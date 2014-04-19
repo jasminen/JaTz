@@ -7,7 +7,7 @@ public class MoveUp2048Action implements Action {
 
 	@Override
 	public State doAction(State state) {
-		int[][] newBoard=state.getBoard().clone();
+		int[][] newBoard=state.getBoard();
 		int newScore=state.getScore();
 		
 		for (int i = 0; i < newBoard[0].length ; i++) {

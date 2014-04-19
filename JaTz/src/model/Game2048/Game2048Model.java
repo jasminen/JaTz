@@ -49,10 +49,16 @@ public class Game2048Model extends Observable implements Model {
 			break;
 		}
 		
-		int[][] board = newState.getBoard();
-		if (hasFree(board)) {
-			DrawNewNumber(board);
+		if (hasFree(newState.getBoard())) {
+			DrawNewNumber(newState);
 		}
+		else {
+			newState.setMode(1);
+		}
+		
+		if(win(newState.getBoard()))
+			newState.setMode(2);
+		
 		
 		states.add(newState);
 		notifyObservers();
@@ -75,17 +81,26 @@ public class Game2048Model extends Observable implements Model {
 	}
 	
 	
-	private void DrawNewNumber(int[][] board) {
+	private void DrawNewNumber(State state) {
 		int row=new Random().nextInt(4);
 		int column=new Random().nextInt(4);
-		while(board[row][column]!= 0) {
+		while(state.getBoard()[row][column]!= 0) {
 			row=new Random().nextInt(4);
 			column=new Random().nextInt(4);
 		}
 		if(new Random().nextInt(10) < 9 )
-			board[row][column]=2;
+			state.setCell(row, column, 2);
 		else
-			board[row][column]=4;
+			state.setCell(row, column, 4);
 	}
 	
+	
+	private Boolean win(int[][] board) {
+		for(int[] r : board)
+			for(int c : r)
+				if(c==2048)
+					return true;
+		return false;
+		
+	}
 }

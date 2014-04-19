@@ -18,12 +18,12 @@ public class Presenter implements Observer {
 		
 		if(o==ui)
 		{
-			///
+			model.doAction(ui.getUserCommand());
 		}
 		
 		if(o==model)
 		{
-			////
+			ui.displayState(model.getState());
 		}
 		
 		
