@@ -6,7 +6,7 @@ public class Run {
 
 	public static void main(String[] args) {
 		Game2048Model bla= new Game2048Model();
-		
+		System.out.println("Tzelon");
 		String str=new String();
 		
 		
