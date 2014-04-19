@@ -1,50 +1,49 @@
 package controller;
 
+import view.Game2048View;
 import model.Game2048.Game2048Model;
 
 public class Run {
 
 	public static void main(String[] args) {
-		Game2048Model bla= new Game2048Model();
-		System.out.println("Tzelon");
-		String str=new String();
-		
-		
+		Game2048Model bla = new Game2048Model();
+		String str = new String();
+
+		Game2048View view = new Game2048View();
+		view.run();
 		for (int i = 0; i < 4; i++) {
-			  str=str.concat("\n");
-			  for (int j = 0; j < 4; j++) {
-			      str=str.concat(bla.getState().getBoard()[i][j]+"  ");
-			    }
+			str = str.concat("\n");
+			for (int j = 0; j < 4; j++) {
+				str = str.concat(bla.getState().getBoard()[i][j] + "  ");
 			}
-		  str=str.concat("\n");
-		  System.out.println(str);
-		
-		  str=new String()  ;
-		  bla.doAction(1);
-		
+		}
+		str = str.concat("\n");
+		System.out.println(str);
+
+		str = new String();
+		bla.doAction(1);
+
 		for (int i = 0; i < 4; i++) {
-			  str=str.concat("\n");
-			  for (int j = 0; j < 4; j++) {
-			      str=str.concat(bla.getState().getBoard()[i][j]+"  ");
-			    }
+			str = str.concat("\n");
+			for (int j = 0; j < 4; j++) {
+				str = str.concat(bla.getState().getBoard()[i][j] + "  ");
 			}
-		  str=str.concat("\n");
-		  System.out.println(str);
-		  
-		  
-		  
-		  str=new String()  ;
-		  bla.doAction(3);
-		  bla.doAction(2);
+		}
+		str = str.concat("\n");
+		System.out.println(str);
+
+		str = new String();
+		bla.doAction(3);
+		bla.doAction(2);
 		for (int i = 0; i < 4; i++) {
-			  str=str.concat("\n");
-			  for (int j = 0; j < 4; j++) {
-			      str=str.concat(bla.getState().getBoard()[i][j]+"  ");
-			    }
+			str = str.concat("\n");
+			for (int j = 0; j < 4; j++) {
+				str = str.concat(bla.getState().getBoard()[i][j] + "  ");
 			}
-		  str=str.concat("\n");
-		  System.out.println(str);
-		  
+		}
+		str = str.concat("\n");
+		System.out.println(str);
+
 	}
 
 }
