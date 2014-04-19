@@ -1,7 +1,6 @@
 package view;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
@@ -9,11 +8,8 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
 
 public class Tile extends Canvas {
 	private Font numberFontStyle;
@@ -23,14 +19,16 @@ public class Tile extends Canvas {
 
 	public Tile(Composite parent, int style) {
 		super(parent, style);
-		boardBackGroundColor = new Color(null, 166, 151, 88);
-		tileBackGroundColor = new Color(null, 222, 211, 149);
+		Board p = (Board)parent;
+		boardBackGroundColor = new Color(null, p.boardBackgroundColor.getRGB());
+		tileBackGroundColor = new Color(null, p.tileBackGroundColor.getRGB());
 		numberFontStyle = new Font(null, "Arial", 24, SWT.BOLD);
-		tileNumber = "2";
-		// Graphics resources that must be disposed.
+
+		// Graphics resources must be disposed.
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
+				Tile.this.numberFontStyle.dispose();
 				Tile.this.tileBackGroundColor.dispose();
 				Tile.this.boardBackGroundColor.dispose();
 				Tile.this.numberFontStyle.dispose();
@@ -45,14 +43,6 @@ public class Tile extends Canvas {
 		});
 	}
 
-	void controlResized(ControlEvent e) {
-		Shell shell[] = e.widget.getDisplay().getShells();
-
-		Control[] t = shell[0].getChildren();
-		Rectangle boardSzie = t[1].getBounds();
-		System.out.println(t[1].getBounds());
-		computeSize(boardSzie.width / 4, boardSzie.height / 4, false);
-	}
 
 	void paintControl(PaintEvent e) {
 		GC gc = e.gc;
@@ -73,13 +63,17 @@ public class Tile extends Canvas {
 		x = (width - fontSzie) / 2 + 2;
 		y = (height - fontSzie) / 2 - 5;
 		gc.drawString(tileNumber, x, y);
+		
+		//Don't forget to dispose 
+		gc.dispose();
+		numberFontStyle.dispose();
 	}
 
-	public Color getBackGround() {
+	public Color getTileBackGroundColor() {
 		return tileBackGroundColor;
 	}
 
-	public void setBackGround(Color backGround) {
+	public void setTileBackGroundColor(Color backGround) {
 		this.tileBackGroundColor = backGround;
 		redraw();
 	}
@@ -91,21 +85,5 @@ public class Tile extends Canvas {
 	public void setTileNumber(String tileNumber) {
 		this.tileNumber = tileNumber;
 		redraw();
-	}
-
-	public Color getRectangleBackGroundColor() {
-		return tileBackGroundColor;
-	}
-
-	public void setRectangleBackGroundColor(Color rectangleBackGroundColor) {
-		this.tileBackGroundColor = rectangleBackGroundColor;
-	}
-
-	public Color getBoardBackGroundColor() {
-		return boardBackGroundColor;
-	}
-
-	public void setBoardBackGroundColor(Color boardBackGroundColor) {
-		this.boardBackGroundColor = boardBackGroundColor;
 	}
 }

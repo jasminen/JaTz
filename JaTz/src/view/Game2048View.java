@@ -3,6 +3,7 @@ package view;
 import java.util.Observable;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -24,16 +25,25 @@ public class Game2048View extends Observable implements View, Runnable {
 		shell.setSize(400, 300);
 		shell.setText("2048 Game");
 
-		Button b1 = new Button(shell, SWT.PUSH);
-		b1.setText("button 1");
-		b1.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
-		Board board = new Board(shell, SWT.BORDER, boardData);
-		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
-//		Tile tile = new Tile(shell, SWT.BORDER);
-//		tile.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 2));
-		Button b2 = new Button(shell, SWT.PUSH);
-		b2.setText("button 2");
-		b2.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		Button undoMove = new Button(shell, SWT.PUSH);
+		undoMove.setText("Undo Move");
+		undoMove.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		Board board = new Board(shell, SWT.BORDER);
+		board.setBoard(boardData);
+		board.setGameColors(new Color(null, 199, 193, 173), new Color(null, 230, 227, 220));
+		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 4));
+		Button restartGame = new Button(shell, SWT.PUSH);
+		restartGame.setText("Restart Game");
+		restartGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		Button loadGame = new Button(shell, SWT.PUSH);
+		loadGame.setText("Load Game");
+		loadGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		Button saveGame = new Button(shell, SWT.PUSH);
+		saveGame.setText("Load Game");
+		saveGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		
+		
+		
 		shell.open();
 	}
 
