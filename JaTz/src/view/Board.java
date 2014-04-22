@@ -28,11 +28,7 @@ public class Board extends Composite {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				Board.this.boardBackgroundColor.dispose();
-				for (Tile[] t : Board.this.tiles) {
-					for (Tile tile : t) {
-						tile.dispose();
-					}
-				}
+				Board.this.tileDispose();
 			}
 		});
 
@@ -52,9 +48,6 @@ public class Board extends Composite {
 			setBackground(boardBackgroundColor);
 			for (int i = 0; i < this.boardData.length; i++) {
 				for (int j = 0; j < this.boardData[i].length; j++) {
-					if (tiles[i][j] != null) {
-						tiles[i][j].dispose();
-					}
 					tiles[i][j] = new Tile(this, 0);
 					tiles[i][j].setTileNumber("" + this.boardData[i][j]);
 					tiles[i][j].setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -68,6 +61,7 @@ public class Board extends Composite {
 	public void setBoard(int[][] boardData) {
 		this.boardChanged = true;
 		this.boardData = boardData;
+		this.tileDispose();
 		this.tiles = new Tile[boardData.length][boardData[0].length];
 		GridLayout gl = new GridLayout(this.boardData[0].length, true);
 		gl.horizontalSpacing = 10;
@@ -78,10 +72,21 @@ public class Board extends Composite {
 		redraw();
 	}
 
-	public void setGameColors(Color boardBackgroundColor, Color tilesBackgroundColor) {
+	public void setGameColors(Color boardBackgroundColor,
+			Color tilesBackgroundColor) {
 		this.boardChanged = true;
 		this.boardBackgroundColor = boardBackgroundColor;
 		this.tileBackGroundColor = tilesBackgroundColor;
 		redraw();
+	}
+
+	private void tileDispose() {
+		if (this.tiles != null) {
+			for (Tile[] t : Board.this.tiles) {
+				for (Tile tile : t) {
+					tile.dispose();
+				}
+			}
+		}
 	}
 }

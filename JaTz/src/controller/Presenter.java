@@ -9,21 +9,27 @@ import java.util.Observer;
 
 public class Presenter implements Observer {
 
-	private View ui;
+	private View gui;
 	private Model model;
+	
+	public Presenter(Model model, View gui) {
+		this.model = model;
+		this.gui = gui;
+	}
 	
 	
 	@Override
 	public void update(Observable o, Object arg1) {
-		
-		if(o==ui)
+		if(o==gui)
 		{
-			model.doAction(ui.getUserCommand());
+			System.out.println(o);
+			model.doAction(gui.getUserCommand());
 		}
 		
 		if(o==model)
 		{
-			ui.displayState(model.getState());
+			System.out.println(o);
+			gui.displayState(model.getState());
 		}
 		
 		
