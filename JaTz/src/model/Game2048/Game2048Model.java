@@ -14,16 +14,7 @@ public class Game2048Model extends Observable implements Model {
 	LinkedList<State> states;
 
 	public Game2048Model() {
-		int[][] board = new int[4][4];
-		int row = new Random().nextInt(4);
-		int column = new Random().nextInt(4);
-		board[row][column] = 2;
-		row = new Random().nextInt(4);
-		column = new Random().nextInt(4);
-		board[row][column] = 2;
-
 		states = new LinkedList<State>();
-		states.add(new State(board, 0));
 	}
 
 	@Override
@@ -43,21 +34,30 @@ public class Game2048Model extends Observable implements Model {
 		case SWT.ARROW_LEFT:
 			newState = new MoveLeft2048Action().doAction(states.getLast());
 			break;
+		case 0:
+			newState = getStartState();
+			break;
+		case -1:
+			if(states.size()>1)
+				states.pollLast();
+			break;
 		default:
 			System.out.println("Not valid key"); // /////////////////////////////////////////////////////////
 			break;
 		}
 
-		if (hasFree(newState.getBoard())) {
-			DrawNewNumber(newState);
-		} else {
-			newState.setMode(1);
+		if (newState != null) {
+			if (hasFree(newState.getBoard())) {
+				DrawNewNumber(newState);
+			} else {
+				newState.setMode(1);
+			}
+
+			if (win(newState.getBoard()))
+				newState.setMode(2);
+
+			states.add(newState);
 		}
-
-		if (win(newState.getBoard()))
-			newState.setMode(2);
-
-		states.add(newState);
 		
 		setChanged();
 		notifyObservers();
@@ -66,6 +66,7 @@ public class Game2048Model extends Observable implements Model {
 
 	@Override
 	public State getState() {
+		System.out.println(states.getLast());
 		return states.getLast();
 	}
 
@@ -98,4 +99,15 @@ public class Game2048Model extends Observable implements Model {
 		return false;
 
 	}
+
+	private State getStartState() {
+		int[][] board = new int[4][4];
+		int row = new Random().nextInt(4);
+		int column = new Random().nextInt(4);
+		board[row][column] = 2;
+
+		return new State(board, 0);
+
+	}
+
 }

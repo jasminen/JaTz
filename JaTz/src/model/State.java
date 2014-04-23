@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Arrays;
+
 public class State {
 
 	private int[][] board;
@@ -20,7 +22,10 @@ public class State {
 	}
 
 	public int[][] getBoard() {
-		return board.clone();
+		int[][] newBoard = new int[this.board.length][this.board[0].length];
+		for(int i=0; i<this.board.length; i++)
+			newBoard[i]=Arrays.copyOf(this.board[i], this.board[i].length);
+		return newBoard;
 	}
 
 	public int getScore() {
@@ -40,5 +45,20 @@ public class State {
 		if (row<board.length && column<board[0].length)
 			board[row][column]=value;
 	}
+	
+	@Override
+	 public String toString(){
+		  String str= "Class State: the board:";
+		  for (int i = 0; i < board.length; i++) {
+			  str=str.concat("\n");
+			  for (int j = 0; j < board[0].length; j++) {
+			      str=str.concat(board[i][j]+"  ");
+			      if(board[i][j]!=-1)
+			    	  str=str.concat(" ");
+			    }
+			}
+		  str=str.concat("\n");
+		  return str;
+		  }
 	
 }

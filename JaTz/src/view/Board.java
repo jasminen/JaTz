@@ -50,7 +50,8 @@ public class Board extends Composite {
 				for (int j = 0; j < this.boardData[i].length; j++) {
 					tiles[i][j] = new Tile(this, 0);
 					tiles[i][j].setTileNumber("" + this.boardData[i][j]);
-					tiles[i][j].setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+					tiles[i][j].setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+							true, true, 1, 1));
 				}
 			}
 			this.layout(false);
@@ -83,8 +84,11 @@ public class Board extends Composite {
 	private void tileDispose() {
 		if (this.tiles != null) {
 			for (Tile[] t : Board.this.tiles) {
-				for (Tile tile : t) {
-					tile.dispose();
+				if (t != null) {
+					for (Tile tile : t) {
+						if (tile != null)
+							tile.dispose();
+					}
 				}
 			}
 		}

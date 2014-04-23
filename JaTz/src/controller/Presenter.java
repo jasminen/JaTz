@@ -22,13 +22,11 @@ public class Presenter implements Observer {
 	public void update(Observable o, Object arg1) {
 		if(o==gui)
 		{
-			System.out.println(o);
 			model.doAction(gui.getUserCommand());
 		}
 		
 		if(o==model)
 		{
-			System.out.println(o);
 			gui.displayState(model.getState());
 		}
 		

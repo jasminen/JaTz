@@ -1,7 +1,8 @@
 package controller;
-
 import view.Game2048View;
 import model.Game2048.Game2048Model;
+
+
 
 public class Run {
 
@@ -11,46 +12,14 @@ public class Run {
 		Presenter presenter2048 = new Presenter(model2048, GUI2048);
 		GUI2048.addObserver(presenter2048);
 		model2048.addObserver(presenter2048);
+		Thread th = new Thread(GUI2048);
+		
+		th.start();
+		
+	
+		//System.out.println(Thread.getAllStackTraces().keySet().size());
 		
 		
-		String str = new String();
-		
-		GUI2048.run();
-		
-		
-		for (int i = 0; i < 4; i++) {
-			str = str.concat("\n");
-			for (int j = 0; j < 4; j++) {
-				str = str.concat(model2048.getState().getBoard()[i][j] + "  ");
-			}
-		}
-		str = str.concat("\n");
-		System.out.println(str);
-
-		str = new String();
-		model2048.doAction(1);
-
-		for (int i = 0; i < 4; i++) {
-			str = str.concat("\n");
-			for (int j = 0; j < 4; j++) {
-				str = str.concat(model2048.getState().getBoard()[i][j] + "  ");
-			}
-		}
-		str = str.concat("\n");
-		System.out.println(str);
-
-		str = new String();
-		model2048.doAction(3);
-		model2048.doAction(2);
-		for (int i = 0; i < 4; i++) {
-			str = str.concat("\n");
-			for (int j = 0; j < 4; j++) {
-				str = str.concat(model2048.getState().getBoard()[i][j] + "  ");
-			}
-		}
-		str = str.concat("\n");
-		System.out.println(str);
-
 	}
 
 }
