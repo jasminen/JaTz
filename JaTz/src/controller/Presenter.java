@@ -2,7 +2,6 @@ package controller;
 
 import model.Model;
 import view.View;
-
 import java.util.Observable;
 import java.util.Observer; 
 
@@ -32,5 +31,7 @@ public class Presenter implements Observer {
 		
 		
 	}
+	
+	
 	
 }

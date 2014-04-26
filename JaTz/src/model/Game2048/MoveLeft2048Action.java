@@ -41,7 +41,7 @@ public class MoveLeft2048Action implements Action {
 			}
 		}
 		
-		return new State(newBoard, newScore);
+		return new State(newBoard, newScore, state.getMode());
 	}
 
 }
