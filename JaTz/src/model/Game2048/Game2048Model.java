@@ -66,7 +66,6 @@ public class Game2048Model extends Observable implements Model {
 
 	@Override
 	public State getState() {
-		System.out.println(states.getLast());
 		return states.getLast();
 	}
 

@@ -27,8 +27,7 @@ public class Game2048View extends Observable implements View, Runnable {
 	State state;
 	Board board;
 	Label score;
-	int[][] boardData = new int[][] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 },
-			{ 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+	int[][] boardData = new int[][] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 },{ 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
 
 	private void initComponents() {
 		display = new Display();
@@ -41,8 +40,7 @@ public class Game2048View extends Observable implements View, Runnable {
 		initButtons();
 
 		final Label instructions = new Label(shell, SWT.NONE);
-		instructions.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, false,
-				false, 1, 1));
+		instructions.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, false, false, 1, 1));
 		instructions.setVisible(false);
 		instructions.setText("Use the arrow keys to move the tiles");
 		instructions.setForeground(new Color(null, 255, 0, 0));
@@ -57,13 +55,11 @@ public class Game2048View extends Observable implements View, Runnable {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_LEFT
-						|| e.keyCode == SWT.ARROW_RIGHT
-						|| e.keyCode == SWT.ARROW_UP) {
+						|| e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_UP) {
 					userCommand = e.keyCode;
 					instructions.setVisible(false);
 					setChanged();
 					notifyObservers();
-
 				} else {
 					instructions.setVisible(true);
 				}
@@ -89,7 +85,7 @@ public class Game2048View extends Observable implements View, Runnable {
 
 	@Override
 	public void displayState(State state) {
-		board.setBoard(state.getBoard());
+		board.updateBoard(state.getBoard());
 		score.setText("Score: " + state.getScore());
 
 	}
