@@ -2,11 +2,13 @@ package model;
 
 import java.util.Arrays;
 
+
+
 public class State {
 
 	private int[][] board;
 	private int score;
-	private int mode; //0-game still on, 1-game over, 2-win.
+	private int mode; //0-game still on, Keys.GAMEOVER, Keys.WIN
 	
 	
 	public State(int[][] board, int score) {
@@ -46,6 +48,7 @@ public class State {
 			board[row][column]=value;
 	}
 	
+	
 	@Override
 	 public String toString(){
 		  String str= "Class State: the board:";
@@ -59,6 +62,24 @@ public class State {
 			}
 		  str=str.concat("\n");
 		  return str;
-		  }
+	}
 	
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof State))
+			return false;
+
+		State other = (State) obj;
+		
+		for(int i=0; i<this.board.length; i++)
+			if(!Arrays.equals(this.board[i], other.getBoard()[i]))
+				return false;	
+			
+		if(this.score != other.getScore())
+			return false;
+		
+		return true;
+	}
 }

@@ -4,17 +4,24 @@ import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Random;
 
-import org.eclipse.swt.SWT;
-
+import controller.Keys;
 import model.Model;
 import model.State;
 
 public class Game2048Model extends Observable implements Model {
 
 	LinkedList<State> states;
+	int winNum;
 
-	public Game2048Model() {
+	public Game2048Model(int winNum) {
 		states = new LinkedList<State>();
+		if (isPowerOfTwo(winNum))
+			this.winNum = winNum;
+		else {
+			System.out.println("Not a power of two, setting to default 2048.");
+			this.winNum=2048;
+		}
+		
 	}
 
 	@Override
@@ -22,23 +29,23 @@ public class Game2048Model extends Observable implements Model {
 		State newState = null;
 
 		switch (action) {
-		case SWT.ARROW_UP:
+		case Keys.UP:
 			newState = new MoveUp2048Action().doAction(states.getLast());
 			break;
-		case SWT.ARROW_RIGHT:
+		case Keys.RIGHT:
 			newState = new MoveRight2048Action().doAction(states.getLast());
 			break;
-		case SWT.ARROW_DOWN:
+		case Keys.DOWN:
 			newState = new MoveDown2048Action().doAction(states.getLast());
 			break;
-		case SWT.ARROW_LEFT:
+		case Keys.LEFT:
 			newState = new MoveLeft2048Action().doAction(states.getLast());
 			break;
-		case 0:
+		case Keys.RESTART:
 			newState = getStartState();
 			break;
-		case -1:
-			if(states.size()>1)
+		case Keys.UNDO:
+			if (states.size() > 1)
 				states.pollLast();
 			break;
 		default:
@@ -50,15 +57,16 @@ public class Game2048Model extends Observable implements Model {
 			if (hasFree(newState.getBoard())) {
 				DrawNewNumber(newState);
 			} else {
-				newState.setMode(1);
+				if (!gotAvailableMoves(newState))
+					newState.setMode(Keys.GAMEOVER);
 			}
 
 			if (win(newState.getBoard()))
-				newState.setMode(2);
+				newState.setMode(Keys.WIN);
 
 			states.add(newState);
 		}
-		
+
 		setChanged();
 		notifyObservers();
 
@@ -66,7 +74,6 @@ public class Game2048Model extends Observable implements Model {
 
 	@Override
 	public State getState() {
-		System.out.println(states.getLast());
 		return states.getLast();
 	}
 
@@ -94,7 +101,7 @@ public class Game2048Model extends Observable implements Model {
 	private Boolean win(int[][] board) {
 		for (int[] r : board)
 			for (int c : r)
-				if (c == 2048)
+				if (c == this.winNum)
 					return true;
 		return false;
 
@@ -108,6 +115,32 @@ public class Game2048Model extends Observable implements Model {
 
 		return new State(board, 0);
 
+	}
+
+	private Boolean gotAvailableMoves(State state) {
+		State up = new MoveUp2048Action().doAction(state);
+		State down = new MoveDown2048Action().doAction(state);
+		State right = new MoveRight2048Action().doAction(state);
+		State left = new MoveLeft2048Action().doAction(state);
+
+		if (state.equals(up) && state.equals(down) && state.equals(right)
+				&& state.equals(left))
+			return false;
+
+		return true;
+
+	}
+
+	
+	
+	private static boolean isPowerOfTwo(int number) {
+		if (number <= 0) {
+			return false;
+		}
+		if ((number & -number) == number) {
+			return true;
+		}
+		return false;
 	}
 
 }
