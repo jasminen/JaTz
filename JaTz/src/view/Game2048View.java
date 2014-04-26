@@ -56,6 +56,7 @@ public class Game2048View extends Observable implements View, Runnable {
 			public void keyPressed(KeyEvent e) {
 				if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_LEFT
 						|| e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_UP) {
+					
 					userCommand = e.keyCode;
 					instructions.setVisible(false);
 					setChanged();
