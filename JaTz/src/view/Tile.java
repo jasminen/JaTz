@@ -48,7 +48,7 @@ public class Tile extends Canvas {
 	void paintControl(PaintEvent e) {
 		GC gc = e.gc;
 		int width = e.width, height = e.height;
-		int fontSzie = (int)Math.min(width / 3, height / 3);
+		int fontSzie = 16; //(int)Math.min(width / 3, height / 3);
 		FontMetrics fm = e.gc.getFontMetrics();
 		int fwidth = fm.getAverageCharWidth();
 		int mx = getSize().x/2 - (""+tileNumber).length() * fwidth/2;
