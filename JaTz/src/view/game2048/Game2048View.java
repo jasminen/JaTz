@@ -1,4 +1,4 @@
-package view;
+package view.game2048;
 
 import java.util.Observable;
 
@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
+import view.Board;
+import view.View;
 import model.State;
 
 public class Game2048View extends Observable implements View, Runnable {

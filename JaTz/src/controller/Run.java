@@ -1,6 +1,6 @@
 package controller;
-import view.Game2048View;
-import model.Game2048.Game2048Model;
+import view.game2048.Game2048View;
+import model.game2048.Game2048Model;
 
 
 
