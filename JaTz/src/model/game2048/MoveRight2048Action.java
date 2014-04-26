@@ -1,4 +1,4 @@
-package model.Game2048;
+package model.game2048;
 
 import model.Action;
 import model.State;

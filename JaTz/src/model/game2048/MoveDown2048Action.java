@@ -1,9 +1,11 @@
-package model.Game2048;
+package model.game2048;
+
+
 
 import model.Action;
 import model.State;
 
-public class MoveUp2048Action implements Action {
+public class MoveDown2048Action implements Action {
 
 	@Override
 	public State doAction(State state) {
@@ -13,24 +15,24 @@ public class MoveUp2048Action implements Action {
 		for (int i = 0; i < newBoard[0].length ; i++) {
 			Boolean sumFlag=true;
 			
-			for (int j = 1; j < newBoard.length; j++) {
+			for (int j = newBoard.length-2; j >=0 ; j--) {
 				
 				if(newBoard[j][i] ==0)
 					continue;
 				
-				for (int h = j; h>0 ; h--) {
+				for (int h = j; h<newBoard.length-1 ; h++) {
 					
-					if(newBoard[h-1][i] == 0 ) {
-						newBoard[h-1][i]=newBoard[h][i];
+					if(newBoard[h+1][i] == 0 ) {
+						newBoard[h+1][i]=newBoard[h][i];
 						newBoard[h][i]=0;
 						continue;
 					}
 						
-					else if(newBoard[h-1][i] == newBoard[h][i] && sumFlag) {
-						newBoard[h-1][i]+=newBoard[h][i];
+					else if(newBoard[h+1][i] == newBoard[h][i] && sumFlag) {
+						newBoard[h+1][i]+=newBoard[h][i];
 						newBoard[h][i]=0;
 						sumFlag=false;	
-						newScore+=newBoard[h-1][i];
+						newScore+=newBoard[h+1][i];
 						break;
 					}
 					else {
@@ -40,7 +42,7 @@ public class MoveUp2048Action implements Action {
 				}
 			}
 		}
-		
+
 		return new State(newBoard, newScore, state.getMode());
 	}
 
