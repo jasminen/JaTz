@@ -1,20 +1,25 @@
 package view.gameMaze;
 
+import java.util.Observable;
+
 import model.State;
 import view.View;
 
-public class GameMazeView implements View {
+public class GameMazeView extends Observable implements View, Runnable {
 
 	@Override
 	public void displayState(State state) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public int getUserCommand() {
-		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void run() {
+		
 	}
 
 }

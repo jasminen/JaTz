@@ -3,11 +3,19 @@ package controller;
 
 public interface Keys {
 
-	//public static final List<Integer> UP = Arrays.asList(SWT.ARROW_UP);
+	
 	public static final int UP = 1;
 	public static final int RIGHT = 2;
 	public static final int DOWN = 3;
 	public static final int LEFT = 4;
+
+	
+	/*
+	public static final int UP = SWT.ARROW_UP;
+	public static final int RIGHT = SWT.ARROW_RIGHT;
+	public static final int DOWN = SWT.ARROW_DOWN;
+	public static final int LEFT = SWT.ARROW_LEFT;
+	*/
 	
 	
 	public static final int UNDO = -1;

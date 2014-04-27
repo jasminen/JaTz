@@ -1,10 +1,12 @@
 package model.game2048;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Random;
 
 import controller.Keys;
+import model.Action;
 import model.Model;
 import model.State;
 
@@ -12,9 +14,14 @@ public class Game2048Model extends Observable implements Model {
 
 	LinkedList<State> states;
 	int winNum;
+	private HashMap<Integer, Action> actionFactory;
+	
 
+	//C'tor - gets the win number of the game (a power of two).
 	public Game2048Model(int winNum) {
 		states = new LinkedList<State>();
+		actionFactory = new HashMap<Integer, Action>();
+		
 		if (isPowerOfTwo(winNum))
 			this.winNum = winNum;
 		else {
@@ -22,26 +29,23 @@ public class Game2048Model extends Observable implements Model {
 			this.winNum=2048;
 		}
 		
+		actionFactory.put(Keys.UP, new MoveUp2048Action());
+		actionFactory.put(Keys.DOWN, new MoveDown2048Action());
+		actionFactory.put(Keys.RIGHT, new MoveRight2048Action());
+		actionFactory.put(Keys.LEFT, new MoveLeft2048Action());
 	}
 
+	
+	
+	
 	@Override
 	public void doAction(int action) {
 		State newState = null;
+		Action a;
 
 		switch (action) {
-		case Keys.UP:
-			newState = new MoveUp2048Action().doAction(states.getLast());
-			break;
-		case Keys.RIGHT:
-			newState = new MoveRight2048Action().doAction(states.getLast());
-			break;
-		case Keys.DOWN:
-			newState = new MoveDown2048Action().doAction(states.getLast());
-			break;
-		case Keys.LEFT:
-			newState = new MoveLeft2048Action().doAction(states.getLast());
-			break;
 		case Keys.RESTART:
+			states.clear();
 			newState = getStartState();
 			break;
 		case Keys.UNDO:
@@ -49,10 +53,15 @@ public class Game2048Model extends Observable implements Model {
 				states.pollLast();
 			break;
 		default:
-			System.out.println("Not valid key"); // /////////////////////////////////////////////////////////
+			a=this.actionFactory.get(action); //Get relevant Action
+			if(a!=null)
+				newState=a.doAction(states.getLast()); //start doAction method
+			else
+				System.out.println("Not valid key"); ///////////////////////////////////////////////////////////////////////////////////////////
 			break;
 		}
 
+		//Check if the mode of the game needs to be changed to game over or win. if not, draw a new number.
 		if (newState != null) {
 			if (hasFree(newState.getBoard())) {
 				DrawNewNumber(newState);
@@ -72,6 +81,8 @@ public class Game2048Model extends Observable implements Model {
 
 	}
 
+	
+	
 	@Override
 	public State getState() {
 		return states.getLast();

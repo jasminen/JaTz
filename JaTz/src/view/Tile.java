@@ -88,7 +88,6 @@ public class Tile extends Canvas {
 
 	public void setTileNumber(int tileNumber) {
 		this.tileNumber = tileNumber;
-//		System.out.println(this.tileNumber);
 		redraw();
 	}
 }
