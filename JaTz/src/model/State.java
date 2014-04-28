@@ -2,6 +2,8 @@ package model;
 
 import java.util.Arrays;
 
+import org.eclipse.swt.graphics.Point;
+
 
 
 public class State {
@@ -21,6 +23,12 @@ public class State {
 		this.board=board;
 		this.score=score;
 		this.mode=mode;
+	}
+	
+	public State(State state) {
+		this.board = state.getBoard();
+		this.score = state.getScore();
+		this.mode = state.getMode();
 	}
 
 	public int[][] getBoard() {
@@ -43,9 +51,30 @@ public class State {
 			this.mode=mode;
 	}
 	
+	public void setScore(int score) {
+			this.score=score;
+	}
+	
 	public void setCell(int row, int column, int value) {
-		if (row<board.length && column<board[0].length)
+		if (cellExists(row, column))
 			board[row][column]=value;
+	}
+	
+	public Boolean cellExists(int row, int column) {
+		if (row<board.length && column<board[0].length)
+			return true;
+		return false;
+	}
+	
+	public Point findCell(int value) {
+		for (int i = 0; i < this.board.length; i++) {
+			for (int j = 0; j < this.board[0].length; j++) {
+				if(board[i][j] == value) {
+					return new Point(i, j);
+				}
+			}
+		}
+		return null;
 	}
 	
 	

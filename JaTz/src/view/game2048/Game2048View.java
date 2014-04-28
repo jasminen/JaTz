@@ -1,6 +1,8 @@
 package view.game2048;
 
 import java.util.Observable;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -30,7 +32,10 @@ public class Game2048View extends Observable implements View, Runnable {
 	Board board;
 	Label score;
 	int[][] boardData = new int[][] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 },{ 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-
+	KeyEvent lastKeyEvent = null;
+	long keyTime;
+	Boolean keyFlag = false;
+	
 	private void initComponents() {
 		display = new Display();
 		shell = new Shell(display);
@@ -49,13 +54,11 @@ public class Game2048View extends Observable implements View, Runnable {
 		shell.forceFocus();
 
 		shell.addKeyListener(new KeyListener() {
-
+			
+			
+					
 			@Override
 			public void keyReleased(KeyEvent e) {
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
 				if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_LEFT
 						|| e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_UP) {
 					userCommand = e.keyCode;
@@ -64,11 +67,55 @@ public class Game2048View extends Observable implements View, Runnable {
 					notifyObservers();
 				} else {
 					instructions.setVisible(true);
-				}
-
+				} 
 			}
-		});
 
+			@Override
+			public void keyPressed(final KeyEvent e) {
+				/*
+				if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_LEFT
+						|| e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_UP) {
+					
+					if(keyFlag==false) {
+						keyTime=System.currentTimeMillis();	
+						keyFlag=true;
+						lastKeyEvent=e;
+						userCommand = e.keyCode;
+					}
+					else {
+						if(System.currentTimeMillis()-keyTime < 50 && lastKeyEvent.keyCode != e.keyCode) {
+							userCommand = lastKeyEvent.keyCode + e.keyCode;
+						}
+						
+						else {
+							userCommand = e.keyCode;
+						}
+						keyFlag=false;
+					}
+				
+					instructions.setVisible(false);
+					setChanged();
+					notifyObservers();
+				} else {
+					instructions.setVisible(true);
+				} 
+				*/
+				
+				/*
+				if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_LEFT
+						|| e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_UP) {
+					userCommand = e.keyCode;
+					instructions.setVisible(false);
+					setChanged();
+					notifyObservers();
+				} else {
+					instructions.setVisible(true);
+				} 
+				*/
+			}
+			});
+		
+		
 		shell.open();
 	}
 

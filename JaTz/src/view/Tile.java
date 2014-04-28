@@ -3,6 +3,11 @@ package view;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.DragDetectEvent;
+import org.eclipse.swt.events.DragDetectListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -20,7 +25,7 @@ public class Tile extends Canvas {
 
 	public Tile(Composite parent, int style) {
 		super(parent, style);
-		Board p = (Board)parent;
+		Board p = (Board) parent;
 		boardBackGroundColor = new Color(null, p.boardBackgroundColor.getRGB());
 		tileBackGroundColor = new Color(null, p.tileBackGroundColor.getRGB());
 		numberFontStyle = new Font(null, "Arial", 24, SWT.BOLD);
@@ -35,26 +40,54 @@ public class Tile extends Canvas {
 				Tile.this.numberFontStyle.dispose();
 			}
 		});
-
+		
+		
 		addPaintListener(new PaintListener() {
 			@Override
 			public void paintControl(PaintEvent e) {
 				Tile.this.paintControl(e);
 			}
 		});
+
+		
+		
+		addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseUp(MouseEvent e) {
+				System.out.println("mouse up: x: "+e.x +" y: "+e.y+ " size: x: "+Tile.this.getSize().x+" y: "+Tile.this.getSize().y);
+				
+			}
+			
+			@Override
+			public void mouseDown(MouseEvent e) {
+				System.out.println("mouse down: x: "+e.x +" y: "+e.y);
+				
+			}
+			
+			@Override
+			public void mouseDoubleClick(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+
+
 	}
 
-
+	
+	
+	
 	void paintControl(PaintEvent e) {
 		GC gc = e.gc;
 		int width = e.width, height = e.height;
-		int fontSzie = 16; //(int)Math.min(width / 3, height / 3);
+		int fontSzie = 16; // (int)Math.min(width / 3, height / 3);
 		FontMetrics fm = e.gc.getFontMetrics();
 		int fwidth = fm.getAverageCharWidth();
-		int mx = getSize().x/2 - (""+tileNumber).length() * fwidth/2;
-		int my = getSize().y/2 - fm.getHeight()/2 - fm.getDescent();
-		
-		
+		int mx = getSize().x / 2 - ("" + tileNumber).length() * fwidth / 2;
+		int my = getSize().y / 2 - fm.getHeight() / 2 - fm.getDescent();
+
 		numberFontStyle = new Font(null, "Arial", fontSzie, SWT.BOLD);
 		gc.setFont(numberFontStyle);
 
@@ -64,11 +97,11 @@ public class Tile extends Canvas {
 		gc.setBackground(tileBackGroundColor);
 		gc.fillRoundRectangle(0, 0, width, height, 3, 3);
 
-		if(tileNumber > 0) {
-			gc.drawString(""+tileNumber, mx, my);
+		if (tileNumber > 0) {
+			gc.drawString("" + tileNumber, mx, my);
 		}
-		
-		//Don't forget to dispose 
+
+		// Don't forget to dispose
 		gc.dispose();
 		numberFontStyle.dispose();
 	}

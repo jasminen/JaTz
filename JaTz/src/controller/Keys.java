@@ -10,6 +10,11 @@ public interface Keys {
 	public static final int LEFT = 4;
 
 	
+	public static final int DIAGONAL_LEFT_UP = 5;
+	public static final int DIAGONAL_RIGHT_UP = 6;
+	public static final int DIAGONAL_LEFT_DOWN = 7;
+	public static final int DIAGONAL_RIGHT_DOWN = 8;	
+	
 	/*
 	public static final int UP = SWT.ARROW_UP;
 	public static final int RIGHT = SWT.ARROW_RIGHT;
@@ -26,5 +31,8 @@ public interface Keys {
 	
 	public static final int GAMEOVER = 666;
 	public static final int WIN = 2048;
+	
+	
+	public static final int MOUSE = 11;
 	
 }

@@ -1,6 +1,7 @@
 package view;
 
 import org.eclipse.swt.SWT;
+
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -18,6 +19,7 @@ public class Board extends Composite {
 
 		// Defaults
 		setBackground(boardBackgroundColor);
+		
 	}
 
 	public void setBoard(int[][] boardData) {

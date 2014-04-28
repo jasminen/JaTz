@@ -33,6 +33,10 @@ public class Presenter implements Observer {
 		commandToAction.put(Keys.LEFT, Keys.LEFT);
 		commandToAction.put(Keys.UNDO, Keys.UNDO);
 		commandToAction.put(Keys.RESTART, Keys.RESTART);
+		commandToAction.put(SWT.ARROW_UP + SWT.ARROW_RIGHT  ,Keys.DIAGONAL_RIGHT_UP );
+		commandToAction.put(SWT.ARROW_UP + SWT.ARROW_LEFT  ,Keys.DIAGONAL_LEFT_UP );
+		commandToAction.put(SWT.ARROW_DOWN + SWT.ARROW_LEFT  ,Keys.DIAGONAL_LEFT_DOWN );
+		commandToAction.put(SWT.ARROW_DOWN + SWT.ARROW_RIGHT  ,Keys.DIAGONAL_RIGHT_DOWN );
 	}
 	
 	

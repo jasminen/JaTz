@@ -39,7 +39,7 @@ public class Game2048Model extends Observable implements Model {
 	
 	
 	@Override
-	public void doAction(int action) {
+	public void doAction(Integer action) {
 		State newState = null;
 		Action a;
 
