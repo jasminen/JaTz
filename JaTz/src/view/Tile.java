@@ -3,11 +3,8 @@ package view;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.DragDetectEvent;
-import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -41,15 +38,12 @@ public class Tile extends Canvas {
 			}
 		});
 		
-		
 		addPaintListener(new PaintListener() {
 			@Override
 			public void paintControl(PaintEvent e) {
 				Tile.this.paintControl(e);
 			}
 		});
-
-		
 		
 		addMouseListener(new MouseListener() {
 			
@@ -71,13 +65,7 @@ public class Tile extends Canvas {
 				
 			}
 		});
-		
-
-
 	}
-
-	
-	
 	
 	void paintControl(PaintEvent e) {
 		GC gc = e.gc;

@@ -28,7 +28,8 @@ public interface Keys {
 	public static final int SAVE = 5;
 	public static final int LOAD = 6;
 	
-	
+	public static final int NEW_GAME = 999;
+	public static final int IN_PROGRESS = 669;
 	public static final int GAMEOVER = 666;
 	public static final int WIN = 2048;
 	

@@ -42,7 +42,7 @@ public class Game2048Model extends Observable implements Model {
 	public void doAction(Integer action) {
 		State newState = null;
 		Action a;
-
+		
 		switch (action) {
 		case Keys.RESTART:
 			states.clear();
@@ -57,22 +57,26 @@ public class Game2048Model extends Observable implements Model {
 			if(a!=null)
 				newState=a.doAction(states.getLast()); //start doAction method
 			else
-				System.out.println("Not valid key"); ///////////////////////////////////////////////////////////////////////////////////////////
+				System.out.println("Not valid key"); //////////////////////////////
 			break;
 		}
 
 		//Check if the mode of the game needs to be changed to game over or win. if not, draw a new number.
 		if (newState != null) {
+			if(!states.isEmpty()) { newState.setMode(Keys.IN_PROGRESS); }
 			if (hasFree(newState.getBoard())) {
 				DrawNewNumber(newState);
 			} else {
-				if (!gotAvailableMoves(newState))
+				if (!gotAvailableMoves(newState)) {
 					newState.setMode(Keys.GAMEOVER);
+					
+				}
 			}
 
 			if (win(newState.getBoard()))
 				newState.setMode(Keys.WIN);
 
+			 
 			states.add(newState);
 		}
 
@@ -134,8 +138,7 @@ public class Game2048Model extends Observable implements Model {
 		State right = new MoveRight2048Action().doAction(state);
 		State left = new MoveLeft2048Action().doAction(state);
 
-		if (state.equals(up) && state.equals(down) && state.equals(right)
-				&& state.equals(left))
+		if (state.equals(up) && state.equals(down) && state.equals(right) && state.equals(left))
 			return false;
 
 		return true;
