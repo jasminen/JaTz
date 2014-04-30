@@ -1,5 +1,6 @@
 package model.game2048;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Observable;
@@ -10,12 +11,14 @@ import model.Action;
 import model.Model;
 import model.State;
 
-public class Game2048Model extends Observable implements Model {
+public class Game2048Model extends Observable implements Model, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	LinkedList<State> states;
 	int winNum;
 	private HashMap<Integer, Action> actionFactory;
 	
+	public Game2048Model() {}
 
 	//C'tor - gets the win number of the game (a power of two).
 	public Game2048Model(int winNum) {
@@ -44,6 +47,11 @@ public class Game2048Model extends Observable implements Model {
 		Action a;
 		
 		switch (action) {
+		case Keys.NEW_GAME:
+			states.clear();
+			newState = getStartState();
+			newState.setMode(Keys.NEW_GAME);
+			break;
 		case Keys.RESTART:
 			states.clear();
 			newState = getStartState();
@@ -60,11 +68,10 @@ public class Game2048Model extends Observable implements Model {
 				System.out.println("Not valid key"); //////////////////////////////
 			break;
 		}
-
+		
 		//Check if the mode of the game needs to be changed to game over or win. if not, draw a new number.
 		if (newState != null) {
-			if(!states.isEmpty()) { newState.setMode(Keys.IN_PROGRESS); }
-			if (hasFree(newState.getBoard())) {
+			if (hasFree(newState.getCopyBoard())) {
 				DrawNewNumber(newState);
 			} else {
 				if (!gotAvailableMoves(newState)) {
@@ -73,13 +80,12 @@ public class Game2048Model extends Observable implements Model {
 				}
 			}
 
-			if (win(newState.getBoard()))
+			if (win(newState.getCopyBoard()))
 				newState.setMode(Keys.WIN);
 
 			 
 			states.add(newState);
 		}
-
 		setChanged();
 		notifyObservers();
 
@@ -103,7 +109,7 @@ public class Game2048Model extends Observable implements Model {
 	private void DrawNewNumber(State state) {
 		int row = new Random().nextInt(4);
 		int column = new Random().nextInt(4);
-		while (state.getBoard()[row][column] != 0) {
+		while (state.getCopyBoard()[row][column] != 0) {
 			row = new Random().nextInt(4);
 			column = new Random().nextInt(4);
 		}
@@ -145,8 +151,6 @@ public class Game2048Model extends Observable implements Model {
 
 	}
 
-	
-	
 	private static boolean isPowerOfTwo(int number) {
 		if (number <= 0) {
 			return false;
@@ -155,6 +159,30 @@ public class Game2048Model extends Observable implements Model {
 			return true;
 		}
 		return false;
+	}
+	
+	public LinkedList<State> getStates() {
+		return states;
+	}
+
+	public void setStates(LinkedList<State> states) {
+		this.states = states;
+	}
+
+	public int getWinNum() {
+		return winNum;
+	}
+
+	public void setWinNum(int winNum) {
+		this.winNum = winNum;
+	}
+
+	public HashMap<Integer, Action> getActionFactory() {
+		return actionFactory;
+	}
+
+	public void setActionFactory(HashMap<Integer, Action> actionFactory) {
+		this.actionFactory = actionFactory;
 	}
 
 }

@@ -11,11 +11,13 @@ public class State {
 	private int[][] board;
 	private int score;
 	private int mode; // Keys.NEW_GAME, Keys.GAMEOVER, Keys.WIN, Keys.IN_PROGRESS
+	
+	public State(){}
 
 	public State(int[][] board, int score) {
 		this.board = board;
 		this.score = score;
-		this.mode = Keys.NEW_GAME;
+		this.mode = Keys.IN_PROGRESS;
 	}
 
 	public State(int[][] board, int score, int mode) {
@@ -25,16 +27,20 @@ public class State {
 	}
 
 	public State(State state) {
-		this.board = state.getBoard();
+		this.board = state.getCopyBoard();
 		this.score = state.getScore();
 		this.mode = state.getMode();
 	}
 
-	public int[][] getBoard() {
+	public int[][] getCopyBoard() {
 		int[][] newBoard = new int[this.board.length][this.board[0].length];
 		for (int i = 0; i < this.board.length; i++)
 			newBoard[i] = Arrays.copyOf(this.board[i], this.board[i].length);
 		return newBoard;
+	}
+	
+	public int[][] getBoard() {
+		return board;
 	}
 
 	public int getScore() {
@@ -49,6 +55,10 @@ public class State {
 			this.mode = mode;
 	}
 
+	public void setBoard(int[][] board) {
+		this.board = board;
+	}
+	
 	public void setScore(int score) {
 		this.score = score;
 	}
@@ -98,7 +108,7 @@ public class State {
 		State other = (State) obj;
 
 		for (int i = 0; i < this.board.length; i++)
-			if (!Arrays.equals(this.board[i], other.getBoard()[i]))
+			if (!Arrays.equals(this.board[i], other.getCopyBoard()[i]))
 				return false;
 
 		if (this.score != other.getScore())

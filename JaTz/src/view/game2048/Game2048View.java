@@ -25,11 +25,9 @@ import model.State;
 
 public class Game2048View extends Observable implements View, Runnable {
 
-	
 	Display display;
 	Shell shell;
-	int userCommand = 0;
-	State state;
+	int userCommand = Keys.NEW_GAME;
 	Board board;
 	Label score;
 	KeyEvent lastKeyEvent = null;
@@ -255,9 +253,9 @@ public class Game2048View extends Observable implements View, Runnable {
 		        String[] filterExt = { "*.xml", "*.txt", "*.*" };
 		        fd.setFilterExtensions(filterExt);
 		        String fileName = fd.open();
-		        System.out.println(fileName);				
-//				setChanged();
-//				notifyObservers();
+		        System.out.println("load");				
+				setChanged();
+				notifyObservers(fileName + "_load");
 				shell.forceFocus();
 			}
 		});
@@ -275,9 +273,9 @@ public class Game2048View extends Observable implements View, Runnable {
 		        String[] filterExt = { "*.xml", "*.txt", "*.*" };
 		        fd.setFilterExtensions(filterExt);
 		        String fileName = fd.open();
-		        System.out.println(fileName);
-//				setChanged();
-//				notifyObservers();
+		        System.out.println("save");
+				setChanged();
+		        notifyObservers(fileName + "_save");
 				shell.forceFocus();
 			}
 		});
