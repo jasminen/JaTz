@@ -1,0 +1,96 @@
+package view;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+
+import controller.Keys;
+
+public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
+
+	int command;
+	Boolean keyFlag = false;
+	int lastKeyEventCode = 0;
+
+	
+	
+	@Override
+	public void keyPressed(final KeyEvent e) {
+		
+		if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_LEFT || e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_UP) {
+			setInstructions(false);
+			if (keyFlag == false) {
+				keyFlag = true;
+				lastKeyEventCode = e.keyCode;
+				Timer tm = new Timer();
+				
+				tm.schedule(new TimerTask() { //Scheduled after 100 millisec
+
+					@Override
+					public void run() {
+						if (keyFlag == false && lastKeyEventCode != e.keyCode) {
+							command =((e.keyCode==SWT.ARROW_LEFT || lastKeyEventCode==SWT.ARROW_LEFT)?e.keyCode+100+lastKeyEventCode:e.keyCode-20+lastKeyEventCode);
+						} else {
+							keyFlag = false;
+							command = e.keyCode;
+						}
+						
+						System.out.println("timer: "+command);
+						switch (command) {
+						case SWT.ARROW_DOWN:
+							setUserCommand(Keys.DOWN);
+							break;
+						case SWT.ARROW_UP:
+							setUserCommand(Keys.UP);
+							break;
+						case SWT.ARROW_LEFT:
+							setUserCommand(Keys.LEFT);
+							break;
+						case SWT.ARROW_RIGHT:
+							setUserCommand(Keys.RIGHT);
+							break;
+						case SWT.ARROW_LEFT + SWT.ARROW_DOWN + 100:
+							setUserCommand(Keys.DIAGONAL_LEFT_DOWN);
+							break;
+						case SWT.ARROW_RIGHT + SWT.ARROW_DOWN - 20:
+							setUserCommand(Keys.DIAGONAL_RIGHT_DOWN);
+							break;
+						case SWT.ARROW_LEFT + SWT.ARROW_UP + 100:
+							setUserCommand(Keys.DIAGONAL_LEFT_UP);
+							break;
+						case SWT.ARROW_RIGHT + SWT.ARROW_UP - 20:
+							setUserCommand(Keys.DIAGONAL_RIGHT_UP);
+							break;
+						default:
+							break;	
+						}
+						
+					}
+				}, 50); //End tm.schedule
+				
+			} else {
+				keyFlag = false;
+				lastKeyEventCode = e.keyCode;
+			}
+
+		} else {
+			setInstructions(true);
+		}
+		
+		
+		
+	}
+
+	
+
+	@Override
+	public void keyReleased(KeyEvent e) {}
+
+	
+	
+	public abstract void setUserCommand(int userCommand);
+	public abstract void setInstructions(Boolean flag);
+}

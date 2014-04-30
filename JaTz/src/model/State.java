@@ -63,6 +63,15 @@ public class State {
 		this.score = score;
 	}
 
+	
+	public Boolean hasFreeCells() {
+		for (int[] r : this.board)
+			for (int c : r)
+				if (c == 0)
+					return true;
+		return false;
+	}
+	
 	public void setCell(int row, int column, int value) {
 		if (cellExists(row, column))
 			board[row][column] = value;

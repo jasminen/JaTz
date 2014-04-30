@@ -15,18 +15,11 @@ public interface Keys {
 	public static final int DIAGONAL_LEFT_DOWN = 7;
 	public static final int DIAGONAL_RIGHT_DOWN = 8;	
 	
-	/*
-	public static final int UP = SWT.ARROW_UP;
-	public static final int RIGHT = SWT.ARROW_RIGHT;
-	public static final int DOWN = SWT.ARROW_DOWN;
-	public static final int LEFT = SWT.ARROW_LEFT;
-	*/
-	
 	
 	public static final int UNDO = -1;
 	public static final int RESTART = 0;
-	public static final int SAVE = 5;
-	public static final int LOAD = 6;
+	public static final int SAVE = 50;
+	public static final int LOAD = 60;
 	
 	public static final int NEW_GAME = 999;
 	public static final int IN_PROGRESS = 669;

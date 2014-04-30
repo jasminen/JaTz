@@ -3,7 +3,6 @@ package view.game2048;
 import java.util.Observable;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -19,6 +18,8 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 import controller.Keys;
+import view.AbsArrowDiagonalKeysListener;
+import view.AbsArrowKeysListener;
 import view.Board;
 import view.View;
 import model.State;
@@ -30,11 +31,10 @@ public class Game2048View extends Observable implements View, Runnable {
 	int userCommand = Keys.NEW_GAME;
 	Board board;
 	Label score;
-	KeyEvent lastKeyEvent = null;
-	long keyTime;
-	Boolean keyFlag = false;
 	String fileName;
-	
+	String gameName = "2048";
+	Label instructions;
+
 	private void initComponents() {
 		display = new Display();
 		shell = new Shell(display);
@@ -45,81 +45,22 @@ public class Game2048View extends Observable implements View, Runnable {
 		initMenuBar();
 		initButtons();
 
-		final Label instructions = new Label(shell, SWT.NONE);
-		instructions.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, false, false, 1, 1));
+		instructions = new Label(shell, SWT.NONE);
+		instructions.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, false,
+				false, 1, 1));
 		instructions.setVisible(false);
 		instructions.setText("Use the arrow keys to move the tiles");
 		instructions.setForeground(new Color(null, 255, 0, 0));
 		shell.forceFocus();
-
-		shell.addKeyListener(new KeyListener() {
-			
-			
-					
-			@Override
-			public void keyReleased(KeyEvent e) {
-//				if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_LEFT
-//						|| e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_UP) {
-//					
-//					System.out.println("KeyCode: " + e.keyCode + " StateMaske: "  + e.stateMask);
-//					
-//					userCommand = e.keyCode;
-//					instructions.setVisible(false);
-//					setChanged();
-//					notifyObservers();
-//				} else {
-//					instructions.setVisible(true);
-//				} 
-			}
-
-			@Override
-			public void keyPressed(final KeyEvent e) {
-				/*
-				if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_LEFT
-						|| e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_UP) {
-					
-					if(keyFlag==false) {
-						keyTime=System.currentTimeMillis();	
-						keyFlag=true;
-						lastKeyEvent=e;
-						userCommand = e.keyCode;
-					}
-					else {
-						if(System.currentTimeMillis()-keyTime < 50 && lastKeyEvent.keyCode != e.keyCode) {
-							userCommand = lastKeyEvent.keyCode + e.keyCode;
-						}
-						
-						else {
-							userCommand = e.keyCode;
-						}
-						keyFlag=false;
-					}
-				
-					instructions.setVisible(false);
-					setChanged();
-					notifyObservers();
-				} else {
-					instructions.setVisible(true);
-				} 
-				*/
-				
-				
-				if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_LEFT
-						|| e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_UP) {
-					
-					userCommand = e.keyCode;
-					instructions.setVisible(false);
-					setChanged();
-					notifyObservers();
-					
-				} else {
-					instructions.setVisible(true);
-				}
-			}
-			});
-		shell.open();
+		
+		setShellKeyListener();
+		
+		shell.open(); // End initComponent
 	}
 
+	
+	
+	
 	@Override
 	public void run() {
 		initComponents();
@@ -146,10 +87,12 @@ public class Game2048View extends Observable implements View, Runnable {
 			score.setText("Score: " + state.getScore());
 			break;
 		case Keys.WIN:
-			score.setText("Score: " + state.getScore() + "  YOU WIN!!!"); //needs improvement 
+			score.setText("Score: " + state.getScore() + "  YOU WIN!!!"); // needs
+																			// improvement
 			break;
 		case Keys.GAMEOVER:
-			score.setText("Score: " + state.getScore() + "  GAME OVER!!!"); //needs improvement 
+			score.setText("Score: " + state.getScore() + "  GAME OVER!!!"); // needs
+																			// improvement
 			break;
 		default:
 			break;
@@ -160,7 +103,6 @@ public class Game2048View extends Observable implements View, Runnable {
 	public int getUserCommand() {
 		return userCommand;
 	}
-	
 
 	private void initMenuBar() {
 		Menu menuBar = new Menu(shell, SWT.BAR);
@@ -178,6 +120,20 @@ public class Game2048View extends Observable implements View, Runnable {
 		editItem.setMenu(editMenu);
 
 		// Create all the items in the File dropdown menu
+		MenuItem newGameItem = new MenuItem(fileMenu, SWT.CASCADE);
+		newGameItem.setText("New Game");
+
+		Menu newGameSubMenu = new Menu(shell, SWT.DROP_DOWN);
+		newGameItem.setMenu(newGameSubMenu);
+
+		MenuItem game2048Item = new MenuItem(newGameSubMenu, SWT.NONE);
+		game2048Item.setText("2048");
+		game2048Item.addListener(SWT.Selection, setGameName("2048"));
+
+		MenuItem gameMazeItem = new MenuItem(newGameSubMenu, SWT.NONE);
+		gameMazeItem.setText("Maze");
+		gameMazeItem.addListener(SWT.Selection, setGameName("maze"));
+
 		MenuItem restartItem = new MenuItem(fileMenu, SWT.NONE);
 		restartItem.setText("Restart");
 		restartItem.addListener(SWT.Selection, restartGame());
@@ -201,41 +157,45 @@ public class Game2048View extends Observable implements View, Runnable {
 		// End of Edit dropdown
 
 		shell.setMenuBar(menuBar);
-		
+
 		ExitItem.addListener(SWT.Selection, exit());
 		undoItem.addListener(SWT.Selection, undoMove());
 		loadItem.addListener(SWT.Selection, loadGame());
 		saveItem.addListener(SWT.Selection, saveGame());
-		
+
 	}
+
 
 	private void initButtons() {
 		Button undoMove = new Button(shell, SWT.PUSH);
 		undoMove.setText("Undo Move");
-		undoMove.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,	1));
-		
+		undoMove.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,
+				1));
+
 		score = new Label(shell, SWT.NONE);
 		score.setText("Score: 0        ");
 		score.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
-		
+
 		Button restartGame = new Button(shell, SWT.PUSH);
 		restartGame.setText("Restart Game");
-		restartGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false,1, 1));
+		restartGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false,
+				1, 1));
 
 		board = new Board(shell, SWT.BORDER);
-//		board.setBoard(boardData);
-		board.setGameColors(new Color(null, 199, 193, 173), new Color(null,230, 227, 220));
+		board.setGameColors(new Color(null, 199, 193, 173), new Color(null,
+				230, 227, 220));
 		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
 
 		Button loadGame = new Button(shell, SWT.PUSH);
 		loadGame.setText("Load Game");
-		loadGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,1));
-		
-		
+		loadGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,
+				1));
+
 		Button saveGame = new Button(shell, SWT.PUSH);
 		saveGame.setText("Save Game");
-		saveGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,2));
-		
+		saveGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,
+				2));
+
 		loadGame.addListener(SWT.Selection, loadGame());
 		saveGame.addListener(SWT.Selection, saveGame());
 		restartGame.addListener(SWT.Selection, restartGame());
@@ -248,40 +208,38 @@ public class Game2048View extends Observable implements View, Runnable {
 			public void handleEvent(Event e) {
 				userCommand = Keys.LOAD;
 				FileDialog fd = new FileDialog(shell, SWT.OPEN);
-		        fd.setText("Load");
-		        fd.setFilterPath("C:/");
-		        String[] filterExt = { "*.xml", "*.txt", "*.*" };
-		        fd.setFilterExtensions(filterExt);
-		        String fileName = fd.open();
-		        System.out.println("load");				
+				fd.setText("Load");
+				fd.setFilterPath("C:/");
+				String[] filterExt = { "*.xml", "*.txt", "*.*" };
+				fd.setFilterExtensions(filterExt);
+				String fileName = fd.open();
+				System.out.println("load");
 				setChanged();
 				notifyObservers(fileName + "_load");
 				shell.forceFocus();
 			}
 		});
 	}
-	
-	
+
 	private Listener saveGame() {
 		return (new Listener() {
 			@Override
 			public void handleEvent(Event e) {
 				userCommand = Keys.SAVE;
 				FileDialog fd = new FileDialog(shell, SWT.SAVE);
-		        fd.setText("Save");
-		        fd.setFilterPath("C:/");
-		        String[] filterExt = { "*.xml", "*.txt", "*.*" };
-		        fd.setFilterExtensions(filterExt);
-		        String fileName = fd.open();
-		        System.out.println("save");
+				fd.setText("Save");
+				fd.setFilterPath("C:/");
+				String[] filterExt = { "*.xml", "*.txt", "*.*" };
+				fd.setFilterExtensions(filterExt);
+				String fileName = fd.open();
+				System.out.println("save");
 				setChanged();
-		        notifyObservers(fileName + "_save");
+				notifyObservers(fileName + "_save");
 				shell.forceFocus();
 			}
 		});
 	}
-	
-	
+
 	private Listener restartGame() {
 		return (new Listener() {
 			@Override
@@ -305,7 +263,7 @@ public class Game2048View extends Observable implements View, Runnable {
 			}
 		});
 	}
-	
+
 	private Listener exit() {
 		return (new Listener() {
 			@Override
@@ -315,4 +273,70 @@ public class Game2048View extends Observable implements View, Runnable {
 		});
 	}
 	
+	private Listener setGameName(final String game) {
+
+		return new Listener() {
+
+			@Override
+			public void handleEvent(Event e) {
+				shell.removeListener(1, shell.getListeners(1)[0]);
+				Game2048View.this.gameName = game;
+				setShellKeyListener();
+				userCommand = Keys.NEW_GAME;
+				setChanged();
+				notifyObservers();
+			}
+		};
+
+	}
+	
+	
+	
+	private void setShellKeyListener() {
+		if (gameName.equals("maze")) {
+			shell.addKeyListener(new AbsArrowDiagonalKeysListener() {
+
+				@Override
+				public void setUserCommand(int userCommand) {
+					Game2048View.this.userCommand = userCommand;
+					display.asyncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							setChanged();
+							notifyObservers();
+						}
+					});
+				}
+
+				@Override
+				public void setInstructions(Boolean flag) {
+					instructions.setVisible(flag);
+
+				}
+			});
+
+		}
+
+		else {
+			shell.addKeyListener(new AbsArrowKeysListener() {
+
+				@Override
+				public void setUserCommand(int userCommand) {
+					Game2048View.this.userCommand = userCommand;
+					setChanged();
+					notifyObservers();
+
+				}
+
+				@Override
+				public void setInstructions(Boolean flag) {
+					instructions.setVisible(flag);
+				}
+			});
+		}
+
+		
+	}
+
 }

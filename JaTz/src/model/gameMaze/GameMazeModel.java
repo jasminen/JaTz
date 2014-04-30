@@ -1,42 +1,73 @@
 package model.gameMaze;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-
-import controller.Keys;
-import model.Action;
-import model.Model;
+import model.AbsModel;
 import model.State;
 
-public class GameMazeModel implements Model {
-
-	LinkedList<State> states;
-	private HashMap<Integer, Action> actionFactory;
+public class GameMazeModel extends AbsModel {
 	
-	public GameMazeModel() {
-		states = new LinkedList<State>();
-		actionFactory = new HashMap<Integer, Action>();
+
+
+
+	@Override
+	public void moveUp() {
+		// TODO Auto-generated method stub
 		
-		actionFactory.put(Keys.UP, new MazeAction(-1, 0));
-		actionFactory.put(Keys.DOWN, new MazeAction(1, 0));
-		actionFactory.put(Keys.LEFT, new MazeAction(0, -1));
-		actionFactory.put(Keys.RIGHT, new MazeAction(0, 1));
+	}
+
+	@Override
+	public void moveDown() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void moveLeft() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void moveRight() {
+		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
-	public void doAction(Integer action) {
-		State newState = actionFactory.get(action).doAction(states.getLast());
+	public void moveDiagonalLeftUp() {
 		
-		if(!newState.equals(states.getLast()))
+	}
+	
+	@Override
+	public void moveDiagonalRightUp() {
+		
+	}
+	
+	@Override
+	public void moveDiagonalLeftDown(){
+		
+	}
+	
+	@Override
+	public void moveDiagonalRightDown(){
+		
+	}
+	
+	
+
+	public void doAction(int r, int c) {
+		State newState = new MazeAction(r,c).doAction(getState());
+		if(!newState.equals(getState()))
 			states.add(newState);
-
 	}
+	
+	
 
 	@Override
-	public State getState() {
-	
+	protected State getStartState() {
+		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 
 }

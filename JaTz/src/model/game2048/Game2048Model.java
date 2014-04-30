@@ -1,29 +1,22 @@
 package model.game2048;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Observable;
 import java.util.Random;
-
 import controller.Keys;
-import model.Action;
+import model.AbsModel;
 import model.Model;
 import model.State;
 
-public class Game2048Model extends Observable implements Model, Serializable {
+public class Game2048Model extends AbsModel implements Model, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	LinkedList<State> states;
 	int winNum;
-	private HashMap<Integer, Action> actionFactory;
+	
 	
 	public Game2048Model() {}
 
 	//C'tor - gets the win number of the game (a power of two).
 	public Game2048Model(int winNum) {
-		states = new LinkedList<State>();
-		actionFactory = new HashMap<Integer, Action>();
 		
 		if (isPowerOfTwo(winNum))
 			this.winNum = winNum;
@@ -31,81 +24,72 @@ public class Game2048Model extends Observable implements Model, Serializable {
 			System.out.println("Not a power of two, setting to default 2048.");
 			this.winNum=2048;
 		}
-		
-		actionFactory.put(Keys.UP, new MoveUp2048Action());
-		actionFactory.put(Keys.DOWN, new MoveDown2048Action());
-		actionFactory.put(Keys.RIGHT, new MoveRight2048Action());
-		actionFactory.put(Keys.LEFT, new MoveLeft2048Action());
+
 	}
 
 	
 	
 	
 	@Override
-	public void doAction(Integer action) {
-		State newState = null;
-		Action a;
+	public void moveUp() {
+		endPhase(new MoveUp2048Action().doAction(getState()));
 		
-		switch (action) {
-		case Keys.NEW_GAME:
-			states.clear();
-			newState = getStartState();
-			newState.setMode(Keys.NEW_GAME);
-			break;
-		case Keys.RESTART:
-			states.clear();
-			newState = getStartState();
-			break;
-		case Keys.UNDO:
-			if (states.size() > 1)
-				states.pollLast();
-			break;
-		default:
-			a=this.actionFactory.get(action); //Get relevant Action
-			if(a!=null)
-				newState=a.doAction(states.getLast()); //start doAction method
-			else
-				System.out.println("Not valid key"); //////////////////////////////
-			break;
-		}
+	}
+
+	@Override
+	public void moveDown() {
+		endPhase(new MoveDown2048Action().doAction(getState()));
 		
-		//Check if the mode of the game needs to be changed to game over or win. if not, draw a new number.
+	}
+
+	@Override
+	public void moveLeft() {
+		endPhase(new MoveLeft2048Action().doAction(getState()));
+		
+	}
+
+	@Override
+	public void moveRight() {
+		endPhase(new MoveRight2048Action().doAction(getState()));
+		
+	}
+
+	
+	@Override
+	protected State getStartState() {
+		int[][] board = new int[4][4];
+		int row = new Random().nextInt(4);
+		int column = new Random().nextInt(4);
+		board[row][column] = 2;
+		
+		row = new Random().nextInt(4);
+		column = new Random().nextInt(4);
+		board[row][column] = 2;
+		
+		return new State(board, 0);
+	}
+
+	
+	//Check if the mode needs to be change. if not, draw a new number. Add to states array and notify.
+	private void endPhase(State newState) {
 		if (newState != null) {
-			if (hasFree(newState.getCopyBoard())) {
+			if ((newState.hasFreeCells())) {
 				DrawNewNumber(newState);
 			} else {
 				if (!gotAvailableMoves(newState)) {
 					newState.setMode(Keys.GAMEOVER);
-					
 				}
 			}
-
 			if (win(newState.getCopyBoard()))
 				newState.setMode(Keys.WIN);
-
-			 
 			states.add(newState);
 		}
 		setChanged();
 		notifyObservers();
-
 	}
-
 	
 	
-	@Override
-	public State getState() {
-		return states.getLast();
-	}
-
-	private Boolean hasFree(int[][] board) {
-		for (int[] r : board)
-			for (int c : r)
-				if (c == 0)
-					return true;
-		return false;
-	}
-
+	
 	private void DrawNewNumber(State state) {
 		int row = new Random().nextInt(4);
 		int column = new Random().nextInt(4);
@@ -119,6 +103,7 @@ public class Game2048Model extends Observable implements Model, Serializable {
 			state.setCell(row, column, 4);
 	}
 
+	
 	private Boolean win(int[][] board) {
 		for (int[] r : board)
 			for (int c : r)
@@ -128,16 +113,7 @@ public class Game2048Model extends Observable implements Model, Serializable {
 
 	}
 
-	private State getStartState() {
-		int[][] board = new int[4][4];
-		int row = new Random().nextInt(4);
-		int column = new Random().nextInt(4);
-		board[row][column] = 2;
-
-		return new State(board, 0);
-
-	}
-
+	
 	private Boolean gotAvailableMoves(State state) {
 		State up = new MoveUp2048Action().doAction(state);
 		State down = new MoveDown2048Action().doAction(state);
@@ -160,14 +136,7 @@ public class Game2048Model extends Observable implements Model, Serializable {
 		}
 		return false;
 	}
-	
-	public LinkedList<State> getStates() {
-		return states;
-	}
 
-	public void setStates(LinkedList<State> states) {
-		this.states = states;
-	}
 
 	public int getWinNum() {
 		return winNum;
@@ -177,12 +146,14 @@ public class Game2048Model extends Observable implements Model, Serializable {
 		this.winNum = winNum;
 	}
 
-	public HashMap<Integer, Action> getActionFactory() {
-		return actionFactory;
-	}
+	
 
-	public void setActionFactory(HashMap<Integer, Action> actionFactory) {
-		this.actionFactory = actionFactory;
-	}
 
+
+
+
+	
+	
+	
+	
 }

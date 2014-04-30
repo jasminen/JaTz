@@ -19,17 +19,28 @@ public class Board extends Composite {
 
 		// Defaults
 		setBackground(boardBackgroundColor);
-		
+
 	}
 
 	public void setBoard(int[][] boardData) {
+
+		if (tiles != null && boardData != null && boardData[0] != null) {
+			for (int i = 0; i < this.boardData.length; i++) {
+				for (int j = 0; j < this.boardData[i].length; j++) {
+					if (tiles[i][j] != null)
+						tiles[i][j].dispose();
+				}
+			}
+		}
+
 		this.boardData = boardData;
 		this.tiles = new Tile[this.boardData.length][this.boardData[0].length];
 		for (int i = 0; i < this.boardData.length; i++) {
 			for (int j = 0; j < this.boardData[i].length; j++) {
 				tiles[i][j] = new Tile(this, 0);
 				tiles[i][j].setTileNumber(this.boardData[i][j]);
-				tiles[i][j].setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+				tiles[i][j].setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+						true, true, 1, 1));
 			}
 		}
 		GridLayout gl = new GridLayout(this.boardData[0].length, true);
@@ -39,7 +50,7 @@ public class Board extends Composite {
 		gl.marginHeight = 10;
 		setLayout(gl);
 	}
-	
+
 	public void updateBoard(int[][] boardData) {
 		this.boardData = boardData;
 		for (int i = 0; i < this.boardData.length; i++) {
@@ -49,11 +60,11 @@ public class Board extends Composite {
 		}
 	}
 
-	public void setGameColors(Color boardBackgroundColor, Color tilesBackgroundColor) {
+	public void setGameColors(Color boardBackgroundColor,
+			Color tilesBackgroundColor) {
 		this.boardChanged = true;
 		this.boardBackgroundColor = boardBackgroundColor;
 		this.tileBackGroundColor = tilesBackgroundColor;
 		redraw();
 	}
 }
-
