@@ -1,4 +1,4 @@
-package view;
+package view.gamesMaze2048;
 
 import java.util.Timer;
 import java.util.TimerTask;

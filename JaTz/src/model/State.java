@@ -1,13 +1,15 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import org.eclipse.swt.graphics.Point;
 
 import controller.Keys;
 
-public class State {
+public class State implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private int[][] board;
 	private int score;
 	private int mode; // Keys.NEW_GAME, Keys.GAMEOVER, Keys.WIN, Keys.IN_PROGRESS

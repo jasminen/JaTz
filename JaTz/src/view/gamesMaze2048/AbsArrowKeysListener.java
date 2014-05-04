@@ -1,4 +1,4 @@
-package view;
+package view.gamesMaze2048;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;

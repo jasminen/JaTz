@@ -17,16 +17,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import controller.Keys;
-import view.AbsArrowDiagonalKeysListener;
-import view.AbsArrowKeysListener;
 import view.Board;
 import view.MouseDragCommand;
 import view.View;
 import model.State;
-
 
 public class GamesMaze2048View extends Observable implements View, Runnable {
 
@@ -65,8 +63,11 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 		setShellKeyListener();
 
+		// Prompt a messageBox when pressing on Exit.
+		shell.addListener(SWT.Close, exit()); 
+
 		shell.open(); // End initComponent
-		
+
 	}
 
 	@Override
@@ -90,23 +91,22 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		case Keys.NEW_GAME:
 			board.setBoard(state.getBoard());
 			board.layout();
-			score.setText("Score: " + state.getScore() +"      "+state.getMsg());
+			score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
 			break;
 		case Keys.IN_PROGRESS:
 			board.updateBoard(state.getBoard());
-			score.setText("Score: " + state.getScore()+"      "+state.getMsg());
+			score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
 			break;
-
 		case Keys.WIN:
 			board.updateBoard(state.getBoard());
-			score.setText("Score: " + state.getScore() + "      "+state.getMsg()); 
-			winWindow();								
+			score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
+			winWindow();
 			break;
 		case Keys.GAMEOVER:
 			if (gameName.equals("maze"))
 				board.updateBoard(state.getBoard());
-			score.setText("Score: " + state.getScore() + "      "+state.getMsg()); 
-			gameOverWindow();													
+			score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
+			gameOverWindow();
 			break;
 		default:
 			break;
@@ -143,11 +143,11 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 		MenuItem game2048Item = new MenuItem(newGameSubMenu, SWT.NONE);
 		game2048Item.setText("2048");
-		game2048Item.addListener(SWT.Selection, setGameName("2048"));
+		game2048Item.addListener(SWT.Selection, startNewGame("2048"));
 
 		MenuItem gameMazeItem = new MenuItem(newGameSubMenu, SWT.NONE);
 		gameMazeItem.setText("Maze");
-		gameMazeItem.addListener(SWT.Selection, setGameName("maze"));
+		gameMazeItem.addListener(SWT.Selection, startNewGame("maze"));
 
 		MenuItem restartItem = new MenuItem(fileMenu, SWT.NONE);
 		restartItem.setText("Restart");
@@ -229,8 +229,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				fd.setFilterExtensions(filterExt);
 				String fileName = fd.open();
 				System.out.println("load");
-				setChanged();
-				notifyObservers(fileName + "_load");
+				if (!(fileName == null)) {
+					setChanged();
+					notifyObservers(fileName + "_load");
+				}
 				shell.forceFocus();
 			}
 		});
@@ -283,30 +285,35 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		return (new Listener() {
 			@Override
 			public void handleEvent(Event e) {
-				System.out.println("dispose");
-				display.dispose();
+				MessageBox exitMB = new MessageBox(shell, SWT.ICON_QUESTION | SWT.NO | SWT.YES);
+				exitMB.setText("Exit");
+				exitMB.setMessage("Wanna leave?");
+				int buttonID = exitMB.open();
+				if(buttonID == SWT.YES) {
+					e.doit = true;
+					display.dispose();
+				}
 			}
 		});
 	}
 
-	private Listener setGameName(final String game) {
+	private Listener startNewGame(final String game) {
 
 		return new Listener() {
 
 			@Override
 			public void handleEvent(Event e) {
-				if(!GamesMaze2048View.this.gameName.equals(game)) {
-				shell.removeListener(1, shell.getListeners(1)[0]);
-				userCommand = Keys.DIFFERENT_GAME;
-				GamesMaze2048View.this.gameName = game;
-				setShellKeyListener();
+				if (!GamesMaze2048View.this.gameName.equals(game)) {
+					shell.removeListener(1, shell.getListeners(1)[0]);
+					userCommand = Keys.DIFFERENT_GAME;
+					GamesMaze2048View.this.gameName = game;
+					setShellKeyListener();
 				} else
 					userCommand = Keys.NEW_GAME;
-				
+
 				setChanged();
 				notifyObservers();
-				
-				
+
 			}
 		};
 
@@ -357,26 +364,26 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		}
 
 	}
-	
-	
+
 	private void winWindow() {
 		Shell winShell = new Shell(display);
 		winShell.setSize(280, 230);
-		winShell.setBackgroundImage(new Image(Display.getDefault(), "images/youwin.jpg"));
+		winShell.setBackgroundImage(new Image(Display.getDefault(),
+				"images/youwin.jpg"));
 		winShell.setText("Congratulations!!!!!");
 		winShell.open();
-		
+
 	}
-	
+
 	private void gameOverWindow() {
 		Shell gameOverShell = new Shell(display);
 		gameOverShell.setSize(325, 268);
-		gameOverShell.setBackgroundImage(new Image(Display.getDefault(), "images/gameover.png"));
+		gameOverShell.setBackgroundImage(new Image(Display.getDefault(),
+				"images/gameover.png"));
 		gameOverShell.setText("Game Over");
 		gameOverShell.open();
-		
+
 	}
-	
 
 	private void setMouseCommand() {
 		this.mouseCommand = new MouseDragCommand() {
@@ -385,9 +392,14 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 			public void setCommand(Point to, Point objectSize) {
 				Boolean flag = true;
 
-				if (to.x < 0 && Math.abs(to.x) < objectSize.x + 10 && to.y < 0 && Math.abs(to.y) < objectSize.y + 10 && gameName.equals("maze")) {
+				if (to.x < 0 && Math.abs(to.x) < objectSize.x + 10 && to.y < 0
+						&& Math.abs(to.y) < objectSize.y + 10
+						&& gameName.equals("maze")) {
 					userCommand = Keys.DIAGONAL_LEFT_UP;
-				} else if (to.x < 0 && Math.abs(to.x) < objectSize.x + 10 && to.y > objectSize.y && to.y < (2 * objectSize.y) + 10 && gameName.equals("maze")) {
+				} else if (to.x < 0 && Math.abs(to.x) < objectSize.x + 10
+						&& to.y > objectSize.y
+						&& to.y < (2 * objectSize.y) + 10
+						&& gameName.equals("maze")) {
 					userCommand = Keys.DIAGONAL_LEFT_DOWN;
 				} else if (to.x > objectSize.x
 						&& to.x < (2 * objectSize.x) + 10 && to.y < 0

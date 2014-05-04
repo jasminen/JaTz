@@ -8,7 +8,7 @@ import controller.Keys;
 
 
 /*
- * Holds x,y and adds them to the State's point . x is rows and y columns.
+ * Holds x,y and adds them to the State's Mouse point . x is rows and y columns.
  */
 
 public class MazeAction implements Action {
@@ -18,14 +18,12 @@ public class MazeAction implements Action {
 	public MazeAction(int x, int y) {
 		this.x=x;
 		this.y=y;
-		
 	}
 
 	
 	
 	@Override
 	public State doAction(State state) {
-		
 		Point oldPoint = state.findCell(Keys.MOUSE);
 		Point newPoint = new Point(oldPoint.x+this.x,oldPoint.y+this.y);
 		State newState = new State(state);

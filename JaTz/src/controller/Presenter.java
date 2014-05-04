@@ -1,7 +1,7 @@
 package controller;
 
+import model.AbsModel;
 import model.Model;
-import model.game2048.Game2048Model;
 import view.View;
 
 import java.util.Observable;
@@ -13,9 +13,9 @@ public class Presenter implements Observer {
 	private Model model;
 	private Model model2;
 
-	public Presenter(Model model1, Model model2, View gui) {
+	public Presenter(Model model, Model model2, View gui) {
 		this.model2 = model2;
-		this.model = model1;
+		this.model = model;
 		this.gui = gui;
 	}
 
@@ -92,10 +92,8 @@ public class Presenter implements Observer {
 			try {
 				this.model = SLhelper.load(operations[0]);
 				gui.displayState(this.model.getState());
-				if (this.model.getClass().getSimpleName()
-						.equals("Game2048Model")) {
-					((Game2048Model) this.model).addObserver(this);
-				}
+				if(this.model instanceof AbsModel)
+					((AbsModel) this.model).addObserver(this);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -1,12 +1,15 @@
 package model;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Observable;
 
 import controller.Keys;
 
-public abstract class AbsModel extends Observable implements Model {
+public abstract class AbsModel extends Observable implements Model , Serializable {
 
+	
+	private static final long serialVersionUID = 1L;
 	protected LinkedList<State> states;
 	
 	public AbsModel() {

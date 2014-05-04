@@ -1,5 +1,6 @@
 package model.gameMaze;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import org.eclipse.swt.graphics.Point;
@@ -14,8 +15,9 @@ import model.gameMaze.solver.MazeDomain;
 import model.gameMaze.solver.Node;
 import model.gameMaze.solver.astar.Astar;
 
-public class GameMazeModel extends AbsModel {
+public class GameMazeModel extends AbsModel implements  Serializable {
 
+	private static final long serialVersionUID = 1L;
 	int rows, columns, winScore=0;
 
 	public GameMazeModel() {
@@ -84,8 +86,9 @@ public class GameMazeModel extends AbsModel {
 	}
 	
 	public void doAction(int r, int c) {
-		if (getState().getMode() != Keys.WIN
-				&& getState().getMode() != Keys.GAMEOVER) {
+		
+		
+		if (getState().getMode() != Keys.WIN && getState().getMode() != Keys.GAMEOVER) {
 			State newState = new MazeAction(r, c).doAction(getState());
 
 			if (!newState.equals(getState())) {
@@ -98,6 +101,7 @@ public class GameMazeModel extends AbsModel {
 						newState.setMsg("Your score is not the best score ("+winScore+"). Try again!");
 					}
 				}
+				
 				states.add(newState);
 			}
 			setChanged();
@@ -126,6 +130,30 @@ public class GameMazeModel extends AbsModel {
 		}
 	
 		return new State(board, 0, Keys.IN_PROGRESS, "Goal Score is: "+winScore+"         Straight moves cost 10, Diagonal cost 15.");
+	}
+
+	public int getRows() {
+		return rows;
+	}
+
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public int getColumns() {
+		return columns;
+	}
+
+	public void setColumns(int columns) {
+		this.columns = columns;
+	}
+
+	public int getWinScore() {
+		return winScore;
+	}
+
+	public void setWinScore(int winScore) {
+		this.winScore = winScore;
 	}
 
 

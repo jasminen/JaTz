@@ -8,10 +8,9 @@ import org.eclipse.swt.graphics.Point;
 
 import controller.Keys;
 import model.AbsModel;
-import model.Model;
 import model.State;
 
-public class Game2048Model extends AbsModel implements Model, Serializable {
+public class Game2048Model extends AbsModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	int boardSize ;
@@ -174,6 +173,22 @@ public class Game2048Model extends AbsModel implements Model, Serializable {
 
 	public void setWinNum(int winNum) {
 		this.winNum = winNum;
+	}
+
+	public int getBoardSize() {
+		return boardSize;
+	}
+
+	public void setBoardSize(int boardSize) {
+		this.boardSize = boardSize;
+	}
+
+	public Boolean getAlreadyWon() {
+		return alreadyWon;
+	}
+
+	public void setAlreadyWon(Boolean alreadyWon) {
+		this.alreadyWon = alreadyWon;
 	}
 
 	
