@@ -11,9 +11,11 @@ public class Presenter implements Observer {
 
 	private View gui;
 	private Model model;
+	private Model model2;
 
-	public Presenter(Model model, View gui) {
-		this.model = model;
+	public Presenter(Model model1, Model model2, View gui) {
+		this.model2 = model2;
+		this.model = model1;
 		this.gui = gui;
 	}
 
@@ -24,8 +26,7 @@ public class Presenter implements Observer {
 				saveLoadActions(io);
 			} else {
 				int command = gui.getUserCommand();
-				System.out.println(command);
-				
+
 				switch (command) {
 				case Keys.UP:
 					model.moveUp();
@@ -40,7 +41,6 @@ public class Presenter implements Observer {
 					model.moveRight();
 					break;
 				case Keys.DIAGONAL_LEFT_DOWN:
-					System.out.println("Diag");
 					model.moveDiagonalLeftDown();
 					break;
 				case Keys.DIAGONAL_LEFT_UP:
@@ -52,6 +52,10 @@ public class Presenter implements Observer {
 				case Keys.DIAGONAL_RIGHT_UP:
 					model.moveDiagonalRightUp();
 					break;
+				case Keys.DIFFERENT_GAME:
+					Model m = model;
+					model = model2;
+					model2 = m;
 				case Keys.NEW_GAME:
 					model.newGame();
 					break;
@@ -65,6 +69,7 @@ public class Presenter implements Observer {
 					System.out.println("Presenter: Unknown command");
 					break;
 				}
+
 			}
 		}
 		if (o == model) {
@@ -73,9 +78,6 @@ public class Presenter implements Observer {
 
 	}
 
-	
-	
-	
 	private void saveLoadActions(Object io) {
 		String[] operations = ((String) io).split("_");
 		switch (operations[1]) {

@@ -1,7 +1,11 @@
 package model.game2048;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Random;
+
+import org.eclipse.swt.graphics.Point;
+
 import controller.Keys;
 import model.AbsModel;
 import model.Model;
@@ -10,10 +14,15 @@ import model.State;
 public class Game2048Model extends AbsModel implements Model, Serializable {
 
 	private static final long serialVersionUID = 1L;
+	int boardSize ;
 	int winNum;
+	Boolean alreadyWon = false;
 	
 	
-	public Game2048Model() {}
+	public Game2048Model() {
+		this.boardSize = 4;
+		this.winNum=2048;
+	}
 
 	//C'tor - gets the win number of the game (a power of two).
 	public Game2048Model(int winNum) {
@@ -24,9 +33,10 @@ public class Game2048Model extends AbsModel implements Model, Serializable {
 			System.out.println("Not a power of two, setting to default 2048.");
 			this.winNum=2048;
 		}
-
+		this.boardSize = 4;
 	}
 
+	
 	
 	
 	
@@ -54,35 +64,44 @@ public class Game2048Model extends AbsModel implements Model, Serializable {
 		
 	}
 
+	@Override
+	public void restart() {
+		this.states.clear();
+		this.states.add(getStartState());
+		setChanged();
+		notifyObservers();
+	}
 	
 	@Override
 	protected State getStartState() {
-		int[][] board = new int[4][4];
-		int row = new Random().nextInt(4);
-		int column = new Random().nextInt(4);
-		board[row][column] = 2;
+		int[][] board = new int[boardSize][boardSize];
+		State state = new State(board, 0);
+		DrawNewNumber(state);
+		DrawNewNumber(state);
 		
-		row = new Random().nextInt(4);
-		column = new Random().nextInt(4);
-		board[row][column] = 2;
-		
-		return new State(board, 0);
+		return state;
 	}
 
 	
 	//Check if the mode needs to be change. if not, draw a new number. Add to states array and notify.
 	private void endPhase(State newState) {
 		if (newState != null) {
-			if ((newState.hasFreeCells())) {
+			if(newState.getMode() == Keys.WIN) //Let the game continue after winning.
+				newState.setMode(Keys.IN_PROGRESS);
+			
+			
+			if ((newState.hasFreeCells())) {  
 				DrawNewNumber(newState);
 			} else {
 				if (!gotAvailableMoves(newState)) {
 					newState.setMode(Keys.GAMEOVER);
 				}
 			}
-			if (win(newState.getCopyBoard()))
+			
+			if (alreadyWon == false && win(newState.getCopyBoard())) //Check winning only if didn't win before.
 				newState.setMode(Keys.WIN);
-			states.add(newState);
+			
+			this.states.add(newState);
 		}
 		setChanged();
 		notifyObservers();
@@ -91,12 +110,20 @@ public class Game2048Model extends AbsModel implements Model, Serializable {
 	
 	
 	private void DrawNewNumber(State state) {
-		int row = new Random().nextInt(4);
-		int column = new Random().nextInt(4);
-		while (state.getCopyBoard()[row][column] != 0) {
-			row = new Random().nextInt(4);
-			column = new Random().nextInt(4);
+		ArrayList<Point> freeCells = new ArrayList<Point>(); 
+		
+		//Build an array list of free cells.
+		for (int i = 0; i < state.getCopyBoard().length; i++) {  
+			for (int j = 0; j < state.getBoard()[0].length; j++) {
+				if(state.getCell(i, j) == Keys.EMPTY)
+					freeCells.add(new Point(i, j));
+			}
 		}
+		
+		//Choose a random cell out of the free cells array and update the relevant array in board
+		int cell = new Random().nextInt(freeCells.size());
+		int row = freeCells.get(cell).x;
+		int column = freeCells.get(cell).y;
 		if (new Random().nextInt(10) < 9)
 			state.setCell(row, column, 2);
 		else
@@ -107,8 +134,10 @@ public class Game2048Model extends AbsModel implements Model, Serializable {
 	private Boolean win(int[][] board) {
 		for (int[] r : board)
 			for (int c : r)
-				if (c == this.winNum)
+				if (c == this.winNum) {
+					this.alreadyWon = true;
 					return true;
+				}
 		return false;
 
 	}
@@ -120,8 +149,9 @@ public class Game2048Model extends AbsModel implements Model, Serializable {
 		State right = new MoveRight2048Action().doAction(state);
 		State left = new MoveLeft2048Action().doAction(state);
 
-		if (state.equals(up) && state.equals(down) && state.equals(right) && state.equals(left))
+		if (state.equals(up) && state.equals(down) && state.equals(right) && state.equals(left)) {
 			return false;
+		}
 
 		return true;
 
@@ -139,7 +169,7 @@ public class Game2048Model extends AbsModel implements Model, Serializable {
 
 
 	public int getWinNum() {
-		return winNum;
+		return this.winNum;
 	}
 
 	public void setWinNum(int winNum) {

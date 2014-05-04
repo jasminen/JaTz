@@ -38,7 +38,6 @@ public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 							command = e.keyCode;
 						}
 						
-						System.out.println("timer: "+command);
 						switch (command) {
 						case SWT.ARROW_DOWN:
 							setUserCommand(Keys.DOWN);

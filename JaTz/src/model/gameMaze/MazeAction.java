@@ -29,19 +29,23 @@ public class MazeAction implements Action {
 		Point oldPoint = state.findCell(Keys.MOUSE);
 		Point newPoint = new Point(oldPoint.x+this.x,oldPoint.y+this.y);
 		State newState = new State(state);
-		if (newState.cellExists(newPoint.x, newPoint.y)) {
-			newState.setCell(oldPoint.x,oldPoint.y , 0);
-			newState.setCell(newPoint.x, newPoint.y, Keys.MOUSE);
+		newState.setMode(Keys.IN_PROGRESS);
+		if (newState.cellExists(newPoint.x, newPoint.y) && newState.getCell(newPoint.x, newPoint.y) != -1 && newState.getCell(newPoint.x, newPoint.y) != Keys.WALL) {
+			newState.setCell(oldPoint.x,oldPoint.y , Keys.EMPTY);
 			
-			if(this.x - oldPoint.x == 0 || this.y - oldPoint.y == 0)
+			if(this.x == 0 ^ this.y == 0)
 				newState.setScore(state.getScore()+10);
 			
-			else if(this.x - oldPoint.x != 0 && this.y - oldPoint.y != 0){
+			else if(this.x != 0 && this.y != 0){
 				newState.setScore(state.getScore()+15);
 			}
 			
+			if(newPoint.equals(state.findCell(Keys.CHEESE))) {
+				newState.setCell(newPoint.x, newPoint.y, Keys.MOUSE_AND_CHEESE);
+			} else
+				newState.setCell(newPoint.x, newPoint.y, Keys.MOUSE);
+			
 		}
-		
 		return newState;
 	}
 

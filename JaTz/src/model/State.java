@@ -11,6 +11,7 @@ public class State {
 	private int[][] board;
 	private int score;
 	private int mode; // Keys.NEW_GAME, Keys.GAMEOVER, Keys.WIN, Keys.IN_PROGRESS
+	private String msg = "";
 	
 	public State(){}
 
@@ -25,11 +26,19 @@ public class State {
 		this.score = score;
 		this.mode = mode;
 	}
+	
+	public State(int[][] board, int score, int mode, String msg) {
+		this.board = board;
+		this.score = score;
+		this.mode = mode;
+		this.msg = msg;
+	}
 
 	public State(State state) {
 		this.board = state.getCopyBoard();
 		this.score = state.getScore();
 		this.mode = state.getMode();
+		this.msg = state.getMsg();
 	}
 
 	public int[][] getCopyBoard() {
@@ -62,6 +71,14 @@ public class State {
 	public void setScore(int score) {
 		this.score = score;
 	}
+	
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
 
 	
 	public Boolean hasFreeCells() {
@@ -78,9 +95,15 @@ public class State {
 	}
 
 	public Boolean cellExists(int row, int column) {
-		if (row < board.length && column < board[0].length)
+		if (row < board.length && row >= 0 && column < board[0].length && column >=0)
 			return true;
 		return false;
+	}
+	
+	public int getCell(int r, int c) {
+		if(cellExists(r, c))
+			return board[r][c];
+		return -1;
 	}
 
 	public Point findCell(int value) {
@@ -105,7 +128,7 @@ public class State {
 					str = str.concat(" ");
 			}
 		}
-		str = str.concat("\n");
+		str = str.concat("\n Score: "+this.score+"\n");
 		return str;
 	}
 
@@ -116,13 +139,19 @@ public class State {
 
 		State other = (State) obj;
 
-		for (int i = 0; i < this.board.length; i++)
-			if (!Arrays.equals(this.board[i], other.getCopyBoard()[i]))
-				return false;
+		for (int i = 0; i < this.board.length; i++){
+			for (int j = 0; j < this.board[0].length; j++) {
+				if (this.board[i][j] != other.getCopyBoard()[i][j])
+					return false;
+			}
+		
+		}
 
 		if (this.score != other.getScore())
 			return false;
 
 		return true;
 	}
+
+
 }

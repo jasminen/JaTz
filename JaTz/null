@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.7.0_45" class="java.beans.XMLDecoder">
+ <object class="model.gameMaze.GameMazeModel">
+  <void property="states">
+   <void method="add">
+    <object class="model.State">
+     <void property="board">
+      <array class="[I" length="6">
+       <void index="0">
+        <array class="int" length="6">
+         <void index="0">
+          <int>11</int>
+         </void>
+         <void index="4">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="1">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="3">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="2">
+        <array class="int" length="6"/>
+       </void>
+       <void index="3">
+        <array class="int" length="6">
+         <void index="3">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="4">
+        <array class="int" length="6">
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="5">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="2">
+          <int>555</int>
+         </void>
+         <void index="4">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>22</int>
+         </void>
+        </array>
+       </void>
+      </array>
+     </void>
+     <void property="mode">
+      <int>999</int>
+     </void>
+     <void property="msg">
+      <string>Goal Score is: 80</string>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="model.State">
+     <void property="board">
+      <array class="[I" length="6">
+       <void index="0">
+        <array class="int" length="6">
+         <void index="4">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="1">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="1">
+          <int>11</int>
+         </void>
+         <void index="3">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="2">
+        <array class="int" length="6"/>
+       </void>
+       <void index="3">
+        <array class="int" length="6">
+         <void index="3">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="4">
+        <array class="int" length="6">
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="5">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="2">
+          <int>555</int>
+         </void>
+         <void index="4">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>22</int>
+         </void>
+        </array>
+       </void>
+      </array>
+     </void>
+     <void property="msg">
+      <string>Goal Score is: 80</string>
+     </void>
+     <void property="score">
+      <int>15</int>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="model.State">
+     <void property="board">
+      <array class="[I" length="6">
+       <void index="0">
+        <array class="int" length="6">
+         <void index="4">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="1">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="3">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="2">
+        <array class="int" length="6">
+         <void index="2">
+          <int>11</int>
+         </void>
+        </array>
+       </void>
+       <void index="3">
+        <array class="int" length="6">
+         <void index="3">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="4">
+        <array class="int" length="6">
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="5">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="2">
+          <int>555</int>
+         </void>
+         <void index="4">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>22</int>
+         </void>
+        </array>
+       </void>
+      </array>
+     </void>
+     <void property="msg">
+      <string>Goal Score is: 80</string>
+     </void>
+     <void property="score">
+      <int>30</int>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="model.State">
+     <void property="board">
+      <array class="[I" length="6">
+       <void index="0">
+        <array class="int" length="6">
+         <void index="4">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="1">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="3">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="2">
+        <array class="int" length="6">
+         <void index="3">
+          <int>11</int>
+         </void>
+        </array>
+       </void>
+       <void index="3">
+        <array class="int" length="6">
+         <void index="3">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="4">
+        <array class="int" length="6">
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="5">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="2">
+          <int>555</int>
+         </void>
+         <void index="4">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>22</int>
+         </void>
+        </array>
+       </void>
+      </array>
+     </void>
+     <void property="msg">
+      <string>Goal Score is: 80</string>
+     </void>
+     <void property="score">
+      <int>40</int>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="model.State">
+     <void property="board">
+      <array class="[I" length="6">
+       <void index="0">
+        <array class="int" length="6">
+         <void index="4">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="1">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="3">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="2">
+        <array class="int" length="6"/>
+       </void>
+       <void index="3">
+        <array class="int" length="6">
+         <void index="3">
+          <int>555</int>
+         </void>
+         <void index="4">
+          <int>11</int>
+         </void>
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="4">
+        <array class="int" length="6">
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="5">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="2">
+          <int>555</int>
+         </void>
+         <void index="4">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>22</int>
+         </void>
+        </array>
+       </void>
+      </array>
+     </void>
+     <void property="msg">
+      <string>Goal Score is: 80</string>
+     </void>
+     <void property="score">
+      <int>55</int>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="model.State">
+     <void property="board">
+      <array class="[I" length="6">
+       <void index="0">
+        <array class="int" length="6">
+         <void index="4">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="1">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="3">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="2">
+        <array class="int" length="6"/>
+       </void>
+       <void index="3">
+        <array class="int" length="6">
+         <void index="3">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="4">
+        <array class="int" length="6">
+         <void index="4">
+          <int>11</int>
+         </void>
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="5">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="2">
+          <int>555</int>
+         </void>
+         <void index="4">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>22</int>
+         </void>
+        </array>
+       </void>
+      </array>
+     </void>
+     <void property="msg">
+      <string>Goal Score is: 80</string>
+     </void>
+     <void property="score">
+      <int>65</int>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="model.State">
+     <void property="board">
+      <array class="[I" length="6">
+       <void index="0">
+        <array class="int" length="6">
+         <void index="4">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="1">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="3">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="2">
+        <array class="int" length="6"/>
+       </void>
+       <void index="3">
+        <array class="int" length="6">
+         <void index="3">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="4">
+        <array class="int" length="6">
+         <void index="5">
+          <int>555</int>
+         </void>
+        </array>
+       </void>
+       <void index="5">
+        <array class="int" length="6">
+         <void index="0">
+          <int>555</int>
+         </void>
+         <void index="2">
+          <int>555</int>
+         </void>
+         <void index="4">
+          <int>555</int>
+         </void>
+         <void index="5">
+          <int>33</int>
+         </void>
+        </array>
+       </void>
+      </array>
+     </void>
+     <void property="mode">
+      <int>2048</int>
+     </void>
+     <void property="score">
+      <int>80</int>
+     </void>
+    </object>
+   </void>
+  </void>
+ </object>
+</java>

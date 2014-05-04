@@ -10,7 +10,7 @@ public abstract class AbsModel extends Observable implements Model {
 	protected LinkedList<State> states;
 	
 	public AbsModel() {
-		states = new LinkedList<State>();
+		this.states = new LinkedList<State>();
 	}
 
 	@Override
@@ -38,27 +38,22 @@ public abstract class AbsModel extends Observable implements Model {
 	public void moveDiagonalRightDown() {}
 
 	@Override
-	public void restart() {
-		states.clear();
-		states.add(getStartState());
-		setChanged();
-		notifyObservers();
-	}
+	public abstract void restart();
 
 	@Override
 	public void undo() {
-		if (states.size() > 1)
-			states.pollLast();
+		if (this.states.size() > 1)
+			this.states.pollLast();
 		setChanged();
 		notifyObservers();
 	}
 
 	@Override
 	public void newGame() {
-		states.clear();
+		this.states.clear();
 		State newState = getStartState();
 		newState.setMode(Keys.NEW_GAME);
-		states.add(newState);
+		this.states.add(newState);
 		setChanged();
 		notifyObservers();
 	}
@@ -66,7 +61,7 @@ public abstract class AbsModel extends Observable implements Model {
 	
 	@Override
 	public State getState() {
-		return states.getLast();
+		return this.states.getLast();
 	}
 	
 	protected abstract State getStartState();
@@ -78,7 +73,7 @@ public abstract class AbsModel extends Observable implements Model {
 	}
 	
 	public LinkedList<State> getStates() {
-		return states;
+		return this.states;
 	}
 	
 }

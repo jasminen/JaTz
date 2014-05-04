@@ -11,16 +11,23 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+
+import controller.Keys;
 
 public class Tile extends Canvas {
 	private Font numberFontStyle;
 	private Color tileBackGroundColor;
 	private Color boardBackGroundColor;
 	private int tileNumber;
+	private Point to, tileSize;
+	
 
-	public Tile(Composite parent, int style) {
+	public Tile(Composite parent, int style, final MouseDragCommand mouseCommand) {
 		super(parent, style);
 		Board p = (Board) parent;
 		boardBackGroundColor = new Color(null, p.boardBackgroundColor.getRGB());
@@ -49,46 +56,71 @@ public class Tile extends Canvas {
 			
 			@Override
 			public void mouseUp(MouseEvent e) {
-				System.out.println("mouse up: x: "+e.x +" y: "+e.y+ " size: x: "+Tile.this.getSize().x+" y: "+Tile.this.getSize().y);
-				
+				to = new Point(e.x, e.y);
+				tileSize = Tile.this.getSize();
+				mouseCommand.setCommand(to, tileSize);
 			}
 			
 			@Override
-			public void mouseDown(MouseEvent e) {
-				System.out.println("mouse down: x: "+e.x +" y: "+e.y);
-				
-			}
+			public void mouseDown(MouseEvent e) {}
 			
 			@Override
-			public void mouseDoubleClick(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void mouseDoubleClick(MouseEvent arg0) {}
 		});
 	}
 	
 	void paintControl(PaintEvent e) {
 		GC gc = e.gc;
 		int width = e.width, height = e.height;
-		int fontSzie = 16; // (int)Math.min(width / 3, height / 3);
+		int fontSzie = (int)Math.min(width / 4, height / 4);
 		FontMetrics fm = e.gc.getFontMetrics();
 		int fwidth = fm.getAverageCharWidth();
-		int mx = getSize().x / 2 - ("" + tileNumber).length() * fwidth / 2;
-		int my = getSize().y / 2 - fm.getHeight() / 2 - fm.getDescent();
+		int mx = getSize().x / 2 - ((("" + tileNumber).length() * fwidth));
+		int my = getSize().y / 2 - (fm.getHeight() / 2)- fm.getDescent();
 
+		
+		
 		numberFontStyle = new Font(null, "Arial", fontSzie, SWT.BOLD);
 		gc.setFont(numberFontStyle);
 
 		// Paint the tile, two background for the round rectangle
 		gc.setBackground(boardBackGroundColor);
 		gc.fillRectangle(0, 0, width, height);
-		gc.setBackground(tileBackGroundColor);
+		
+		//gc.setBackground(tileBackGroundColor);
+		
+		//gc.fillRoundRectangle(0, 0, width, height, 3, 3);
+		
+		setColor(gc);
 		gc.fillRoundRectangle(0, 0, width, height, 3, 3);
-
-		if (tileNumber > 0) {
+		
+		switch (tileNumber) {
+		case Keys.MOUSE:
+			Image mouseImage = new Image(Display.getDefault(),"images/mouse.jpg");
+			gc.drawImage(new Image(Display.getDefault(), mouseImage.getImageData().scaledTo(width, height)), 0, 0);
+			break;
+		case Keys.CHEESE:
+			Image cheeseImage = new Image(Display.getDefault(),"images/cheese.jpg");
+			gc.drawImage(new Image(Display.getDefault(), cheeseImage.getImageData().scaledTo(width, height)), 0, 0);
+			break;
+		case Keys.MOUSE_AND_CHEESE:
+			Image mouseCheeseImage = new Image(Display.getDefault(),"images/mouseNcheese2.jpg");
+			gc.drawImage(new Image(Display.getDefault(), mouseCheeseImage.getImageData().scaledTo(width, height)), 0, 0);
+			break;
+		case Keys.WALL:
+			Image wallImage = new Image(Display.getDefault(),"images/wall2.jpg");
+			gc.drawImage(new Image(Display.getDefault(), wallImage.getImageData().scaledTo(width, height)), 0, 0);
+			break;
+		case Keys.EMPTY:
+			break;
+		default:
 			gc.drawString("" + tileNumber, mx, my);
+			break;
 		}
+		
 
+		
+		
 		// Don't forget to dispose
 		gc.dispose();
 		numberFontStyle.dispose();
@@ -110,5 +142,49 @@ public class Tile extends Canvas {
 	public void setTileNumber(int tileNumber) {
 		this.tileNumber = tileNumber;
 		redraw();
+	}
+	
+	private void setColor(GC gc) {
+		switch (tileNumber) {
+		case 2:
+			gc.setBackground(new Color(null, 238,223,204));
+			break;
+		case 4:
+			gc.setBackground(new Color(null, 243,200,160));
+			break;
+		case 8:
+			gc.setBackground(new Color(null,250,180,100));
+			break;
+		case 16:
+			gc.setBackground(new Color(null,255,140,70));
+			break;
+		case 32:
+			gc.setBackground(new Color(null,255,90,89));
+			break;
+		case 64:
+			gc.setBackground(new Color(null,255,0,0));
+			break;
+		case 128:
+			gc.setBackground(new Color(null,238,235,155));
+			break;
+		case 256:
+			gc.setBackground(new Color(null,238,220,130));
+			break;
+		case 512:
+			gc.setBackground(new Color(null,243,210,100));
+			break;
+		case 1024:
+			gc.setBackground(new Color(null,255,250,100));
+			break;
+		case 2048:
+			gc.setBackground(new Color(null,255,255,50));
+			break;
+		case 4096:
+			gc.setBackground(new Color(null,139,105,20));
+			break;
+		default:
+			gc.setBackground(tileBackGroundColor);
+			break;
+		}
 	}
 }
