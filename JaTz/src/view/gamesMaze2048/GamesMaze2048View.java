@@ -217,6 +217,11 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		undoMove.addListener(SWT.Selection, undoMove());
 	}
 
+	
+	//---------------
+	// Listeners
+	//---------------
+	
 	private Listener loadGame() {
 		return (new Listener() {
 			@Override
@@ -298,9 +303,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	}
 
 	private Listener startNewGame(final String game) {
-
 		return new Listener() {
-
 			@Override
 			public void handleEvent(Event e) {
 				if (!GamesMaze2048View.this.gameName.equals(game)) {
@@ -308,26 +311,23 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 					userCommand = Keys.DIFFERENT_GAME;
 					GamesMaze2048View.this.gameName = game;
 					setShellKeyListener();
-				} else
+				} else {
 					userCommand = Keys.NEW_GAME;
-
+				}
 				setChanged();
 				notifyObservers();
-
 			}
 		};
-
 	}
-
+	
+	// Setting the shell key listener according to the game.
 	private void setShellKeyListener() {
 		if (gameName.equals("maze")) {
 			shell.addKeyListener(new AbsArrowDiagonalKeysListener() {
-
 				@Override
 				public void setUserCommand(int userCommand) {
 					GamesMaze2048View.this.userCommand = userCommand;
 					display.asyncExec(new Runnable() {
-
 						@Override
 						public void run() {
 							setChanged();
@@ -335,36 +335,31 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 						}
 					});
 				}
-
 				@Override
 				public void setInstructions(Boolean flag) {
 					instructions.setVisible(flag);
-
 				}
 			});
-
 		}
 
 		else {
 			shell.addKeyListener(new AbsArrowKeysListener() {
-
 				@Override
 				public void setUserCommand(int userCommand) {
 					GamesMaze2048View.this.userCommand = userCommand;
 					setChanged();
 					notifyObservers();
-
 				}
-
 				@Override
 				public void setInstructions(Boolean flag) {
 					instructions.setVisible(flag);
 				}
 			});
 		}
-
 	}
 
+	//---------END LISTENERS------------//
+	
 	private void winWindow() {
 		Shell winShell = new Shell(display);
 		winShell.setSize(280, 230);

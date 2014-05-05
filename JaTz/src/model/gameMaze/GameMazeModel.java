@@ -15,6 +15,10 @@ import model.gameMaze.solver.MazeDomain;
 import model.gameMaze.solver.Node;
 import model.gameMaze.solver.astar.Astar;
 
+/*
+ * Maze Mode 
+ */
+
 public class GameMazeModel extends AbsModel implements  Serializable {
 
 	private static final long serialVersionUID = 1L;

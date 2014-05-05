@@ -9,6 +9,10 @@ import org.eclipse.swt.events.KeyListener;
 
 import controller.Keys;
 
+/*
+ * Abstract Arrow Diagonal Key Listener 
+ */
+
 public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 
 	int command;
@@ -19,7 +23,7 @@ public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 	
 	@Override
 	public void keyPressed(final KeyEvent e) {
-		
+		// The timer is waiting for the second key press for 50 millisec if there isn't any it will proceed.
 		if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_LEFT || e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_UP) {
 			setInstructions(false);
 			if (keyFlag == false) {
@@ -27,7 +31,7 @@ public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 				lastKeyEventCode = e.keyCode;
 				Timer tm = new Timer();
 				
-				tm.schedule(new TimerTask() { //Scheduled after 100 millisec
+				tm.schedule(new TimerTask() { //Scheduled after 50 millisec
 
 					@Override
 					public void run() {
@@ -78,9 +82,6 @@ public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 		} else {
 			setInstructions(true);
 		}
-		
-		
-		
 	}
 
 	

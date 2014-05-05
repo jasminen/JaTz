@@ -7,6 +7,13 @@ import org.eclipse.swt.graphics.Point;
 
 import controller.Keys;
 
+/*
+ * State - Two dimensional array representing the board.
+ * 		   Score of this state.
+ * 		   Mode - what is the status of the game. 
+ */
+
+
 public class State implements Serializable{
 
 	private static final long serialVersionUID = 1L;

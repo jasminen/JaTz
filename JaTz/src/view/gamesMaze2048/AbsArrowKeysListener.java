@@ -6,6 +6,10 @@ import org.eclipse.swt.events.KeyListener;
 
 import controller.Keys;
 
+/*
+ * Abstract Arrow Keys Listener 
+ */
+
 public abstract class AbsArrowKeysListener implements KeyListener {
 
 	@Override

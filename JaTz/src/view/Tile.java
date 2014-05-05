@@ -19,6 +19,10 @@ import org.eclipse.swt.widgets.Display;
 
 import controller.Keys;
 
+/*
+ * Tile - Component of the board.
+ */
+
 public class Tile extends Canvas {
 	private Font numberFontStyle;
 	private Color tileBackGroundColor;
@@ -34,6 +38,11 @@ public class Tile extends Canvas {
 		tileBackGroundColor = new Color(null, p.tileBackGroundColor.getRGB());
 		numberFontStyle = new Font(null, "Arial", 24, SWT.BOLD);
 
+		
+		//--------------------------------
+		// Listeners 
+		//--------------------------------
+		
 		// Graphics resources must be disposed.
 		addDisposeListener(new DisposeListener() {
 			@Override
@@ -87,9 +96,6 @@ public class Tile extends Canvas {
 		gc.setBackground(boardBackGroundColor);
 		gc.fillRectangle(0, 0, width, height);
 		
-		//gc.setBackground(tileBackGroundColor);
-		
-		//gc.fillRoundRectangle(0, 0, width, height, 3, 3);
 		
 		setColor(gc);
 		gc.fillRoundRectangle(0, 0, width, height, 3, 3);
@@ -117,9 +123,6 @@ public class Tile extends Canvas {
 			gc.drawString("" + tileNumber, mx, my);
 			break;
 		}
-		
-
-		
 		
 		// Don't forget to dispose
 		gc.dispose();

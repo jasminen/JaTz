@@ -6,6 +6,11 @@ import java.util.Observable;
 
 import controller.Keys;
 
+/*
+ * Abstract model - define the models structure and handle the state list.
+ */
+
+
 public abstract class AbsModel extends Observable implements Model , Serializable {
 
 	

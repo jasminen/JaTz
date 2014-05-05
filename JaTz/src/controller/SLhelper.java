@@ -9,6 +9,10 @@ import java.io.FileOutputStream;
 
 import model.Model;
 
+/*
+ * SLhelper - Save and Load from/to XML functions
+ */
+
 public class SLhelper {
 	public static void save(Model model, String filename) throws Exception{
         XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(filename)));

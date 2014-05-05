@@ -3,14 +3,17 @@ package controller;
 import model.AbsModel;
 import model.Model;
 import view.View;
-
 import java.util.Observable;
 import java.util.Observer;
+
+/*
+ * Presenter -  models 1&2 receiving the Maze and 2048 models
+ */
 
 public class Presenter implements Observer {
 
 	private View gui;
-	private Model model;
+	private Model model; 
 	private Model model2;
 
 	public Presenter(Model model, Model model2, View gui) {

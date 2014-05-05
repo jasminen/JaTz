@@ -5,6 +5,10 @@ package model.game2048;
 import model.Action;
 import model.State;
 
+/*
+ * Move Up 
+ */
+
 public class MoveUp2048Action implements Action {
 
 	@Override
