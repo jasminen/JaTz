@@ -233,7 +233,6 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				String[] filterExt = { "*.xml", "*.txt", "*.*" };
 				fd.setFilterExtensions(filterExt);
 				String fileName = fd.open();
-				System.out.println("load");
 				if (!(fileName == null)) {
 					setChanged();
 					notifyObservers(fileName + "_load");
@@ -254,9 +253,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				String[] filterExt = { "*.xml", "*.txt", "*.*" };
 				fd.setFilterExtensions(filterExt);
 				String fileName = fd.open();
-				System.out.println("save");
-				setChanged();
-				notifyObservers(fileName + "_save");
+				if (!(fileName == null)) {
+					setChanged();
+					notifyObservers(fileName + "_save");
+				}
 				shell.forceFocus();
 			}
 		});
