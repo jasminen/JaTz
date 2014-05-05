@@ -131,6 +131,8 @@ public class GameMazeModel extends AbsModel implements  Serializable {
 	
 		return new State(board, 0, Keys.IN_PROGRESS, "Goal Score is: "+winScore+"         Straight moves cost 10, Diagonal cost 15.");
 	}
+	
+	
 
 	public int getRows() {
 		return rows;
