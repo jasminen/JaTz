@@ -83,26 +83,28 @@ public class Game2048Model extends AbsModel implements Serializable {
 	// Check if the mode needs to be change. if not, draw a new number. Add to
 	// states array and notify.
 	private void endPhase(State newState) {
-		if (newState != null && !(newState.equals(getState()))) {
-			if (newState.getMode() == Keys.WIN) // Let the game continue after
-												// winning.
+		if (newState != null  && !newState.equals(getState())) {
+			if (newState.getMode() == Keys.WIN) // Let the game continue after winning
 				newState.setMode(Keys.IN_PROGRESS);
 
-			if ((newState.hasFreeCells())) {
+			if (newState.hasFreeCells()) {
 				DrawNewNumber(newState);
-			} else {
-				if (!gotAvailableMoves(newState)) {
+			}
+			
+			if (!gotAvailableMoves(newState)) {
 					newState.setMode(Keys.GAMEOVER);
-				}
 			}
 
 			if (alreadyWon == false && win(newState.getCopyBoard())) { // Check winning only if didn't win before.
 				newState.setMode(Keys.WIN);
 			}
+			
+			
 			this.states.add(newState);
+			setChanged();
+			notifyObservers();
 		}
-		setChanged();
-		notifyObservers();
+		
 	}
 
 	private void DrawNewNumber(State state) {

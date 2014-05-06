@@ -103,8 +103,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 			winWindow();
 			break;
 		case Keys.GAMEOVER:
-			if (gameName.equals("maze"))
-				board.updateBoard(state.getBoard());
+			board.updateBoard(state.getBoard());
 			score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
 			gameOverWindow();
 			break;
