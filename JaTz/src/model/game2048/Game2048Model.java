@@ -1,6 +1,10 @@
 package model.game2048;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -79,6 +83,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 
 		return state;
 	}
+	
 
 	// Check if the mode needs to be change. if not, draw a new number. Add to
 	// states array and notify.

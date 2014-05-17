@@ -1,6 +1,7 @@
 package backend;
 
 
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
@@ -9,11 +10,13 @@ import java.util.concurrent.Executors;
 
 public class ThreadPooledServer implements Runnable{
 
+	
     protected int          serverPort   = 8080;
     protected ServerSocket serverSocket = null;
     protected boolean      isStopped    = false;
     protected Thread       runningThread= null;
     protected ExecutorService threadPool = Executors.newFixedThreadPool(10);
+    
 
     public ThreadPooledServer(int port){
         this.serverPort = port;
@@ -35,7 +38,7 @@ public class ThreadPooledServer implements Runnable{
                 }
                 throw new RuntimeException("Error accepting client connection", e);
             }
-            this.threadPool.execute(new ClientRunnable(clientSocket, "Thread Pooled Server"));
+            this.threadPool.execute(new ClientRunnable(clientSocket, "Solver server"));
         }
         this.threadPool.shutdown();
         System.out.println("Server Stopped.") ;
@@ -56,9 +59,10 @@ public class ThreadPooledServer implements Runnable{
 
     private void openServerSocket() {
         try {
+        	InetAddress localaddr = InetAddress.getLocalHost();
             this.serverSocket = new ServerSocket(this.serverPort);
-            this.serverSocket.setSoTimeout(15000);
-            System.out.println("Starting server on port: " + this.serverPort);
+            this.serverSocket.setSoTimeout(0);
+            System.out.println("Starting server " + localaddr.getHostAddress() + ", on port: " + this.serverPort);
         } catch (IOException e) {
             throw new RuntimeException("Cannot open port 8080", e);
         }

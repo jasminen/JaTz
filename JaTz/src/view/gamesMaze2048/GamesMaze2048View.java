@@ -1,5 +1,10 @@
 package view.gamesMaze2048;
 
+import java.io.File;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.Observable;
 
 import org.eclipse.swt.SWT;
@@ -10,6 +15,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
@@ -21,6 +27,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import controller.Keys;
+import controller.SLhelper;
 import view.Board;
 import view.MouseDragCommand;
 import view.View;
@@ -37,6 +44,9 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	String gameName;
 	Label instructions;
 	MouseDragCommand mouseCommand;
+	Socket myServer;
+	ObjectOutputStream output;
+	ObjectInputStream input;
 
 	public GamesMaze2048View(String gameName) {
 		this.gameName = gameName;
@@ -54,8 +64,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		initButtons();
 
 		instructions = new Label(shell, SWT.NONE);
-		instructions.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, false,
-				false, 1, 1));
+		instructions.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, false,	false, 1, 1));
 		instructions.setVisible(false);
 		instructions.setText("Use the arrow keys to move the tiles");
 		instructions.setForeground(new Color(null, 255, 0, 0));
@@ -147,6 +156,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		MenuItem gameMazeItem = new MenuItem(newGameSubMenu, SWT.NONE);
 		gameMazeItem.setText("Maze");
 		gameMazeItem.addListener(SWT.Selection, startNewGame("maze"));
+		
+		MenuItem connectToServerItem = new MenuItem(fileMenu, SWT.NONE);
+		connectToServerItem.setText("Connect to Solver server");
+		connectToServerItem.addListener(SWT.Selection, connectToServer());
 
 		MenuItem restartItem = new MenuItem(fileMenu, SWT.NONE);
 		restartItem.setText("Restart");
@@ -269,6 +282,114 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				setChanged();
 				notifyObservers();
 				shell.forceFocus();
+			}
+		});
+	}
+	
+	//NEED TO MAKE IT NICER===========
+	private Listener connectToServer() {
+		return (new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				final Shell connectShell = new Shell(display);
+				connectShell.setLayout(new GridLayout(2, false));
+				connectShell.setSize(300, 150);
+				connectShell.setLocation(600, 500);
+				Label title = new Label(connectShell, SWT.NONE);
+				title.setText("Connect to the relevant IP, default prot is: 9000");
+				title.setFont(new Font(Display.getDefault(), "Arial", 10, SWT.ITALIC));
+				title.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+
+				final Combo ipBox = new Combo(connectShell, SWT.DROP_DOWN);
+				ipBox.setText("localhost");
+				ipBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+				
+				//Dynmic load of selections
+				String selections[];
+				try {
+					selections = (String[]) SLhelper.load(System.getProperty("user.dir")+File.separator+"serverIPs.xml");
+					ipBox.setItems(selections);
+				} catch (Exception e2) {
+					System.out.println("File not exist");
+				}
+
+				
+				final Label serverMsg = new Label(connectShell, SWT.NONE);
+				serverMsg.setText("Server Message: ");
+				serverMsg.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+				
+				final Button connect = new Button(connectShell, SWT.PUSH);
+				connect.setText("Connect");
+				connect.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+				
+				connect.addListener(SWT.Selection, new Listener() {
+					
+					@Override
+					public void handleEvent(Event e) {
+						if (connect.getText() == "Connect") {
+							try{
+								
+								 InetAddress address=InetAddress.getByName(ipBox.getText());
+								 myServer = new Socket(address, 9000);
+								 System.out.println(address);
+								 output=new ObjectOutputStream(myServer.getOutputStream());
+								 input=new ObjectInputStream(myServer.getInputStream());
+								 String messageFromServer=(String)input.readObject();
+								 System.out.println("message from server: "+messageFromServer);
+								 serverMsg.setText("Server Message: " + messageFromServer);
+								 connect.setText("Disonnect");
+								 output.writeObject("networking is so simple in java");
+								 output.flush();
+								 
+								 ipBox.add(ipBox.getText());
+								 
+								}catch (Exception ex) {
+									System.out.println("Exception: " + ex);
+								}
+						} else {
+								try{
+									 output.writeObject("exit");
+									 output.flush();
+									 output.close();
+									 input.close();
+									 myServer.close();
+									 connect.setText("Connect");
+								}catch (Exception ex) {
+									System.out.println("not connected");
+								}
+						}
+
+					}
+				});
+				
+				Button Cancel = new Button(connectShell, SWT.PUSH);
+				Cancel.setText("Cancel");
+				Cancel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+				Cancel.addListener(SWT.Selection, new Listener() {
+					
+					@Override
+					public void handleEvent(Event e) {
+						try{
+							 output.writeObject("exit");
+							 output.flush();
+							 output.close();
+							 input.close();
+							 myServer.close();
+						}catch (Exception ex) {
+							System.out.println("not connected");
+						}
+						try {
+							String selections[] = ipBox.getItems(); //NEED TO WORK ON EXIT TOO=====
+							SLhelper.save(selections, System.getProperty("user.dir")+File.separator+"serverIPs.xml");
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+						connectShell.close();
+					}
+				});
+				
+				connectShell.setText("Connect to solver server");
+				connectShell.open();
 			}
 		});
 	}

@@ -93,7 +93,7 @@ public class Presenter implements Observer {
 			break;
 		case "load":
 			try {
-				this.model = SLhelper.load(operations[0]);
+				this.model = (Model)SLhelper.load(operations[0]);
 				gui.displayState(this.model.getState());
 				if(this.model instanceof AbsModel)
 					((AbsModel) this.model).addObserver(this);
