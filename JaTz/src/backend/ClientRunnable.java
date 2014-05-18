@@ -6,6 +6,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+import backend.minimax.ConsoleGame;
+
 public class ClientRunnable implements Runnable {
 
 	protected Socket clientSocket = null;
@@ -28,6 +30,9 @@ public class ClientRunnable implements Runnable {
 				if (messageIn.equals("exit")) {
 					System.out.println("Client say goodbye");
 					break;
+				} else if (messageIn.equals("fullSolver")) {
+					String state = ConsoleGame.calculateAccuracy();
+					output.writeObject(state);
 				}
 			}
 			output.close();
@@ -40,6 +45,9 @@ public class ClientRunnable implements Runnable {
 			// report exception somewhere.
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
