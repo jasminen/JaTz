@@ -258,6 +258,8 @@ public class AIsolver {
 	 * @return
 	 * @throws CloneNotSupportedException
 	 */
+	
+	
 	private static Map<String, Object> alphabeta(Board theBoard, int depth,
 			int alpha, int beta, Player player)
 			throws CloneNotSupportedException {

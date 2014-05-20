@@ -31,7 +31,7 @@ public class ClientRunnable implements Runnable {
 					System.out.println("Client say goodbye");
 					break;
 				} else if (messageIn.equals("fullSolver")) {
-					String state = ConsoleGame.calculateAccuracy();
+					String state = ConsoleGame.calculateNextMoves();
 					output.writeObject(state);
 				}
 			}

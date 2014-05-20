@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.swt.graphics.Point;
@@ -130,6 +131,23 @@ public class State implements Serializable{
 		return null;
 	}
 
+	
+	public ArrayList<Point> getEmptyCellIds() {
+		
+		ArrayList<Point> freeCells = new ArrayList<Point>();
+		
+		for (int i = 0; i < this.board.length; i++) {
+			for (int j = 0; j < this.board[0].length; j++) {
+				if (getCell(i, j) == Keys.EMPTY)
+					freeCells.add(new Point(i, j));
+			}
+		}
+		
+		return freeCells;
+	}
+	
+	
+	
 	@Override
 	public String toString() {
 		String str = "Class State: the board:";
@@ -167,4 +185,7 @@ public class State implements Serializable{
 	}
 
 
+	
+	
+	
 }

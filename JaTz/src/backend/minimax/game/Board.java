@@ -76,6 +76,13 @@ public class Board implements Cloneable {
         
     }
     
+    public Board(int[][] board, int score) {
+    	this.boardArray = board;
+    	this.score = score;
+    	randomGenerator = new Random(System.currentTimeMillis());
+    	
+    }
+    
     /**
      * Deep clone
      * 

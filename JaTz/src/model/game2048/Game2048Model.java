@@ -1,10 +1,6 @@
 package model.game2048;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -113,15 +109,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 	}
 
 	private void DrawNewNumber(State state) {
-		ArrayList<Point> freeCells = new ArrayList<Point>();
-
-		// Build an array list of free cells.
-		for (int i = 0; i < state.getCopyBoard().length; i++) {
-			for (int j = 0; j < state.getBoard()[0].length; j++) {
-				if (state.getCell(i, j) == Keys.EMPTY)
-					freeCells.add(new Point(i, j));
-			}
-		}
+		ArrayList<Point> freeCells = state.getEmptyCellIds();
 
 		// Choose a random cell out of the free cells array and update the
 		// relevant array in board
@@ -134,6 +122,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 			state.setCell(row, column, 4);
 	}
 
+	
 	private Boolean win(int[][] board) {
 		for (int[] r : board)
 			for (int c : r)
