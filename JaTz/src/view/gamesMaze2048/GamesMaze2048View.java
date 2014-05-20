@@ -310,6 +310,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				exitMB.setText("Exit");
 				exitMB.setMessage("Wanna leave?");
 				int buttonID = exitMB.open();
+				e.doit = false;
 				if(buttonID == SWT.YES) {
 					e.doit = true;
 					display.dispose();

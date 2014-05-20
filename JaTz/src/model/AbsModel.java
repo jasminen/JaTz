@@ -47,6 +47,9 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 
 	@Override
 	public abstract void restart();
+	
+	@Override
+	public void getHint(){}
 
 	@Override
 	public void undo() {

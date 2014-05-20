@@ -1,6 +1,12 @@
 package model.game2048;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,6 +26,9 @@ public class Game2048Model extends AbsModel implements Serializable {
 	int boardSize;
 	int winNum;
 	Boolean alreadyWon = false;
+	Socket myServer;
+	ObjectOutputStream output;
+	ObjectInputStream input;
 
 	public Game2048Model() {
 		this.boardSize = 4;
@@ -81,6 +90,27 @@ public class Game2048Model extends AbsModel implements Serializable {
 	}
 	
 
+	public void getHint(InetSocketAddress socketAddress) {
+		connectToServer(socketAddress.getAddress(), socketAddress.getPort());
+		
+	}
+	
+	
+	private void connectToServer(InetAddress address, int port) {
+		try {
+			myServer = new Socket(address, port);
+			output = new ObjectOutputStream(myServer.getOutputStream());
+			input = new ObjectInputStream(myServer.getInputStream());
+			String messageFromServer = (String) input.readObject();
+			System.out.println("message from server: " + messageFromServer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	// Check if the mode needs to be change. if not, draw a new number. Add to
 	// states array and notify.
 	private void endPhase(State newState) {

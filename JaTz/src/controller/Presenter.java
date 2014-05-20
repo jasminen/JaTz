@@ -68,6 +68,9 @@ public class Presenter implements Observer {
 				case Keys.UNDO:
 					model.undo();
 					break;
+				case Keys.GET_HINT:
+					model.getHint();
+					break;
 				default:
 					System.out.println("Presenter: Unknown command");
 					break;

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import org.eclipse.swt.SWT;
@@ -96,9 +97,9 @@ public abstract class ConnectToServer implements Listener {
 			public void handleEvent(Event e) {
 				if (connect.getText() == "Connect") {
 					try {
-						InetAddress address = InetAddress.getByName(ipBox.getText());
-						myServer = new Socket(address, 9000);
-						System.out.println(address);
+//						InetSocketAddress socketAddress = new InetSocketAddress(InetAddress.getByName(ipBox.getText()), 9000);
+//						myServer = new Socket(address, 9000);
+//						System.out.println(address);
 						output = new ObjectOutputStream(myServer.getOutputStream());
 						input = new ObjectInputStream(myServer.getInputStream());
 						String messageFromServer = (String) input.readObject();

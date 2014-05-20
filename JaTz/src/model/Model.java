@@ -16,6 +16,7 @@ public interface Model {
 	public void undo();
 	public void newGame();
 	
+	public void getHint();
 	public State getState();
 
 
