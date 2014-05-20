@@ -89,23 +89,44 @@ public class Game2048Model extends AbsModel implements Serializable {
 		return state;
 	}
 	
-
-	public void getHint(InetSocketAddress socketAddress) {
-		connectToServer(socketAddress.getAddress(), socketAddress.getPort());
+	@Override
+	public void getHint(State state) {
+		String messageFromServer;
+		try {
+			messageFromServer = (String) input.readObject();
+			System.out.println("message from server: " + messageFromServer);
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		
 		
 	}
 	
-	
-	private void connectToServer(InetAddress address, int port) {
+	@Override
+	public void connectToServer(InetSocketAddress socketAddress) {
+		String messageFromServer;
 		try {
-			myServer = new Socket(address, port);
+			myServer = new Socket(socketAddress.getAddress(), socketAddress.getPort());
 			output = new ObjectOutputStream(myServer.getOutputStream());
 			input = new ObjectInputStream(myServer.getInputStream());
-			String messageFromServer = (String) input.readObject();
+			messageFromServer = (String) input.readObject();
 			System.out.println("message from server: " + messageFromServer);
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
+			System.out.println("server not found");
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
+		}
+	}
+	
+	@Override
+	public void disconnectFromServer() {
+		try {
+			output.writeObject("exit");
+			output.flush();
+			output.close();
+			input.close();
+			myServer.close();
+		} catch (IOException e) {
+			System.out.println("Not Connected");
 			e.printStackTrace();
 		}
 	}

@@ -31,8 +31,8 @@ public class ClientRunnable implements Runnable {
 					System.out.println("Client say goodbye");
 					break;
 				} else if (messageIn.equals("fullSolver")) {
-					String state = ConsoleGame.calculateNextMoves();
-					output.writeObject(state);
+//					String state = ConsoleGame.calculateNextMoves();
+//					output.writeObject(state);
 				}
 			}
 			output.close();
@@ -46,9 +46,10 @@ public class ClientRunnable implements Runnable {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
+//		catch (CloneNotSupportedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }

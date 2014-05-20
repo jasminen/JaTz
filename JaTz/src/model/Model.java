@@ -1,5 +1,7 @@
 package model;
 
+import java.net.InetSocketAddress;
+
 public interface Model {
 	
 	public void moveUp();
@@ -16,7 +18,9 @@ public interface Model {
 	public void undo();
 	public void newGame();
 	
-	public void getHint();
+	public void connectToServer(InetSocketAddress socketAddress);
+	public void disconnectFromServer();
+	public void getHint(State state);
 	public State getState();
 
 

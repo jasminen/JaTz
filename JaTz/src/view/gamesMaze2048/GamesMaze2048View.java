@@ -287,7 +287,15 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	}
 	
 	private Listener connectToServer() {
-		return (new ConnectToServer(display){});
+		return (new ConnectToServer(display){
+
+			@Override
+			public void setUserCommand(int userCommand) {
+				GamesMaze2048View.this.userCommand = userCommand;
+				setChanged();
+				notifyObservers(this.socketAddress);
+				
+			}});
 	}
 
 	private Listener undoMove() {

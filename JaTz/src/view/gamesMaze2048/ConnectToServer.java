@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import controller.Keys;
 import controller.SLhelper;
 
 public abstract class ConnectToServer implements Listener {
@@ -30,6 +31,7 @@ public abstract class ConnectToServer implements Listener {
 	Button GetSolver;
 	Button Cancel;
 	Socket myServer;
+	InetSocketAddress socketAddress;
 	ObjectOutputStream output;
 	ObjectInputStream input;
 	
@@ -52,7 +54,7 @@ public abstract class ConnectToServer implements Listener {
 		ipBox.setText("localhost");
 		ipBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		
-		//Dynmic load of selections
+		//Dynamic load of selections
 		String selections[];
 		try {
 			selections = (String[]) SLhelper.load(System.getProperty("user.dir")+File.separator+"serverIPs.xml");
@@ -97,28 +99,19 @@ public abstract class ConnectToServer implements Listener {
 			public void handleEvent(Event e) {
 				if (connect.getText() == "Connect") {
 					try {
-//						InetSocketAddress socketAddress = new InetSocketAddress(InetAddress.getByName(ipBox.getText()), 9000);
-//						myServer = new Socket(address, 9000);
-//						System.out.println(address);
-						output = new ObjectOutputStream(myServer.getOutputStream());
-						input = new ObjectInputStream(myServer.getInputStream());
-						String messageFromServer = (String) input.readObject();
-						System.out.println("message from server: " + messageFromServer);
-						serverMsg.setText("Server Message: " + messageFromServer);
+						socketAddress = new InetSocketAddress(InetAddress.getByName(ipBox.getText()), 9000);
+						setUserCommand(Keys.CONNECT);
 						GetSolver.setEnabled(true);
-						
 						connect.setText("Disonnect");
-						ipBox.add(ipBox.getText());
+						if (ipBox.indexOf(ipBox.getText()) == -1) {
+							ipBox.add(ipBox.getText());
+						}
 					} catch (Exception ex) {
 						System.out.println("Exception: " + ex);
 					}
 				} else {
 					try {
-						output.writeObject("exit");
-						output.flush();
-						output.close();
-						input.close();
-						myServer.close();
+						setUserCommand(Keys.DISCONNECT);
 						GetSolver.setEnabled(false);
 						connect.setText("Connect");
 					} catch (Exception ex) {
@@ -135,15 +128,7 @@ public abstract class ConnectToServer implements Listener {
 			
 			@Override
 			public void handleEvent(Event e) {
-				try{
-					 output.writeObject("exit");
-					 output.flush();
-					 output.close();
-					 input.close();
-					 myServer.close();
-				}catch (Exception ex) {
-					System.out.println("not connected");
-				}
+				setUserCommand(Keys.DISCONNECT);
 				try {
 					String selections[] = ipBox.getItems(); //NEED TO WORK ON EXIT TOO (X) =====
 					SLhelper.save(selections, System.getProperty("user.dir")+File.separator+"serverIPs.xml");
@@ -173,5 +158,5 @@ public abstract class ConnectToServer implements Listener {
 		});
 	}
 	
-
+	public abstract void setUserCommand(int userCommand);
 }
