@@ -12,9 +12,10 @@ import java.util.Random;
 
 import org.eclipse.swt.graphics.Point;
 
-import controller.Keys;
+import common.Keys;
+import common.Message;
+import common.State;
 import model.AbsModel;
-import model.State;
 
 /*
  * Game2048Model 
@@ -90,18 +91,24 @@ public class Game2048Model extends AbsModel implements Serializable {
 	}
 	
 	@Override
-	public void getHint(State state) {
-		String messageFromServer;
-		try {
-			messageFromServer = (String) input.readObject();
-			System.out.println("message from server: " + messageFromServer);
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
+	public void getHint() {
+		
+		while(!(alreadyWon || getState().getMode() == Keys.GAMEOVER)) {
+			System.out.println("Already won: "+alreadyWon+"      mode is: "+getState().getMode());
+			try {
+				output.writeObject(new Message(getState(), "getHint", 0, "2048"));
+				Message messageIn = (Message) input.readObject();
+				performAction(messageIn.getResult());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
-		
-		
 	}
 	
+
+
 	@Override
 	public void connectToServer(InetSocketAddress socketAddress) {
 		String messageFromServer;
@@ -111,9 +118,15 @@ public class Game2048Model extends AbsModel implements Serializable {
 			input = new ObjectInputStream(myServer.getInputStream());
 			messageFromServer = (String) input.readObject();
 			System.out.println("message from server: " + messageFromServer);
+			getState().setConnectedToServer(true);
+			setChanged();
+			notifyObservers();
 		} catch (IOException | ClassNotFoundException e) {
 			System.out.println("server not found");
 			e.printStackTrace();
+			getState().setConnectedToServer(false);
+			setChanged();
+			notifyObservers();
 		}
 	}
 	
@@ -125,6 +138,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 			output.close();
 			input.close();
 			myServer.close();
+			getState().setConnectedToServer(false);
 		} catch (IOException e) {
 			System.out.println("Not Connected");
 			e.printStackTrace();
@@ -198,6 +212,26 @@ public class Game2048Model extends AbsModel implements Serializable {
 
 		return true;
 
+	}
+	
+	private void performAction(int action) {
+		switch (action) {
+		case Keys.UP:
+			moveUp();
+			break;
+		case Keys.DOWN:
+			moveDown();
+			break;
+		case Keys.LEFT:
+			moveLeft();
+			break;
+		case Keys.RIGHT:
+			moveRight();
+			break;
+		default:
+			break;
+		}
+		
 	}
 
 	private static boolean isPowerOfTwo(int number) {

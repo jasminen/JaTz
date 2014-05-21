@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 import org.eclipse.swt.graphics.Point;
 
-import controller.Keys;
+import common.Keys;
 
 
 

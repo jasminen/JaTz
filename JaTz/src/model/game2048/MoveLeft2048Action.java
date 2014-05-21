@@ -1,8 +1,9 @@
 
 package model.game2048;
 
+import common.State;
+
 import model.Action;
-import model.State;
 
 /*
  * Move Left 

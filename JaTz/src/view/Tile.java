@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
-import controller.Keys;
+import common.Keys;
 
 /*
  * Tile - Component of the board.

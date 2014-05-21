@@ -4,7 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 
-import controller.Keys;
+import common.Keys;
 
 /*
  * Abstract Arrow Keys Listener 

@@ -1,6 +1,6 @@
 package view;
 
-import model.State;
+import common.State;
 
 public interface View {
 

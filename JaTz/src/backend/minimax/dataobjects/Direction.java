@@ -16,6 +16,8 @@
  */
 package backend.minimax.dataobjects;
 
+import common.Keys;
+
 /**
  * Direction enum.
  * 
@@ -25,22 +27,22 @@ public enum Direction {
     /**
      * Move Up
      */
-    UP(0,"Up"), 
+    UP(Keys.UP,"Up"), 
     
     /**
      * Move Right
      */
-    RIGHT(1,"Right"), 
+    RIGHT(Keys.RIGHT,"Right"), 
     
     /**
      * Move Down
      */
-    DOWN(2,"Down"), 
+    DOWN(Keys.DOWN,"Down"), 
     
     /**
      * Move Left
      */
-    LEFT(3,"Left");
+    LEFT(Keys.LEFT,"Left");
     
     
     /**

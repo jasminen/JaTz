@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import backend.minimax.ConsoleGame;
+import common.Keys;
+import common.State;
 import backend.minimax.dataobjects.Direction;
 import backend.minimax.game.Board;
 
@@ -40,212 +41,19 @@ public class AIsolver {
 	 * @return
 	 * @throws CloneNotSupportedException
 	 */
-	public static Direction findBestMove(Board theBoard, int depth)
-			throws CloneNotSupportedException {
-		// Map<String, Object> result = minimax(theBoard, depth, Player.USER);
-
-		 Map<String, Object> result = alphabeta(theBoard, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, Player.USER);
-
-//		Map<String, Object> result = hMan(theBoard);
-		return (Direction) result.get("Direction");
+	public static int findBestMove(State currentState) throws CloneNotSupportedException {
+		
+		int depth = 7;
+        Board theBoard = new Board(currentState.getCopyBoard(), currentState.getScore());
+		Map<String, Object> result = alphabeta(theBoard, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, Player.USER);
+		
+		if(!(result.get("Direction")==null))
+			return ((Direction) result.get("Direction")).getCode();
+		System.out.println("The direction is null");
+		return Keys.UP;
 	}
 
-	private static Map<String, Object> hMan(Board theBoard)throws CloneNotSupportedException {
-		Boolean rightFlag = false;
-		Map<String, Object> result = new HashMap<>();
-		Direction direction = null;
-		Board newBoard = (Board) theBoard.clone();
-		ConsoleGame.printBoard(theBoard.getBoardArray(), 0, null);
-		if (rightFlag) {
-			direction = Direction.LEFT;
-			newBoard.move(direction);
-			rightFlag = false;
-		}
-		else if (rowFreeCell(theBoard, 0)) {
-			direction = Direction.UP;
-			newBoard.move(direction);
-			if (newBoard.isEqual(theBoard.getBoardArray(), newBoard.getBoardArray())) {
-				direction = Direction.LEFT;
-				newBoard.move(direction);
-				if (newBoard.isEqual(theBoard.getBoardArray(), newBoard.getBoardArray())) {
-					direction = Direction.RIGHT;
-					newBoard.move(direction);
-					if (rowFreeCell(newBoard, 0)) {
-						rightFlag = true;
-					}
-				}
-			}
-		} else {
-			Point p;
-			if (aLike(theBoard, 0) != null) {
-				System.out.println("Top row LEFT");
-				direction = Direction.LEFT;
-				newBoard.move(direction);
-				
-			} else {
-				p = aLike(theBoard, 0, 1);
-				System.out.println("P: 2 row");
-				if (p != null) {
-					int direc = p.x - p.y;
-					System.out.println("Direc: " + direc + " x/i: " + p.x + " y/j: " + p.y + " Free cell: " + rowFreeCell(theBoard, 1) );
-					if (direc < 0 && rowFreeCell(theBoard, 1)) {
-						System.out.println("LEFT");
-						direction = Direction.LEFT;
-						newBoard.move(direction);
-					} else if (direc > 0 && rowFreeCell(theBoard, 1)) {
-						System.out.println("RIGHT");
-						direction = Direction.RIGHT;
-						newBoard.move(direction);
-						if (rowFreeCell(newBoard, 0)) {
-							rightFlag = true;
-						}
-					} else {
-						System.out.println("UP");
-						direction = Direction.UP;
-						newBoard.move(direction);
-					}
-				}
-			}
-			if(newBoard.isEqual(theBoard.getBoardArray(), newBoard.getBoardArray())) {
-				direction = Direction.UP;
-				newBoard.move(direction);
-				if (newBoard.isEqual(theBoard.getBoardArray(), newBoard.getBoardArray())) {
-					direction = Direction.LEFT;
-					newBoard.move(direction);
-					if (newBoard.isEqual(theBoard.getBoardArray(), newBoard.getBoardArray())) {
-						direction = Direction.RIGHT;
-						newBoard.move(direction);
-						if (rowFreeCell(newBoard, 0)) {
-							rightFlag = true;
-						}
-					}
-				}
-			}
-		}
-
-		result.put("Direction", direction);
-		return result;
-	}
-
-	private static boolean rowFreeCell(Board theBoard, int rowNumber) {
-		int[][] board = theBoard.getBoardArray();
-		for (int i = 0; i < board[rowNumber].length; i++) {
-			if (board[rowNumber][i] == 0) {
-				return true;
-			}
-		}
-		return false;
-	}
 	
-	private static Point aLike(Board theBoard, int rowNumber1, int rowNumber2) {
-		int disPoints, bestDisPoints = 10;
-		Point points = null;
-		int[][] board = theBoard.getBoardArray();
-		for (int i = 0; i < board[rowNumber1].length; i++) {
-			for (int j = 0; j < board[rowNumber2].length; j++) {
-				if (board[rowNumber1][i] == board[rowNumber2][j]) {
-					disPoints = Math.abs(i-j);
-					if(disPoints < bestDisPoints) {
-						bestDisPoints = disPoints;
-						points = new Point(i, j);
-					}
-				}
-			}
-		}
-		return points;
-	}
-	private static Point aLike(Board theBoard, int rowNumber) {
-		Point points = null;
-		int[][] board = theBoard.getBoardArray();
-		System.out.println("waa");
-		for (int i = 0; i < board[rowNumber].length-1; i++) {
-				if (board[rowNumber][i] == board[rowNumber][i+1]) {
-						points = new Point(i, i+1);
-						return points;
-				}
-		}
-		return points;
-	}
-
-	/**
-	 * Finds the best move by using the Minimax algorithm.
-	 * 
-	 * @param theBoard
-	 * @param depth
-	 * @param player
-	 * @return
-	 * @throws CloneNotSupportedException
-	 */
-	private static Map<String, Object> minimax(Board theBoard, int depth, Player player) throws CloneNotSupportedException {
-		Map<String, Object> result = new HashMap<>();
-
-		Direction bestDirection = null;
-		int bestScore;
-
-		if (depth == 0 || theBoard.isGameTerminated()) {
-			bestScore = heuristicScore(theBoard.getScore(),
-					theBoard.getNumberOfEmptyCells(),
-					calculateClusteringScore(theBoard.getBoardArray()));
-		} else {
-			if (player == Player.USER) {
-				bestScore = Integer.MIN_VALUE;
-
-				for (Direction direction : Direction.values()) {
-					Board newBoard = (Board) theBoard.clone();
-
-					int points = newBoard.move(direction);
-
-					if (points == 0
-							&& newBoard.isEqual(theBoard.getBoardArray(),
-									newBoard.getBoardArray())) {
-						continue;
-					}
-
-					Map<String, Object> currentResult = minimax(newBoard,
-							depth - 1, Player.COMPUTER);
-					int currentScore = ((Number) currentResult.get("Score"))
-							.intValue();
-					if (currentScore > bestScore) { // maximize score
-						bestScore = currentScore;
-						bestDirection = direction;
-					}
-				}
-			} else {
-				bestScore = Integer.MAX_VALUE;
-
-				List<Integer> moves = theBoard.getEmptyCellIds();
-				if (moves.isEmpty()) {
-					bestScore = 0;
-				}
-				int[] possibleValues = { 2, 4 };
-
-				int i, j;
-				int[][] boardArray;
-				for (Integer cellId : moves) {
-					i = cellId / Board.BOARD_SIZE;
-					j = cellId % Board.BOARD_SIZE;
-
-					for (int value : possibleValues) {
-						Board newBoard = (Board) theBoard.clone();
-						newBoard.setEmptyCell(i, j, value);
-
-						Map<String, Object> currentResult = minimax(newBoard,
-								depth - 1, Player.USER);
-						int currentScore = ((Number) currentResult.get("Score"))
-								.intValue();
-						if (currentScore < bestScore) { // minimize best score
-							bestScore = currentScore;
-						}
-					}
-				}
-			}
-		}
-
-		result.put("Score", bestScore);
-		result.put("Direction", bestDirection);
-
-		return result;
-	}
 
 	/**
 	 * Finds the best move bay using the Alpha-Beta pruning algorithm.
@@ -269,6 +77,7 @@ public class AIsolver {
 		int bestScore;
 
 		if (theBoard.isGameTerminated()) {
+			bestDirection = null;
 			if (theBoard.hasWon()) {
 				bestScore = Integer.MAX_VALUE; // highest possible score
 			} else {

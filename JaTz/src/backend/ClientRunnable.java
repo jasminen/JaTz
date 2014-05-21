@@ -5,8 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-
-import backend.minimax.ConsoleGame;
+import common.Message;
+import backend.minimax.ai.AIsolver;
 
 public class ClientRunnable implements Runnable {
 
@@ -25,14 +25,14 @@ public class ClientRunnable implements Runnable {
 			output.writeObject("You are connected to " + this.serverText);
 			output.flush();
 			while (true) {
-				String messageIn = (String) input.readObject();
-				System.out.println("message from the client: " + messageIn);
-				if (messageIn.equals("exit")) {
-					System.out.println("Client say goodbye");
+				Message messageIn = (Message) input.readObject();
+				System.out.println("message from the client: " + messageIn.getMsg());
+				if (messageIn.getMsg().equals("exit")) {
+					System.out.println("Client says goodbye");
 					break;
-				} else if (messageIn.equals("fullSolver")) {
-//					String state = ConsoleGame.calculateNextMoves();
-//					output.writeObject(state);
+				} else if (messageIn.getMsg().equals("getHint") && messageIn.getGame().equals("2048")) {
+					int direction = AIsolver.findBestMove(messageIn.getState());
+					output.writeObject(new Message(null, "This is the best next move", direction, messageIn.getGame()));
 				}
 			}
 			output.close();
@@ -47,9 +47,8 @@ public class ClientRunnable implements Runnable {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} 
-//		catch (CloneNotSupportedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 	}
 }

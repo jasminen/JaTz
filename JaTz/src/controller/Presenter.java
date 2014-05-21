@@ -2,7 +2,6 @@ package controller;
 
 import model.AbsModel;
 import model.Model;
-import model.State;
 import view.View;
 
 import java.net.InetSocketAddress;
@@ -10,6 +9,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
+import common.Keys;
+import common.State;
 
 /*
  * Presenter -  models 1&2 receiving the Maze and 2048 models
@@ -80,7 +82,7 @@ public class Presenter implements Observer {
 					model.disconnectFromServer();
 					break;
 				case Keys.GET_HINT:
-//					model.getHint(state);
+					model.getHint();
 					break;
 				default:
 					System.out.println("Presenter: Unknown command");

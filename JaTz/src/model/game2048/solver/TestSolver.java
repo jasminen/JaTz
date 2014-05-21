@@ -3,8 +3,8 @@ package model.game2048.solver;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
-import controller.Keys;
-import model.State;
+import common.Keys;
+import common.State;
 import model.game2048.Game2048Model;
 import model.game2048.MoveDown2048Action;
 import model.game2048.MoveLeft2048Action;

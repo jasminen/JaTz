@@ -2,9 +2,9 @@ package model.gameMaze;
 
 import org.eclipse.swt.graphics.Point;
 
+import common.Keys;
+import common.State;
 import model.Action;
-import model.State;
-import controller.Keys;
 
 
 /*

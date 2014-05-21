@@ -1,4 +1,4 @@
-package controller;
+package common;
 
 /*
  * Keys - Int to String mapping  

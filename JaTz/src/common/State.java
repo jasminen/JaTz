@@ -1,12 +1,10 @@
-package model;
+package common;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.swt.graphics.Point;
-
-import controller.Keys;
 
 /*
  * State - Two dimensional array representing the board.
@@ -22,6 +20,7 @@ public class State implements Serializable{
 	private int score;
 	private int mode; // Keys.NEW_GAME, Keys.GAMEOVER, Keys.WIN, Keys.IN_PROGRESS
 	private String msg = "";
+	private boolean connectedToServer = false; 
 	
 	public State(){}
 
@@ -182,6 +181,14 @@ public class State implements Serializable{
 			return false;
 
 		return true;
+	}
+
+	public boolean isConnectedToServer() {
+		return connectedToServer;
+	}
+
+	public void setConnectedToServer(boolean connectedToServer) {
+		this.connectedToServer = connectedToServer;
 	}
 
 

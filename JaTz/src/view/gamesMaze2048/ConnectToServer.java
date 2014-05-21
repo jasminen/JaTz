@@ -19,7 +19,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-import controller.Keys;
+import common.Keys;
+
 import controller.SLhelper;
 
 public abstract class ConnectToServer implements Listener {
@@ -30,10 +31,7 @@ public abstract class ConnectToServer implements Listener {
 	Shell connectShell;
 	Button GetSolver;
 	Button Cancel;
-	Socket myServer;
 	InetSocketAddress socketAddress;
-	ObjectOutputStream output;
-	ObjectInputStream input;
 	
 	public ConnectToServer(Display display) {
 		this.display = display;
@@ -146,11 +144,8 @@ public abstract class ConnectToServer implements Listener {
 			@Override
 			public void handleEvent(Event e) {
 				try{
-					 output.writeObject("fullSolver");
-					 output.flush();
-					 String messageFromServer = (String)input.readObject();
-					 System.out.println("message from server: "+messageFromServer);
-					 serverMsg.setText("Server Message: " + messageFromServer);
+					 setUserCommand(Keys.GET_HINT);
+//					 serverMsg.setText("Server Message: " + messageFromServer);
 				}catch (Exception ex) {
 					System.out.println("not connected");
 				}

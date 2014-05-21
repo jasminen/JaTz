@@ -2,6 +2,8 @@ package model;
 
 import java.net.InetSocketAddress;
 
+import common.State;
+
 public interface Model {
 	
 	public void moveUp();
@@ -20,7 +22,7 @@ public interface Model {
 	
 	public void connectToServer(InetSocketAddress socketAddress);
 	public void disconnectFromServer();
-	public void getHint(State state);
+	public void getHint();
 	public State getState();
 
 

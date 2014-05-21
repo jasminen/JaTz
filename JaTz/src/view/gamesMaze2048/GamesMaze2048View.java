@@ -20,11 +20,11 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import controller.Keys;
+import common.Keys;
+import common.State;
 import view.Board;
 import view.MouseDragCommand;
 import view.View;
-import model.State;
 
 /**
  * 

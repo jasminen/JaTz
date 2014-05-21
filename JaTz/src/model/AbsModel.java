@@ -5,7 +5,8 @@ import java.net.InetSocketAddress;
 import java.util.LinkedList;
 import java.util.Observable;
 
-import controller.Keys;
+import common.Keys;
+import common.State;
 
 /*
  * Abstract model - define the models structure and handle the state list.
@@ -47,7 +48,7 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 	public void moveDiagonalRightDown() {}
 	
 	@Override
-	public void getHint(State state) {}
+	public void getHint() {}
 	
 	@Override
 	public void disconnectFromServer() {}

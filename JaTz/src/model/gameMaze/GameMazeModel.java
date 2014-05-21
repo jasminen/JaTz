@@ -5,9 +5,9 @@ import java.util.Random;
 
 import org.eclipse.swt.graphics.Point;
 
-import controller.Keys;
+import common.Keys;
+import common.State;
 import model.AbsModel;
-import model.State;
 import model.gameMaze.solver.Maze;
 import model.gameMaze.solver.MazeAirDistance;
 import model.gameMaze.solver.MazeDistanceG;

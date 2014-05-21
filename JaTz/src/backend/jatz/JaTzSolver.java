@@ -1,6 +1,6 @@
 package backend.jatz;
 
-import model.State;
+import common.State;
 
 public class JaTzSolver {
 
