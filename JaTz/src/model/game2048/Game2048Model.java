@@ -1,6 +1,12 @@
 package model.game2048;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,6 +26,9 @@ public class Game2048Model extends AbsModel implements Serializable {
 	int boardSize;
 	int winNum;
 	Boolean alreadyWon = false;
+	Socket myServer;
+	ObjectOutputStream output;
+	ObjectInputStream input;
 
 	public Game2048Model() {
 		this.boardSize = 4;
@@ -80,7 +89,49 @@ public class Game2048Model extends AbsModel implements Serializable {
 		return state;
 	}
 	
-
+	@Override
+	public void getHint(State state) {
+		String messageFromServer;
+		try {
+			messageFromServer = (String) input.readObject();
+			System.out.println("message from server: " + messageFromServer);
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	@Override
+	public void connectToServer(InetSocketAddress socketAddress) {
+		String messageFromServer;
+		try {
+			myServer = new Socket(socketAddress.getAddress(), socketAddress.getPort());
+			output = new ObjectOutputStream(myServer.getOutputStream());
+			input = new ObjectInputStream(myServer.getInputStream());
+			messageFromServer = (String) input.readObject();
+			System.out.println("message from server: " + messageFromServer);
+		} catch (IOException | ClassNotFoundException e) {
+			System.out.println("server not found");
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void disconnectFromServer() {
+		try {
+			output.writeObject("exit");
+			output.flush();
+			output.close();
+			input.close();
+			myServer.close();
+		} catch (IOException e) {
+			System.out.println("Not Connected");
+			e.printStackTrace();
+		}
+	}
+	
+	
 	// Check if the mode needs to be change. if not, draw a new number. Add to
 	// states array and notify.
 	private void endPhase(State newState) {

@@ -2,9 +2,14 @@ package controller;
 
 import model.AbsModel;
 import model.Model;
+import model.State;
 import view.View;
+
+import java.net.InetSocketAddress;
 import java.util.Observable;
 import java.util.Observer;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 /*
  * Presenter -  models 1&2 receiving the Maze and 2048 models
@@ -25,7 +30,7 @@ public class Presenter implements Observer {
 	@Override
 	public void update(Observable o, Object io) {
 		if (o == gui) {
-			if (io != null) {
+			if (io != null && !(io instanceof InetSocketAddress)) {
 				saveLoadActions(io);
 			} else {
 				int command = gui.getUserCommand();
@@ -67,6 +72,15 @@ public class Presenter implements Observer {
 					break;
 				case Keys.UNDO:
 					model.undo();
+					break;
+				case Keys.CONNECT:
+					model.connectToServer((InetSocketAddress) io);
+					break;
+				case Keys.DISCONNECT:
+					model.disconnectFromServer();
+					break;
+				case Keys.GET_HINT:
+//					model.getHint(state);
 					break;
 				default:
 					System.out.println("Presenter: Unknown command");

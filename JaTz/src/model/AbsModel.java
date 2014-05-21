@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.net.InetSocketAddress;
 import java.util.LinkedList;
 import java.util.Observable;
 
@@ -44,9 +45,19 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 
 	@Override
 	public void moveDiagonalRightDown() {}
+	
+	@Override
+	public void getHint(State state) {}
+	
+	@Override
+	public void disconnectFromServer() {}
+	
+	@Override
+	public void connectToServer(InetSocketAddress socketAddress){}
 
 	@Override
 	public abstract void restart();
+	
 
 	@Override
 	public void undo() {

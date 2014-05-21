@@ -23,7 +23,9 @@ public interface Keys {
 	public static final int SAVE = 50;
 	public static final int LOAD = 60;
 	public static final int CONNECT = 80;
-	
+	public static final int DISCONNECT = 90;
+	public static final int GET_HINT = 800;
+
 	
 	public static final int NEW_GAME = 999;
 	public static final int DIFFERENT_GAME = 888;

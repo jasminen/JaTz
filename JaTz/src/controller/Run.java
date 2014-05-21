@@ -11,9 +11,9 @@ public class Run {
 	
 		
 		GameMazeModel modelMaze = new GameMazeModel();
-		GamesMaze2048View GUI2048 = new GamesMaze2048View("maze");
+		GamesMaze2048View GUI2048 = new GamesMaze2048View("2048");
 		Game2048Model model2048 = new Game2048Model(2048);
-		Presenter presenter = new Presenter(modelMaze,model2048, GUI2048);
+		Presenter presenter = new Presenter(model2048, modelMaze, GUI2048);
 		GUI2048.addObserver(presenter);
 		modelMaze.addObserver(presenter);
 		model2048.addObserver(presenter);
