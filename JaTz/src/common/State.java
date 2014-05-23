@@ -190,9 +190,4 @@ public class State implements Serializable{
 	public void setConnectedToServer(boolean connectedToServer) {
 		this.connectedToServer = connectedToServer;
 	}
-
-
-	
-	
-	
 }

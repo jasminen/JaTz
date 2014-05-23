@@ -8,10 +8,8 @@ import java.net.InetSocketAddress;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import common.Keys;
-import common.State;
 
 /*
  * Presenter -  models 1&2 receiving the Maze and 2048 models

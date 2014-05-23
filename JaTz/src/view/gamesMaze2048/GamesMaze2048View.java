@@ -42,6 +42,8 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	String fileName;
 	String gameName;
 	Label instructions;
+	Button getSolver;
+	Boolean connectedToServer;
 	MouseDragCommand mouseCommand;
 	
 	/**
@@ -95,7 +97,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 	@Override
 	public void displayState(final State state) {
-
+		connectedToServer = state.isConnectedToServer();
 		switch (state.getMode()) {
 		case Keys.NEW_GAME:
 			board.setBoard(state.getBoard());
@@ -195,8 +197,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	private void initButtons() {
 		Button undoMove = new Button(shell, SWT.PUSH);
 		undoMove.setText("Undo Move");
-		undoMove.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,
-				1));
+		undoMove.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,	1));
 
 		score = new Label(shell, SWT.NONE);
 		score.setText("Score: 0        ");
@@ -205,24 +206,28 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 		Button restartGame = new Button(shell, SWT.PUSH);
 		restartGame.setText("Restart Game");
-		restartGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false,
-				1, 1));
+		restartGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 
 		board = new Board(shell, SWT.BORDER, mouseCommand);
-		board.setGameColors(new Color(null, 199, 193, 173), new Color(null,
-				230, 227, 220));
-		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
+		board.setGameColors(new Color(null, 199, 193, 173), new Color(null,230, 227, 220));
+		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 4));
 
 		Button loadGame = new Button(shell, SWT.PUSH);
 		loadGame.setText("Load Game");
-		loadGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,
-				1));
+		loadGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 
 		Button saveGame = new Button(shell, SWT.PUSH);
 		saveGame.setText("Save Game");
-		saveGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,
-				2));
-
+		saveGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		
+		
+		getSolver = new Button(shell, SWT.PUSH);
+		getSolver.setText("Please Solve");
+		getSolver.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 2));
+		getSolver.setEnabled(false);
+		
+		
+		getSolver.addListener(SWT.Selection, getSolverListener());
 		loadGame.addListener(SWT.Selection, loadGame());
 		saveGame.addListener(SWT.Selection, saveGame());
 		restartGame.addListener(SWT.Selection, restartGame());
@@ -233,6 +238,19 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	//---------------
 	// Listeners
 	//---------------
+	
+	
+	private Listener getSolverListener() {
+		return (new Listener() {
+			
+			@Override
+			public void handleEvent(Event e) {
+				userCommand = Keys.GET_HINT;
+				setChanged();
+				notifyObservers();
+			}
+		});
+	}
 	
 	private Listener loadGame() {
 		return (new Listener() {
@@ -294,6 +312,22 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				GamesMaze2048View.this.userCommand = userCommand;
 				setChanged();
 				notifyObservers(this.socketAddress);
+				if (connectedToServer) {
+					connected(true);
+					connect.setText("Disonnect");
+					if (ipBox.indexOf(ipBox.getText()) == -1) {
+						ipBox.add(ipBox.getText());
+					}
+				} else {
+					connected(false);
+					connect.setText("Connect");
+				}
+				
+			}
+
+			@Override
+			public void connected(Boolean flag) {
+				getSolver.setEnabled(flag);
 				
 			}});
 	}

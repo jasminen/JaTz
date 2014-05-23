@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -99,9 +98,15 @@ public class Game2048Model extends AbsModel implements Serializable {
 				output.writeObject(new Message(getState(), "getHint", 0, "2048"));
 				Message messageIn = (Message) input.readObject();
 				performAction(messageIn.getResult());
+				System.out.println("sleep");
+				Thread.sleep(600);
+				System.out.println("wake up");
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
+				e.printStackTrace(); 
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -139,9 +144,11 @@ public class Game2048Model extends AbsModel implements Serializable {
 			input.close();
 			myServer.close();
 			getState().setConnectedToServer(false);
-		} catch (IOException e) {
+			setChanged();
+			notifyObservers();
+		} catch (IOException | NullPointerException e) {
 			System.out.println("Not Connected");
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 	}
 	

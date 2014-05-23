@@ -1,11 +1,7 @@
 package view.gamesMaze2048;
 
-import java.io.File;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -20,7 +16,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import common.Keys;
-
 import controller.SLhelper;
 
 public abstract class ConnectToServer implements Listener {
@@ -29,8 +24,7 @@ public abstract class ConnectToServer implements Listener {
 	Label serverMsg;
 	Display display;
 	Shell connectShell;
-	Button GetSolver;
-	Button Cancel;
+	Button cancel;
 	InetSocketAddress socketAddress;
 	
 	public ConnectToServer(Display display) {
@@ -49,18 +43,17 @@ public abstract class ConnectToServer implements Listener {
 		title.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 
 		ipBox = new Combo(connectShell, SWT.DROP_DOWN);
-		ipBox.setText("localhost");
-		ipBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		
+		ipBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));	
 		//Dynamic load of selections
 		String selections[];
 		try {
-			selections = (String[]) SLhelper.load(System.getProperty("user.dir")+File.separator+"serverIPs.xml");
+			selections = (String[]) SLhelper.load("conf/serverIPs.xml");
 			ipBox.setItems(selections);
 		} catch (Exception e2) {
 			System.out.println("File not exist");
 		}
-
+		ipBox.setText("localhost");
 		
 		serverMsg = new Label(connectShell, SWT.NONE);
 		serverMsg.setText("Server Message: ");
@@ -72,16 +65,12 @@ public abstract class ConnectToServer implements Listener {
 		
 		connect.addListener(SWT.Selection, connectListener());
 		
-		Cancel = new Button(connectShell, SWT.PUSH);
-		Cancel.setText("Cancel");
-		Cancel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		Cancel.addListener(SWT.Selection, cancelListener());
+		cancel = new Button(connectShell, SWT.PUSH);
+		cancel.setText("Cancel");
+		cancel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		cancel.addListener(SWT.Selection, cancelListener());
 		
-		GetSolver = new Button(connectShell, SWT.PUSH);
-		GetSolver.setText("Please Solve");
-		GetSolver.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		GetSolver.setEnabled(false);
-		GetSolver.addListener(SWT.Selection, getSolverListener());
+		
 		
 		
 		
@@ -99,24 +88,13 @@ public abstract class ConnectToServer implements Listener {
 					try {
 						socketAddress = new InetSocketAddress(InetAddress.getByName(ipBox.getText()), 9000);
 						setUserCommand(Keys.CONNECT);
-						GetSolver.setEnabled(true);
-						connect.setText("Disonnect");
-						if (ipBox.indexOf(ipBox.getText()) == -1) {
-							ipBox.add(ipBox.getText());
-						}
+						
 					} catch (Exception ex) {
 						System.out.println("Exception: " + ex);
 					}
 				} else {
-					try {
-						setUserCommand(Keys.DISCONNECT);
-						GetSolver.setEnabled(false);
-						connect.setText("Connect");
-					} catch (Exception ex) {
-						System.out.println("not connected");
-					}
+					setUserCommand(Keys.DISCONNECT);
 				}
-
 			}
 		});
 	}
@@ -129,7 +107,7 @@ public abstract class ConnectToServer implements Listener {
 				setUserCommand(Keys.DISCONNECT);
 				try {
 					String selections[] = ipBox.getItems(); //NEED TO WORK ON EXIT TOO (X) =====
-					SLhelper.save(selections, System.getProperty("user.dir")+File.separator+"serverIPs.xml");
+					SLhelper.save(selections, "conf/serverIPs.xml");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -138,20 +116,8 @@ public abstract class ConnectToServer implements Listener {
 		});
 	}
 	
-	private Listener getSolverListener() {
-		return (new Listener() {
-			
-			@Override
-			public void handleEvent(Event e) {
-				try{
-					 setUserCommand(Keys.GET_HINT);
-//					 serverMsg.setText("Server Message: " + messageFromServer);
-				}catch (Exception ex) {
-					System.out.println("not connected");
-				}
-			}
-		});
-	}
+	
 	
 	public abstract void setUserCommand(int userCommand);
+	public abstract void connected(Boolean flag);
 }
