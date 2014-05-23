@@ -116,13 +116,12 @@ public class Game2048Model extends AbsModel implements Serializable {
 
 	@Override
 	public void connectToServer(InetSocketAddress socketAddress) {
-		String messageFromServer;
 		try {
 			myServer = new Socket(socketAddress.getAddress(), socketAddress.getPort());
 			output = new ObjectOutputStream(myServer.getOutputStream());
 			input = new ObjectInputStream(myServer.getInputStream());
-			messageFromServer = (String) input.readObject();
-			System.out.println("message from server: " + messageFromServer);
+			Message messageFromServer = (Message) input.readObject();
+			System.out.println("message from server: " + messageFromServer.getMsg());
 			getState().setConnectedToServer(true);
 			setChanged();
 			notifyObservers();
@@ -138,7 +137,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 	@Override
 	public void disconnectFromServer() {
 		try {
-			output.writeObject("exit");
+			output.writeObject(new Message(null, "exit", 0, "2048"));
 			output.flush();
 			output.close();
 			input.close();

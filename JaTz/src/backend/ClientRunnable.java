@@ -22,7 +22,7 @@ public class ClientRunnable implements Runnable {
 		try {
 			ObjectOutputStream output = new ObjectOutputStream(this.clientSocket.getOutputStream());
 			ObjectInputStream input = new ObjectInputStream(this.clientSocket.getInputStream());
-			output.writeObject("You are connected to " + this.serverText);
+			output.writeObject(new Message(null, "You are connected to " + this.serverText, 0, null));
 			output.flush();
 			while (true) {
 				Message messageIn = (Message) input.readObject();

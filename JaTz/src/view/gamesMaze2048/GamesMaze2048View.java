@@ -2,6 +2,7 @@ package view.gamesMaze2048;
 
 import java.util.Observable;
 
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -9,7 +10,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
@@ -19,9 +22,11 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import common.Keys;
 import common.State;
+import controller.SLhelper;
 import view.Board;
 import view.MouseDragCommand;
 import view.View;
@@ -43,7 +48,9 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	String gameName;
 	Label instructions;
 	Button getSolver;
+	Composite radioSelection;
 	Boolean connectedToServer;
+	Text numberOfSteps;
 	MouseDragCommand mouseCommand;
 	
 	/**
@@ -75,7 +82,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		setShellKeyListener();
 
 		// Prompt a messageBox when pressing on Exit.
-		shell.addListener(SWT.Close, exit()); 
+		shell.addListener(SWT.Close, exitListener()); 
 
 		shell.open(); // End initComponent
 
@@ -153,19 +160,19 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 		MenuItem game2048Item = new MenuItem(newGameSubMenu, SWT.NONE);
 		game2048Item.setText("2048");
-		game2048Item.addListener(SWT.Selection, startNewGame("2048"));
+		game2048Item.addListener(SWT.Selection, startNewGameListener("2048"));
 
 		MenuItem gameMazeItem = new MenuItem(newGameSubMenu, SWT.NONE);
 		gameMazeItem.setText("Maze");
-		gameMazeItem.addListener(SWT.Selection, startNewGame("maze"));
+		gameMazeItem.addListener(SWT.Selection, startNewGameListener("maze"));
 		
 		MenuItem connectToServerItem = new MenuItem(fileMenu, SWT.NONE);
 		connectToServerItem.setText("Connect to Solver server");
-		connectToServerItem.addListener(SWT.Selection, connectToServer());
+		connectToServerItem.addListener(SWT.Selection, connectToServerListener());
 
 		MenuItem restartItem = new MenuItem(fileMenu, SWT.NONE);
 		restartItem.setText("Restart");
-		restartItem.addListener(SWT.Selection, restartGame());
+		restartItem.addListener(SWT.Selection, restartGameListener());
 
 		// Create the first separator
 		new MenuItem(fileMenu, SWT.SEPARATOR);
@@ -187,10 +194,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 		shell.setMenuBar(menuBar);
 
-		ExitItem.addListener(SWT.Selection, exit());
-		undoItem.addListener(SWT.Selection, undoMove());
-		loadItem.addListener(SWT.Selection, loadGame());
-		saveItem.addListener(SWT.Selection, saveGame());
+		ExitItem.addListener(SWT.Selection, exitListener());
+		undoItem.addListener(SWT.Selection, undoMoveListener());
+		loadItem.addListener(SWT.Selection, loadGameListener());
+		saveItem.addListener(SWT.Selection, saveGameListener());
 
 	}
 
@@ -210,7 +217,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 		board = new Board(shell, SWT.BORDER, mouseCommand);
 		board.setGameColors(new Color(null, 199, 193, 173), new Color(null,230, 227, 220));
-		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 4));
+		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 6));
 
 		Button loadGame = new Button(shell, SWT.PUSH);
 		loadGame.setText("Load Game");
@@ -223,15 +230,31 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		
 		getSolver = new Button(shell, SWT.PUSH);
 		getSolver.setText("Please Solve");
-		getSolver.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 2));
+		getSolver.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		getSolver.setEnabled(false);
 		
+		radioSelection = new Composite(shell, SWT.NULL);
+		radioSelection.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		radioSelection.setLayout(new RowLayout());
 		
+	    Button fullSolver = new Button(radioSelection, SWT.RADIO);
+	    fullSolver.setText("Full Solver");
+	    Button steps = new Button(radioSelection, SWT.RADIO);
+	    steps.setText("Steps");
+	    steps.setSelection(true);
+	    radioSelection.setVisible(false);
+	    
+	    numberOfSteps = new Text(shell, SWT.BORDER);
+	    numberOfSteps.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 2));
+	    numberOfSteps.addListener(SWT.Verify, onlyNumbersListener());
+	    numberOfSteps.setVisible(false);
+	    
+	    steps.addListener(SWT.Selection, RadioSelected());
 		getSolver.addListener(SWT.Selection, getSolverListener());
-		loadGame.addListener(SWT.Selection, loadGame());
-		saveGame.addListener(SWT.Selection, saveGame());
-		restartGame.addListener(SWT.Selection, restartGame());
-		undoMove.addListener(SWT.Selection, undoMove());
+		loadGame.addListener(SWT.Selection, loadGameListener());
+		saveGame.addListener(SWT.Selection, saveGameListener());
+		restartGame.addListener(SWT.Selection, restartGameListener());
+		undoMove.addListener(SWT.Selection, undoMoveListener());
 	}
 
 	
@@ -240,19 +263,66 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	//---------------
 	
 	
+	private Listener RadioSelected() {
+		return (new Listener() {
+
+			@Override
+			public void handleEvent(Event e) {
+				System.out.println("dsa");
+				if (((Button) radioSelection.getChildren()[0]).getSelection()) { //Full Solver
+					numberOfSteps.setVisible(false);
+				} else { // Steps
+					numberOfSteps.setVisible(true);
+				}
+			}
+
+		});
+	}
+	
+	private Listener onlyNumbersListener() {
+		return (new Listener() {
+			boolean first = true;
+			
+			@Override
+			public void handleEvent(Event e) {
+				String string = e.text;
+		        char[] chars = new char[string.length()];
+		        string.getChars(0, chars.length, chars, 0);
+		        System.out.println(e.text);
+		        for (int i = 0; i < chars.length; i++) {
+		          if (!('0' <= chars[i] && chars[i] <= '9')) {
+		            e.doit = false;
+		            return;
+		          }
+		          if (first && !(Integer.parseInt(e.text) > 0)) {
+		        	  e.doit = false;
+			          return;
+		          }
+		        }
+			}
+		});
+	}
+
+	
 	private Listener getSolverListener() {
 		return (new Listener() {
 			
 			@Override
 			public void handleEvent(Event e) {
-				userCommand = Keys.GET_HINT;
-				setChanged();
-				notifyObservers();
+				if (((Button) radioSelection.getChildren()[0]).getSelection()) { //Full Solver
+					userCommand = Keys.GET_HINT;
+					setChanged();
+					notifyObservers("FullSovler");
+				} else { // Steps
+					userCommand = Keys.GET_HINT;
+					setChanged();
+					notifyObservers("steps_" + numberOfSteps.getText());
+				}
 			}
 		});
 	}
 	
-	private Listener loadGame() {
+	private Listener loadGameListener() {
 		return (new Listener() {
 			@Override
 			public void handleEvent(Event e) {
@@ -272,7 +342,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 
-	private Listener saveGame() {
+	private Listener saveGameListener() {
 		return (new Listener() {
 			@Override
 			public void handleEvent(Event e) {
@@ -292,7 +362,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 
-	private Listener restartGame() {
+	private Listener restartGameListener() {
 		return (new Listener() {
 			@Override
 			public void handleEvent(Event e) {
@@ -304,7 +374,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 	
-	private Listener connectToServer() {
+	private Listener connectToServerListener() {
 		return (new ConnectToServer(display){
 
 			@Override
@@ -314,11 +384,22 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				notifyObservers(this.socketAddress);
 				if (connectedToServer) {
 					connected(true);
+					radioSelection.setVisible(true);
+					numberOfSteps.setVisible(true);
 					connect.setText("Disonnect");
 					if (ipBox.indexOf(ipBox.getText()) == -1) {
 						ipBox.add(ipBox.getText());
 					}
+					String selections[] = ipBox.getItems(); 
+					try {
+						SLhelper.save(selections, "conf/serverIPs.xml");
+					} catch (Exception e) {
+						System.out.println("Can't save the serverIP.xml");
+						e.printStackTrace();
+					}
 				} else {
+					radioSelection.setVisible(false);
+					numberOfSteps.setVisible(false);
 					connected(false);
 					connect.setText("Connect");
 				}
@@ -329,10 +410,20 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 			public void connected(Boolean flag) {
 				getSolver.setEnabled(flag);
 				
+			}
+
+			@Override
+			public void setConnectButtonText() {
+				if (connectedToServer) {
+					connect.setText("Disconnect");
+				} else {
+					connect.setText("Connect");
+				}
+				
 			}});
 	}
 
-	private Listener undoMove() {
+	private Listener undoMoveListener() {
 		return (new Listener() {
 			@Override
 			public void handleEvent(Event e) {
@@ -344,7 +435,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 
-	private Listener exit() {
+	private Listener exitListener() {
 		return (new Listener() {
 			@Override
 			public void handleEvent(Event e) {
@@ -361,7 +452,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 
-	private Listener startNewGame(final String game) {
+	private Listener startNewGameListener(final String game) {
 		return new Listener() {
 			@Override
 			public void handleEvent(Event e) {

@@ -24,7 +24,7 @@ public abstract class ConnectToServer implements Listener {
 	Label serverMsg;
 	Display display;
 	Shell connectShell;
-	Button cancel;
+	Button close;
 	InetSocketAddress socketAddress;
 	
 	public ConnectToServer(Display display) {
@@ -45,6 +45,7 @@ public abstract class ConnectToServer implements Listener {
 		ipBox = new Combo(connectShell, SWT.DROP_DOWN);
 		
 		ipBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));	
+		
 		//Dynamic load of selections
 		String selections[];
 		try {
@@ -55,20 +56,19 @@ public abstract class ConnectToServer implements Listener {
 		}
 		ipBox.setText("localhost");
 		
-		serverMsg = new Label(connectShell, SWT.NONE);
-		serverMsg.setText("Server Message: ");
-		serverMsg.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
+//		serverMsg = new Label(connectShell, SWT.NONE);
+//		serverMsg.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		
 		connect = new Button(connectShell, SWT.PUSH);
-		connect.setText("Connect");
+		setConnectButtonText();
 		connect.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		
 		connect.addListener(SWT.Selection, connectListener());
 		
-		cancel = new Button(connectShell, SWT.PUSH);
-		cancel.setText("Cancel");
-		cancel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		cancel.addListener(SWT.Selection, cancelListener());
+		close = new Button(connectShell, SWT.PUSH);
+		close.setText("Close");
+		close.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		close.addListener(SWT.Selection, cancelListener());
 		
 		
 		
@@ -88,7 +88,6 @@ public abstract class ConnectToServer implements Listener {
 					try {
 						socketAddress = new InetSocketAddress(InetAddress.getByName(ipBox.getText()), 9000);
 						setUserCommand(Keys.CONNECT);
-						
 					} catch (Exception ex) {
 						System.out.println("Exception: " + ex);
 					}
@@ -104,20 +103,12 @@ public abstract class ConnectToServer implements Listener {
 			
 			@Override
 			public void handleEvent(Event e) {
-				setUserCommand(Keys.DISCONNECT);
-				try {
-					String selections[] = ipBox.getItems(); //NEED TO WORK ON EXIT TOO (X) =====
-					SLhelper.save(selections, "conf/serverIPs.xml");
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
 				connectShell.close();
 			}
 		});
 	}
 	
-	
-	
 	public abstract void setUserCommand(int userCommand);
 	public abstract void connected(Boolean flag);
+	public abstract void setConnectButtonText(); 
 }
