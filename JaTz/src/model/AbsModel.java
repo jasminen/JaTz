@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Observable;
 
 import common.Keys;
+import common.SLhelper;
 import common.State;
 
 /*
@@ -13,7 +14,7 @@ import common.State;
  */
 
 
-public abstract class AbsModel extends Observable implements Model , Serializable {
+public abstract class AbsModel extends Observable implements Model , Serializable{
 
 	
 	private static final long serialVersionUID = 1L;
@@ -48,13 +49,16 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 	public void moveDiagonalRightDown() {}
 	
 	@Override
-	public void getHint() {}
+	public void getHint(Integer iterations) {}
 	
 	@Override
 	public void disconnectFromServer() {}
 	
 	@Override
-	public void connectToServer(InetSocketAddress socketAddress){}
+	public void connectToServer(InetSocketAddress socketAddress) {}
+	
+	@Override
+	public void fullSolver() {}
 
 	@Override
 	public abstract void restart();
@@ -83,6 +87,18 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 	public State getState() {
 		return this.states.getLast();
 	}
+	
+	@Override
+	public void save(String path) {
+		try {
+			SLhelper.save(this, path);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public abstract void load(String path);
 	
 	protected abstract State getStartState();
 

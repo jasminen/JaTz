@@ -2,7 +2,6 @@ package view.gamesMaze2048;
 
 import java.util.Observable;
 
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -26,7 +25,6 @@ import org.eclipse.swt.widgets.Text;
 
 import common.Keys;
 import common.State;
-import controller.SLhelper;
 import view.Board;
 import view.MouseDragCommand;
 import view.View;
@@ -39,19 +37,20 @@ import view.View;
 
 public class GamesMaze2048View extends Observable implements View, Runnable {
 
-	Display display;
-	Shell shell;
-	int userCommand = Keys.NEW_GAME;
-	Board board;
-	Label score;
-	String fileName;
-	String gameName;
-	Label instructions;
-	Button getSolver;
-	Composite radioSelection;
-	Boolean connectedToServer;
-	Text numberOfSteps;
-	MouseDragCommand mouseCommand;
+	private Display display;
+	private Shell shell;
+	private int userCommand = Keys.NEW_GAME;
+	private Board board;
+	private Label score;
+	private String gameName;
+	private Label instructions;
+	private Label serverMsg;
+	private Button getSolver;
+	private Composite radioSelection;
+	private Button steps;
+	private Button fullSolver;
+	private Text numberOfSteps;
+	private MouseDragCommand mouseCommand;
 	
 	/**
 	 * 
@@ -104,32 +103,66 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 	@Override
 	public void displayState(final State state) {
-		connectedToServer = state.isConnectedToServer();
-		switch (state.getMode()) {
-		case Keys.NEW_GAME:
-			board.setBoard(state.getBoard());
-			board.layout();
-			score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
-			break;
-		case Keys.IN_PROGRESS:
-			board.updateBoard(state.getBoard());
-			score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
-			break;
-		case Keys.WIN:
-			board.updateBoard(state.getBoard());
-			score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
-			winWindow();
-			break;
-		case Keys.GAMEOVER:
-			board.updateBoard(state.getBoard());
-			score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
-			gameOverWindow();
-			break;
-		default:
-			break;
-		}
+		display.asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				switch (state.getMode()) {
+				case Keys.NEW_GAME:
+					board.setBoard(state.getBoard());
+					board.layout();
+					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
+					break;
+				case Keys.IN_PROGRESS:
+					board.updateBoard(state.getBoard());
+					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
+					break;
+				case Keys.WIN:
+					board.updateBoard(state.getBoard());
+					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
+					winWindow();
+					break;
+				case Keys.GAMEOVER:
+					board.updateBoard(state.getBoard());
+					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
+					gameOverWindow();
+					break;
+				default:
+					break;
+				}
+				
+			}
+		});
 
 	}
+	
+	
+	@Override
+	public void setConnectedToServer(final Boolean isConnectedToServer) {
+		display.asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				System.out.println("View: set connected to server: "+isConnectedToServer);
+				if (isConnectedToServer) {
+					radioSelection.setVisible(true);
+					getSolver.setEnabled(true);
+					numberOfSteps.setVisible(true);
+					serverMsg.setText("Connected to a server");
+					steps.setSelection(true);
+					fullSolver.setSelection(false);
+				} else {
+					radioSelection.setVisible(false);
+					getSolver.setEnabled(false);
+					numberOfSteps.setVisible(false);
+					serverMsg.setText("Not connect to a solver server");
+				}
+			}
+		});
+		
+		
+	}
+	
 
 	@Override
 	public int getUserCommand() {
@@ -217,7 +250,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 		board = new Board(shell, SWT.BORDER, mouseCommand);
 		board.setGameColors(new Color(null, 199, 193, 173), new Color(null,230, 227, 220));
-		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 6));
+		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 7));
 
 		Button loadGame = new Button(shell, SWT.PUSH);
 		loadGame.setText("Load Game");
@@ -237,17 +270,21 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		radioSelection.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		radioSelection.setLayout(new RowLayout());
 		
-	    Button fullSolver = new Button(radioSelection, SWT.RADIO);
+	    fullSolver = new Button(radioSelection, SWT.RADIO);
 	    fullSolver.setText("Full Solver");
-	    Button steps = new Button(radioSelection, SWT.RADIO);
+	    steps = new Button(radioSelection, SWT.RADIO);
 	    steps.setText("Steps");
-	    steps.setSelection(true);
 	    radioSelection.setVisible(false);
 	    
 	    numberOfSteps = new Text(shell, SWT.BORDER);
-	    numberOfSteps.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 2));
+	    numberOfSteps.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
 	    numberOfSteps.addListener(SWT.Verify, onlyNumbersListener());
 	    numberOfSteps.setVisible(false);
+	    
+	    
+	    serverMsg = new Label(shell, SWT.NONE);
+	    serverMsg.setText("You are not connect to the server");
+	    serverMsg.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 2));
 	    
 	    steps.addListener(SWT.Selection, RadioSelected());
 		getSolver.addListener(SWT.Selection, getSolverListener());
@@ -268,12 +305,12 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 			@Override
 			public void handleEvent(Event e) {
-				System.out.println("dsa");
 				if (((Button) radioSelection.getChildren()[0]).getSelection()) { //Full Solver
 					numberOfSteps.setVisible(false);
 				} else { // Steps
 					numberOfSteps.setVisible(true);
 				}
+				shell.forceFocus();
 			}
 
 		});
@@ -281,7 +318,6 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	
 	private Listener onlyNumbersListener() {
 		return (new Listener() {
-			boolean first = true;
 			
 			@Override
 			public void handleEvent(Event e) {
@@ -293,10 +329,6 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		          if (!('0' <= chars[i] && chars[i] <= '9')) {
 		            e.doit = false;
 		            return;
-		          }
-		          if (first && !(Integer.parseInt(e.text) > 0)) {
-		        	  e.doit = false;
-			          return;
 		          }
 		        }
 			}
@@ -310,14 +342,15 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 			@Override
 			public void handleEvent(Event e) {
 				if (((Button) radioSelection.getChildren()[0]).getSelection()) { //Full Solver
-					userCommand = Keys.GET_HINT;
+					userCommand = Keys.FULL_SOLVER;
 					setChanged();
-					notifyObservers("FullSovler");
+					notifyObservers();
 				} else { // Steps
 					userCommand = Keys.GET_HINT;
 					setChanged();
-					notifyObservers("steps_" + numberOfSteps.getText());
+					notifyObservers(Integer.parseInt(numberOfSteps.getText()));
 				}
+				shell.forceFocus();
 			}
 		});
 	}
@@ -335,7 +368,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				String fileName = fd.open();
 				if (!(fileName == null)) {
 					setChanged();
-					notifyObservers(fileName + "_load");
+					notifyObservers(fileName);
 				}
 				shell.forceFocus();
 			}
@@ -355,7 +388,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				String fileName = fd.open();
 				if (!(fileName == null)) {
 					setChanged();
-					notifyObservers(fileName + "_save");
+					notifyObservers(fileName);
 				}
 				shell.forceFocus();
 			}
@@ -382,45 +415,8 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				GamesMaze2048View.this.userCommand = userCommand;
 				setChanged();
 				notifyObservers(this.socketAddress);
-				if (connectedToServer) {
-					connected(true);
-					radioSelection.setVisible(true);
-					numberOfSteps.setVisible(true);
-					connect.setText("Disonnect");
-					if (ipBox.indexOf(ipBox.getText()) == -1) {
-						ipBox.add(ipBox.getText());
-					}
-					String selections[] = ipBox.getItems(); 
-					try {
-						SLhelper.save(selections, "conf/serverIPs.xml");
-					} catch (Exception e) {
-						System.out.println("Can't save the serverIP.xml");
-						e.printStackTrace();
-					}
-				} else {
-					radioSelection.setVisible(false);
-					numberOfSteps.setVisible(false);
-					connected(false);
-					connect.setText("Connect");
-				}
-				
 			}
-
-			@Override
-			public void connected(Boolean flag) {
-				getSolver.setEnabled(flag);
-				
-			}
-
-			@Override
-			public void setConnectButtonText() {
-				if (connectedToServer) {
-					connect.setText("Disconnect");
-				} else {
-					connect.setText("Connect");
-				}
-				
-			}});
+		});
 	}
 
 	private Listener undoMoveListener() {
@@ -530,6 +526,9 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 	}
 
+
+	
+	
 	private void setMouseCommand() {
 		this.mouseCommand = new MouseDragCommand() {
 
@@ -583,5 +582,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 			}
 		};
 	}
+
+
 
 }

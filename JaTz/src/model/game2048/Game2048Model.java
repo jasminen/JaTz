@@ -8,13 +8,19 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.eclipse.swt.graphics.Point;
 
 import common.Keys;
 import common.Message;
+import common.SLhelper;
 import common.State;
 import model.AbsModel;
+import model.client.Client;
 
 /*
  * Game2048Model 
@@ -23,21 +29,25 @@ import model.AbsModel;
 public class Game2048Model extends AbsModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	int boardSize;
-	int winNum;
-	Boolean alreadyWon = false;
-	Socket myServer;
-	ObjectOutputStream output;
-	ObjectInputStream input;
+	private int boardSize;
+	private int winNum;
+	private Boolean alreadyWon = false;
+	private Socket myServer;
+	private ObjectOutputStream output;
+	private ObjectInputStream input;
+	private Boolean connectedToServer = false;
+
+
 
 	public Game2048Model() {
 		this.boardSize = 4;
 		this.winNum = 2048;
+		
 	}
 
 	// C'tor - gets the win number of the game (a power of two).
 	public Game2048Model(int winNum) {
-
+		
 		if (isPowerOfTwo(winNum))
 			this.winNum = winNum;
 		else {
@@ -75,9 +85,12 @@ public class Game2048Model extends AbsModel implements Serializable {
 	public void restart() {
 		this.states.clear();
 		this.states.add(getStartState());
+		this.alreadyWon = false;
 		setChanged();
 		notifyObservers();
 	}
+	
+	
 
 	@Override
 	protected State getStartState() {
@@ -90,47 +103,75 @@ public class Game2048Model extends AbsModel implements Serializable {
 	}
 	
 	@Override
-	public void getHint() {
+	public void getHint(Integer iterations) {
+		if(iterations == null) {
+			iterations = 0;
+		}
 		
-		while(!(alreadyWon || getState().getMode() == Keys.GAMEOVER)) {
-			System.out.println("Already won: "+alreadyWon+"      mode is: "+getState().getMode());
+		while(!(alreadyWon || getState().getMode() == Keys.GAMEOVER) && iterations > 0) {
+			ExecutorService executor = Executors.newSingleThreadExecutor();
+			Future<Message> result = executor.submit(new Client(output, input, new Message(getState(), "getHint", 0, "2048")));
+			executor.shutdown();
 			try {
-				output.writeObject(new Message(getState(), "getHint", 0, "2048"));
-				Message messageIn = (Message) input.readObject();
-				performAction(messageIn.getResult());
-				System.out.println("sleep");
-				Thread.sleep(600);
-				System.out.println("wake up");
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace(); 
+				performAction(result.get().getResult());
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+			iterations--;
+
+		}
+	}
+	
+	
+	@Override
+	public void fullSolver() {
+		while(!(alreadyWon || getState().getMode() == Keys.GAMEOVER)) {
+			ExecutorService executor = Executors.newSingleThreadExecutor();
+			Future<Message> result = executor.submit(new Client(output, input, new Message(getState(), "getHint", 0, "2048")));
+			executor.shutdown();
+			try {
+				performAction(result.get().getResult());
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
 				e.printStackTrace();
 			}
 		}
 	}
+
+
 	
-
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public void connectToServer(InetSocketAddress socketAddress) {
-		try {
-			myServer = new Socket(socketAddress.getAddress(), socketAddress.getPort());
-			output = new ObjectOutputStream(myServer.getOutputStream());
-			input = new ObjectInputStream(myServer.getInputStream());
-			Message messageFromServer = (Message) input.readObject();
-			System.out.println("message from server: " + messageFromServer.getMsg());
-			getState().setConnectedToServer(true);
-			setChanged();
-			notifyObservers();
-		} catch (IOException | ClassNotFoundException e) {
-			System.out.println("server not found");
-			e.printStackTrace();
-			getState().setConnectedToServer(false);
-			setChanged();
-			notifyObservers();
+		if(!isConnectedToServer()) {
+			try {
+				myServer = new Socket(socketAddress.getAddress(), socketAddress.getPort());
+				output = new ObjectOutputStream(myServer.getOutputStream());
+				input = new ObjectInputStream(myServer.getInputStream());
+				Message messageFromServer = (Message) input.readObject();
+				System.out.println("message from server: " + messageFromServer.getMsg());
+				setConnectedToServer(true);
+				ArrayList<String> ips = (ArrayList<String>) SLhelper.load("conf/serverIPs.xml");
+				if(!ips.contains(socketAddress.getAddress().getHostAddress())){
+					ips.add(socketAddress.getAddress().getHostAddress());
+				}
+				SLhelper.save(ips, "conf/serverIPs.xml");
+				setChanged();
+				notifyObservers(connectedToServer);
+			} catch (IOException | ClassNotFoundException e) {
+				System.out.println("server not found");
+				setConnectedToServer(false);
+				setChanged();
+				notifyObservers(connectedToServer);
+			} catch (Exception e) {
+				System.out.println("Can't save the serverIP.xml");
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -142,41 +183,48 @@ public class Game2048Model extends AbsModel implements Serializable {
 			output.close();
 			input.close();
 			myServer.close();
-			getState().setConnectedToServer(false);
+			setConnectedToServer(false);
 			setChanged();
-			notifyObservers();
+			notifyObservers(connectedToServer);
 		} catch (IOException | NullPointerException e) {
 			System.out.println("Not Connected");
 //			e.printStackTrace();
 		}
 	}
 	
+	@Override
+	public void load(String path) {
+		try {
+			Game2048Model model = (Game2048Model) SLhelper.load(path);
+			this.alreadyWon = model.alreadyWon;
+			this.boardSize = model.boardSize;
+			this.states = model.states;
+			this.winNum = model.winNum;
+			setChanged();
+			notifyObservers();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	// Check if the mode needs to be change. if not, draw a new number. Add to
 	// states array and notify.
 	private void endPhase(State newState) {
 		if (newState != null  && !newState.equals(getState())) {
-			if (newState.getMode() == Keys.WIN) // Let the game continue after winning
+			if (newState.getMode() == Keys.WIN) { // Let the game continue after winning
 				newState.setMode(Keys.IN_PROGRESS);
-
-			if (newState.hasFreeCells()) {
+			} if (newState.hasFreeCells()) {
 				DrawNewNumber(newState);
-			}
-			
-			if (!gotAvailableMoves(newState)) {
+			} if (!gotAvailableMoves(newState)) {
 					newState.setMode(Keys.GAMEOVER);
-			}
-
-			if (alreadyWon == false && win(newState.getCopyBoard())) { // Check winning only if didn't win before.
+			} if (alreadyWon == false && win(newState.getCopyBoard())) { // Check winning only if didn't win before.
 				newState.setMode(Keys.WIN);
 			}
-			
-			
 			this.states.add(newState);
 			setChanged();
 			notifyObservers();
 		}
-		
 	}
 
 	private void DrawNewNumber(State state) {
@@ -273,5 +321,41 @@ public class Game2048Model extends AbsModel implements Serializable {
 	public void setAlreadyWon(Boolean alreadyWon) {
 		this.alreadyWon = alreadyWon;
 	}
+	
+	public Socket getMyServer() {
+		return myServer;
+	}
+
+	public void setMyServer(Socket myServer) {
+		this.myServer = myServer;
+	}
+
+	public ObjectOutputStream getOutput() {
+		return output;
+	}
+
+	public void setOutput(ObjectOutputStream output) {
+		this.output = output;
+	}
+
+	public ObjectInputStream getInput() {
+		return input;
+	}
+
+	public void setInput(ObjectInputStream input) {
+		this.input = input;
+	}
+
+	public Boolean isConnectedToServer() {
+		return connectedToServer;
+	}
+
+	public void setConnectedToServer(Boolean connectedToServer) {
+		this.connectedToServer = connectedToServer;
+	}
+
+	
+
+
 
 }

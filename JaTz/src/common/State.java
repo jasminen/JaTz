@@ -20,7 +20,7 @@ public class State implements Serializable{
 	private int score;
 	private int mode; // Keys.NEW_GAME, Keys.GAMEOVER, Keys.WIN, Keys.IN_PROGRESS
 	private String msg = "";
-	private boolean connectedToServer = false; 
+	
 	
 	public State(){}
 
@@ -183,11 +183,5 @@ public class State implements Serializable{
 		return true;
 	}
 
-	public boolean isConnectedToServer() {
-		return connectedToServer;
-	}
 
-	public void setConnectedToServer(boolean connectedToServer) {
-		this.connectedToServer = connectedToServer;
-	}
 }

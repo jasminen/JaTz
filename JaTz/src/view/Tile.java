@@ -37,6 +37,7 @@ public class Tile extends Canvas {
 		boardBackGroundColor = new Color(null, p.boardBackgroundColor.getRGB());
 		tileBackGroundColor = new Color(null, p.tileBackGroundColor.getRGB());
 		numberFontStyle = new Font(null, "Arial", 24, SWT.BOLD);
+		
 
 		
 		//--------------------------------

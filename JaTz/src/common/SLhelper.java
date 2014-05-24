@@ -1,4 +1,4 @@
-package controller;
+package common;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;

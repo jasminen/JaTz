@@ -1,6 +1,6 @@
-package backend.minimax.ai;
+package backend.minimax.ab;
 
-import java.awt.Point;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

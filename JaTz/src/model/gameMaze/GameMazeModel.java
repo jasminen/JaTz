@@ -6,6 +6,7 @@ import java.util.Random;
 import org.eclipse.swt.graphics.Point;
 
 import common.Keys;
+import common.SLhelper;
 import common.State;
 import model.AbsModel;
 import model.gameMaze.solver.Maze;
@@ -160,6 +161,22 @@ public class GameMazeModel extends AbsModel implements  Serializable {
 
 	public void setWinScore(int winScore) {
 		this.winScore = winScore;
+	}
+
+	@Override
+	public void load(String path) {
+		try {
+			GameMazeModel model = (GameMazeModel) SLhelper.load(path);
+			this.winScore = model.winScore;
+			this.states = model.states;
+			this.rows = model.rows;
+			this.columns = model.columns;
+			setChanged();
+			notifyObservers();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 

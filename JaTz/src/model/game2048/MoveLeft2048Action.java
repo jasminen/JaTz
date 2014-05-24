@@ -13,6 +13,7 @@ public class MoveLeft2048Action implements Action {
 
 	@Override
 	public State doAction(State state) {
+		State newState = new State(state);
 		int[][] newBoard=state.getCopyBoard();
 		int newScore=state.getScore();
 		
@@ -47,7 +48,9 @@ public class MoveLeft2048Action implements Action {
 			}
 		}
 		
-		return new State(newBoard, newScore);
+		newState.setBoard(newBoard);
+		newState.setScore(newScore);
+		return newState;
 	}
 
 }

@@ -5,8 +5,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+
 import common.Message;
-import backend.minimax.ai.AIsolver;
+import backend.minimax.ab.AIsolver;
 
 public class ClientRunnable implements Runnable {
 
@@ -42,8 +43,7 @@ public class ClientRunnable implements Runnable {
 			System.out.println("User close the connection");
 		}
 		catch (IOException e) {
-			// report exception somewhere.
-			e.printStackTrace();
+			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} 
