@@ -13,6 +13,9 @@ public class ClientRunnable implements Runnable {
 
 	protected Socket clientSocket = null;
 	protected String serverText = null;
+	protected ObjectOutputStream output;
+	protected ObjectInputStream input;
+		
 
 	public ClientRunnable(Socket clientSocket, String serverText) {
 		this.clientSocket = clientSocket;
@@ -21,13 +24,13 @@ public class ClientRunnable implements Runnable {
 
 	public void run() {
 		try {
-			ObjectOutputStream output = new ObjectOutputStream(this.clientSocket.getOutputStream());
-			ObjectInputStream input = new ObjectInputStream(this.clientSocket.getInputStream());
+			System.out.println("Client connected");
+			output = new ObjectOutputStream(this.clientSocket.getOutputStream());
+			input = new ObjectInputStream(this.clientSocket.getInputStream());
 			output.writeObject(new Message(null, "You are connected to " + this.serverText, 0, null));
 			output.flush();
 			while (true) {
 				Message messageIn = (Message) input.readObject();
-				System.out.println("message from the client: " + messageIn.getMsg());
 				if (messageIn.getMsg().equals("exit")) {
 					System.out.println("Client says goodbye");
 					break;
@@ -40,7 +43,8 @@ public class ClientRunnable implements Runnable {
 			input.close();
 			System.out.println("Request processed");
 		} catch (SocketException e) {
-			System.out.println("User close the connection");
+			System.out.println("Client closed the connection");
+
 		}
 		catch (IOException e) {
 			

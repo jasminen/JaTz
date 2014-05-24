@@ -39,6 +39,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 	private Display display;
 	private Shell shell;
+	private Shell connectShell;
 	private int userCommand = Keys.NEW_GAME;
 	private Board board;
 	private Label score;
@@ -67,7 +68,9 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		shell.setLayout(new GridLayout(2, false));
 		shell.setSize(950, 850);
 		shell.setText("Maze and 2048 Games");
-
+		
+		connectShell = new Shell(display);
+		
 		initMenuBar();
 		initButtons();
 
@@ -143,8 +146,8 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 			
 			@Override
 			public void run() {
-				System.out.println("View: set connected to server: "+isConnectedToServer);
 				if (isConnectedToServer) {
+					connectShell.setVisible(false);
 					radioSelection.setVisible(true);
 					getSolver.setEnabled(true);
 					numberOfSteps.setVisible(true);
@@ -408,7 +411,8 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	}
 	
 	private Listener connectToServerListener() {
-		return (new ConnectToServer(display){
+		
+		return (new ConnectToServer(connectShell){
 
 			@Override
 			public void setUserCommand(int userCommand) {

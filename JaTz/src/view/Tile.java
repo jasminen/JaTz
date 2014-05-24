@@ -147,7 +147,7 @@ public class Tile extends Canvas {
 		this.tileNumber = tileNumber;
 		redraw();
 	}
-	
+
 	private void setColor(GC gc) {
 		switch (tileNumber) {
 		case 2:

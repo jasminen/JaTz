@@ -95,7 +95,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 	@Override
 	protected State getStartState() {
 		int[][] board = new int[boardSize][boardSize];
-		State state = new State(board, 0);
+		State state = new State(board, 0, Keys.NEW_GAME);
 		DrawNewNumber(state);
 		DrawNewNumber(state);
 
@@ -134,7 +134,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 			executor.shutdown();
 			try {
 				performAction(result.get().getResult());
-				Thread.sleep(200);
+				//Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {
@@ -154,17 +154,17 @@ public class Game2048Model extends AbsModel implements Serializable {
 				output = new ObjectOutputStream(myServer.getOutputStream());
 				input = new ObjectInputStream(myServer.getInputStream());
 				Message messageFromServer = (Message) input.readObject();
-				System.out.println("message from server: " + messageFromServer.getMsg());
+				System.out.println("Message from server: " + messageFromServer.getMsg());
 				setConnectedToServer(true);
 				ArrayList<String> ips = (ArrayList<String>) SLhelper.load("conf/serverIPs.xml");
-				if(!ips.contains(socketAddress.getAddress().getHostAddress())){
-					ips.add(socketAddress.getAddress().getHostAddress());
+				if(!(ips.contains(socketAddress.getAddress().getHostName()))) {
+					ips.add(socketAddress.getAddress().getHostName());
 				}
 				SLhelper.save(ips, "conf/serverIPs.xml");
 				setChanged();
 				notifyObservers(connectedToServer);
 			} catch (IOException | ClassNotFoundException e) {
-				System.out.println("server not found");
+				System.out.println("Connection Refused");
 				setConnectedToServer(false);
 				setChanged();
 				notifyObservers(connectedToServer);
@@ -208,11 +208,22 @@ public class Game2048Model extends AbsModel implements Serializable {
 		}
 	}
 	
+	
+	@Override
+	public void undo() {
+		if(getState().getMode() == Keys.WIN) {
+			alreadyWon = false;
+		}
+		super.undo();
+	}
+	
+	
+	
 	// Check if the mode needs to be change. if not, draw a new number. Add to
 	// states array and notify.
 	private void endPhase(State newState) {
 		if (newState != null  && !newState.equals(getState())) {
-			if (newState.getMode() == Keys.WIN) { // Let the game continue after winning
+			if (newState.getMode() == Keys.WIN || newState.getMode() == Keys.NEW_GAME) { // Let the game continue after winning
 				newState.setMode(Keys.IN_PROGRESS);
 			} if (newState.hasFreeCells()) {
 				DrawNewNumber(newState);

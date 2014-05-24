@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.LinkedList;
 import java.util.Observable;
-
-import common.Keys;
 import common.SLhelper;
 import common.State;
 
@@ -76,7 +74,6 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 	public void newGame() {
 		this.states.clear();
 		State newState = getStartState();
-		newState.setMode(Keys.NEW_GAME);
 		this.states.add(newState);
 		setChanged();
 		notifyObservers();

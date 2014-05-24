@@ -24,11 +24,7 @@ public class State implements Serializable{
 	
 	public State(){}
 
-	public State(int[][] board, int score) {
-		this.board = board;
-		this.score = score;
-		this.mode = Keys.IN_PROGRESS;
-	}
+
 
 	public State(int[][] board, int score, int mode) {
 		this.board = board;

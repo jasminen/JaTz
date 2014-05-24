@@ -23,23 +23,32 @@ import common.SLhelper;
 public abstract class ConnectToServer implements Listener {
 	private Button connect;
 	private Combo ipBox;
-	private Display display;
 	private Shell connectShell;
 	private Button disconnect;
 	private Label error;
 	protected InetSocketAddress socketAddress;
 	
-	public ConnectToServer(Display display) {
-		this.display = display;
+	public ConnectToServer(Shell connectShell) {
+
+		this.connectShell = connectShell;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void handleEvent(Event e) {
-		connectShell = new Shell(display);
 		connectShell.setLayout(new GridLayout(3, false));
 		connectShell.setSize(300, 150);
 		connectShell.setLocation(600, 500);
+		
+		connectShell.addListener(SWT.Close, new Listener() {
+			
+			@Override
+			public void handleEvent(Event e) {
+				e.doit = false;
+				connectShell.setVisible(false);
+			}
+		});
+		
 		Label title = new Label(connectShell, SWT.NONE);
 		title.setText("Connect to the relevant IP, default port is: 9000");
 		title.setFont(new Font(Display.getDefault(), "Arial", 10, SWT.ITALIC));
@@ -86,11 +95,11 @@ public abstract class ConnectToServer implements Listener {
 			@Override
 			public void handleEvent(Event e) {
 				try {
+					error.setText("");
 					socketAddress = new InetSocketAddress(InetAddress.getByName(ipBox.getText()), 9000);
 					setUserCommand(Keys.CONNECT);
-					connectShell.close();
 				} catch (Exception ex) {
-					error.setText("Connection refused");
+					error.setText("No such hostname!");
 				}
 			}
 		});
@@ -102,7 +111,7 @@ public abstract class ConnectToServer implements Listener {
 			@Override
 			public void handleEvent(Event e) {
 				setUserCommand(Keys.DISCONNECT);
-				connectShell.close();
+				connectShell.setVisible(false);
 			}
 		});
 	}
