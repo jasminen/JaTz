@@ -20,7 +20,13 @@ import org.eclipse.swt.widgets.Shell;
 import common.Keys;
 import common.SLhelper;
 
-public abstract class ConnectToServer implements Listener {
+/**
+ * Abstract Connect To Server class implements Listener
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
+ */
+
+public abstract class AbsConnectToServer implements Listener {
 	private Button connect;
 	private Combo ipBox;
 	private Shell connectShell;
@@ -28,11 +34,18 @@ public abstract class ConnectToServer implements Listener {
 	private Label error;
 	protected InetSocketAddress socketAddress;
 	
-	public ConnectToServer(Shell connectShell) {
+	/**
+	 * Constructor needs shell to be draw on.
+	 * @param connectShell 
+	 */
+	public AbsConnectToServer(Shell connectShell) {
 
 		this.connectShell = connectShell;
 	}
 
+	/**
+	 * Draw new shell that give the option to connect to a server. 
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void handleEvent(Event e) {
@@ -89,6 +102,10 @@ public abstract class ConnectToServer implements Listener {
 		
 	}
 
+	/**
+	 * Connect to the server and notify the observer with the socket address (IP and Port)
+	 * @return Connect Listener 
+	 */
 	private Listener connectListener() {
 		return (new Listener() {
 			
@@ -105,6 +122,10 @@ public abstract class ConnectToServer implements Listener {
 		});
 	}
 	
+	/**
+	 * Disconnect from the server.
+	 * @return Disconnect Listener 
+	 */
 	private Listener disconnectListener() {
 		return (new Listener() {
 			

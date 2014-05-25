@@ -54,7 +54,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	private MouseDragCommand mouseCommand;
 	
 	/**
-	 * 
+	 * Constructor  
 	 * @param gameName The name of the game the player want to play
 	 */
 	public GamesMaze2048View(String gameName) {
@@ -62,6 +62,9 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		setMouseCommand();
 	}
 
+	/**
+	 * Initialize on the components of the main view
+	 */
 	private void initComponents() {
 		display = new Display();
 		shell = new Shell(display);
@@ -89,89 +92,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		shell.open(); // End initComponent
 
 	}
-
-	@Override
-	public void run() {
-		initComponents();
-		setChanged();
-		notifyObservers();
-
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
-		display.dispose();
-	}
-
-	@Override
-	public void displayState(final State state) {
-		display.asyncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-				switch (state.getMode()) {
-				case Keys.NEW_GAME:
-					board.setBoard(state.getBoard());
-					board.layout();
-					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
-					break;
-				case Keys.IN_PROGRESS:
-					board.updateBoard(state.getBoard());
-					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
-					break;
-				case Keys.WIN:
-					board.updateBoard(state.getBoard());
-					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
-					winWindow();
-					break;
-				case Keys.GAMEOVER:
-					board.updateBoard(state.getBoard());
-					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
-					gameOverWindow();
-					break;
-				default:
-					break;
-				}
-				
-			}
-		});
-
-	}
 	
-	
-	@Override
-	public void setConnectedToServer(final Boolean isConnectedToServer) {
-		display.asyncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-				if (isConnectedToServer) {
-					connectShell.setVisible(false);
-					radioSelection.setVisible(true);
-					getSolver.setEnabled(true);
-					numberOfSteps.setVisible(true);
-					serverMsg.setText("Connected to a server");
-					steps.setSelection(true);
-					fullSolver.setSelection(false);
-				} else {
-					radioSelection.setVisible(false);
-					getSolver.setEnabled(false);
-					numberOfSteps.setVisible(false);
-					serverMsg.setText("Not connect to a solver server");
-				}
-			}
-		});
-		
-		
-	}
-	
-
-	@Override
-	public int getUserCommand() {
-		return userCommand;
-	}
-
+	/**
+	 * Initialize menu bar
+	 */
 	private void initMenuBar() {
 		Menu menuBar = new Menu(shell, SWT.BAR);
 
@@ -237,6 +161,9 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 	}
 
+	/**
+	 * Initialize Buttons
+	 */
 	private void initButtons() {
 		Button undoMove = new Button(shell, SWT.PUSH);
 		undoMove.setText("Undo Move");
@@ -289,7 +216,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	    serverMsg.setText("Not connect to a solver server");
 	    serverMsg.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 2));
 	    
-	    steps.addListener(SWT.Selection, RadioSelected());
+	    steps.addListener(SWT.Selection, RadioSelectedListener());
 		getSolver.addListener(SWT.Selection, getSolverListener());
 		loadGame.addListener(SWT.Selection, loadGameListener());
 		saveGame.addListener(SWT.Selection, saveGameListener());
@@ -297,13 +224,101 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		undoMove.addListener(SWT.Selection, undoMoveListener());
 	}
 
+	/**
+	 * Main view loop
+	 */
+	@Override
+	public void run() {
+		initComponents();
+		setChanged();
+		notifyObservers();
+
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+		display.dispose();
+	}
 	
+	/**
+	 * Display the state of a game according to the state
+	 * Asynchronous Execution
+	 */
+	@Override
+	public void displayState(final State state) {
+		display.asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				switch (state.getMode()) {
+				case Keys.NEW_GAME:
+					board.setBoard(state.getBoard());
+					board.layout();
+					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
+					break;
+				case Keys.IN_PROGRESS:
+					board.updateBoard(state.getBoard());
+					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
+					break;
+				case Keys.WIN:
+					board.updateBoard(state.getBoard());
+					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
+					winWindow();
+					break;
+				case Keys.GAMEOVER:
+					board.updateBoard(state.getBoard());
+					score.setText("Score: " + state.getScore() + "      "+ state.getMsg());
+					gameOverWindow();
+					break;
+				default:
+					break;
+				}
+				
+			}
+		});
+
+	}
+	
+	/**
+	 * If connected to server display solver options, if not hide them.  
+	 */
+	@Override
+	public void setConnectedToServer(final Boolean isConnectedToServer) {
+		display.asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (isConnectedToServer) {
+					connectShell.setVisible(false);
+					radioSelection.setVisible(true);
+					getSolver.setEnabled(true);
+					numberOfSteps.setVisible(true);
+					serverMsg.setText("Connected to a server");
+					steps.setSelection(true);
+					fullSolver.setSelection(false);
+				} else {
+					radioSelection.setVisible(false);
+					getSolver.setEnabled(false);
+					numberOfSteps.setVisible(false);
+					serverMsg.setText("Not connect to a solver server");
+				}
+			}
+		});
+		
+		
+	}
+	
+
 	//---------------
 	// Listeners
 	//---------------
 	
-	
-	private Listener RadioSelected() {
+	/**
+	 * Hide and show number of hints text box according to the radio button selection
+	 * @return Radio Selected Listener
+	 */
+	private Listener RadioSelectedListener() {
 		return (new Listener() {
 
 			@Override
@@ -319,6 +334,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 	
+	/**
+	 * Verify that only number can be entered in text box
+	 * @return Only Numbers Listener
+	 */
 	private Listener onlyNumbersListener() {
 		return (new Listener() {
 			
@@ -337,7 +356,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 
-	
+	/**
+	 * Notify observer on the solve option according to the radio button selection and text box 
+	 * @return Get Solver Listener
+	 */
 	private Listener getSolverListener() {
 		return (new Listener() {
 			
@@ -357,6 +379,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 	
+	/**
+	 * Open the load game window default path is C:/ . File types are .xml, .txt, *.* . and notify the observer 
+	 * @return Load Game Listener
+	 */
 	private Listener loadGameListener() {
 		return (new Listener() {
 			@Override
@@ -377,6 +403,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 
+	/**
+	 * Open the save game window default path is C:/ . File types are .xml, .txt, *.* and notify the observer 
+	 * @return Save Game Listener
+	 */
 	private Listener saveGameListener() {
 		return (new Listener() {
 			@Override
@@ -397,6 +427,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 
+	/**
+	 * Notify the observer to restart the game
+	 * @return Restart Game Listener
+	 */
 	private Listener restartGameListener() {
 		return (new Listener() {
 			@Override
@@ -409,10 +443,12 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 	
+	/**
+	 * Notify the observer to connect to server
+	 * @return Connect To Server Listener
+	 */
 	private Listener connectToServerListener() {
-		
-		return (new ConnectToServer(connectShell){
-
+		return (new AbsConnectToServer(connectShell){
 			@Override
 			public void setUserCommand(int userCommand) {
 				GamesMaze2048View.this.userCommand = userCommand;
@@ -422,6 +458,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 
+	/**
+	 * Notify the observer to undo move
+	 * @return Undo Move Listener
+	 */
 	private Listener undoMoveListener() {
 		return (new Listener() {
 			@Override
@@ -433,7 +473,11 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 			}
 		});
 	}
-
+	
+	/**
+	 * Notify the observer to exit the game
+	 * @return Exit Listener
+	 */
 	private Listener exitListener() {
 		return (new Listener() {
 			@Override
@@ -451,6 +495,11 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		});
 	}
 
+	/**
+	 * Notify the observer to start a new game 
+	 * @param game game name
+	 * @return Start New Game Listener
+	 */
 	private Listener startNewGameListener(final String game) {
 		return new Listener() {
 			@Override
@@ -469,7 +518,9 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 		};
 	}
 	
-	// Setting the shell key listener according to the game.
+	/**
+	 *  Setting the shell key listener according to the game.
+	 */
 	private void setShellKeyListener() {
 		if (gameName.equals("maze")) {
 			shell.addKeyListener(new AbsArrowDiagonalKeysListener() {
@@ -509,6 +560,9 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 	//---------END LISTENERS------------//
 	
+	/**
+	 * Open win window
+	 */
 	private void winWindow() {
 		Shell winShell = new Shell(display);
 		winShell.setSize(280, 230);
@@ -519,6 +573,9 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 	}
 
+	/**
+	 * Open game-over window
+	 */
 	private void gameOverWindow() {
 		Shell gameOverShell = new Shell(display);
 		gameOverShell.setSize(325, 268);
@@ -530,8 +587,17 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	}
 
 
+	/**
+	 * Getter of the user command
+	 */
+	@Override
+	public int getUserCommand() {
+		return userCommand;
+	}
 	
-	
+	/**
+	 * Setter mouse command
+	 */
 	private void setMouseCommand() {
 		this.mouseCommand = new MouseDragCommand() {
 

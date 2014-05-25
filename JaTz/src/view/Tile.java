@@ -19,8 +19,11 @@ import org.eclipse.swt.widgets.Display;
 
 import common.Keys;
 
-/*
- * Tile - Component of the board.
+/**
+ * The tile class extends canvas  
+ * 
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class Tile extends Canvas {
@@ -31,6 +34,12 @@ public class Tile extends Canvas {
 	private Point to, tileSize;
 	
 
+	/**
+	 * Constructor Creates new tile
+	 * @param parent
+	 * @param style
+	 * @param The command what happens when a mouse drag event emitted.
+	 */
 	public Tile(Composite parent, int style, final MouseDragCommand mouseCommand) {
 		super(parent, style);
 		Board p = (Board) parent;
@@ -79,6 +88,10 @@ public class Tile extends Canvas {
 		});
 	}
 	
+	/**
+	 * Paint new tile
+	 * @param e
+	 */
 	void paintControl(PaintEvent e) {
 		GC gc = e.gc;
 		int width = e.width, height = e.height;
@@ -130,24 +143,44 @@ public class Tile extends Canvas {
 		numberFontStyle.dispose();
 	}
 
+	/**
+	 * Getter for the tile background  
+	 * @return Color 
+	 */
 	public Color getTileBackGroundColor() {
 		return tileBackGroundColor;
 	}
 
+	/**
+	 * Setter for the tile background 
+	 * @param tile backGround
+	 */
 	public void setTileBackGroundColor(Color backGround) {
 		this.tileBackGroundColor = backGround;
 		redraw();
 	}
 
+	/**
+	 * Getter for the tile number
+	 * @return tile number
+	 */
 	public int getTileNumber() {
 		return tileNumber;
 	}
 
+	/**
+	 * Setter for the tile number 
+	 * @param tileNumber
+	 */
 	public void setTileNumber(int tileNumber) {
 		this.tileNumber = tileNumber;
 		redraw();
 	}
 
+	/**
+	 * Set color of the tile according to the number
+	 * @param gc
+	 */
 	private void setColor(GC gc) {
 		switch (tileNumber) {
 		case 2:

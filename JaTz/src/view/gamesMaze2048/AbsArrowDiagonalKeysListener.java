@@ -9,10 +9,11 @@ import org.eclipse.swt.events.KeyListener;
 
 import common.Keys;
 
-/*
- * Abstract Arrow Diagonal Key Listener 
+/**
+ * Abstract Arrow Diagonal class implements KeyListener 
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
-
 public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 
 	int command;
@@ -20,7 +21,9 @@ public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 	int lastKeyEventCode = 0;
 
 	
-	
+	/**
+	 * Support keys UP, DOWN, LEFT, RIGHT, RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP 
+	 */
 	@Override
 	public void keyPressed(final KeyEvent e) {
 		// The timer is waiting for the second key press for 50 millisec if there isn't any it will proceed.

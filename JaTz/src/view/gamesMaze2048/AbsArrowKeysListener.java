@@ -6,12 +6,17 @@ import org.eclipse.swt.events.KeyListener;
 
 import common.Keys;
 
-/*
- * Abstract Arrow Keys Listener 
- */
 
+/**
+ * Abstract Arrow class implements KeysListener
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
+ */
 public abstract class AbsArrowKeysListener implements KeyListener {
 
+	/**
+	 * Support keys UP, DOWN, LEFT, RIGHT
+	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		
