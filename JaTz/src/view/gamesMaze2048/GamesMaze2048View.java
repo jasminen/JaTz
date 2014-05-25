@@ -286,7 +286,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	    
 	    
 	    serverMsg = new Label(shell, SWT.NONE);
-	    serverMsg.setText("You are not connect to the server");
+	    serverMsg.setText("Not connect to a solver server");
 	    serverMsg.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 2));
 	    
 	    steps.addListener(SWT.Selection, RadioSelected());
