@@ -154,6 +154,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 				output = new ObjectOutputStream(myServer.getOutputStream());
 				input = new ObjectInputStream(myServer.getInputStream());
 				setConnectedToServer(true);
+				Message messageFromServer = (Message) input.readObject();
 				ArrayList<String> ips = (ArrayList<String>) SLhelper.load("conf/serverIPs.xml");
 				if(!(ips.contains(socketAddress.getAddress().getHostName()))) {
 					ips.add(socketAddress.getAddress().getHostName());
