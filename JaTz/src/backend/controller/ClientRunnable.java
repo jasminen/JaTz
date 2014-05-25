@@ -1,4 +1,4 @@
-package backend;
+package backend.controller;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import common.Message;
-import backend.minimax.ab.AIsolver;
+import backend.model.minimaxAB.MinimaxAB;
 
 public class ClientRunnable implements Runnable {
 
@@ -24,26 +24,25 @@ public class ClientRunnable implements Runnable {
 
 	public void run() {
 		try {
-			System.out.println("Client connected");
+			System.out.println("Client "+clientSocket.getRemoteSocketAddress()+" is connected");
 			output = new ObjectOutputStream(this.clientSocket.getOutputStream());
 			input = new ObjectInputStream(this.clientSocket.getInputStream());
-			output.writeObject(new Message(null, "You are connected to " + this.serverText, 0, null));
+			output.writeObject(new Message(null, "You are connected to " + this.serverText, 0, null, 0));
 			output.flush();
 			while (true) {
 				Message messageIn = (Message) input.readObject();
 				if (messageIn.getMsg().equals("exit")) {
-					System.out.println("Client says goodbye");
+					System.out.println("Client "+clientSocket.getRemoteSocketAddress()+" closed the connection");
 					break;
 				} else if (messageIn.getMsg().equals("getHint") && messageIn.getGame().equals("2048")) {
-					int direction = AIsolver.findBestMove(messageIn.getState());
-					output.writeObject(new Message(null, "This is the best next move", direction, messageIn.getGame()));
+					int direction = MinimaxAB.findBestMove(messageIn.getState(), messageIn.getDepth());
+					output.writeObject(new Message(null, "This is the best next move", direction, messageIn.getGame(), 0));
 				}
 			}
 			output.close();
 			input.close();
-			System.out.println("Request processed");
 		} catch (SocketException e) {
-			System.out.println("Client closed the connection");
+			System.out.println("Client "+clientSocket.getRemoteSocketAddress()+" closed the connection");
 
 		}
 		catch (IOException e) {

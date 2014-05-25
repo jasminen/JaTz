@@ -1,4 +1,4 @@
-package controller;
+package presenter;
 import view.gamesMaze2048.GamesMaze2048View;
 import model.game2048.Game2048Model;
 import model.gameMaze.GameMazeModel;

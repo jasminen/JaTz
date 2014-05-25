@@ -110,7 +110,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 		
 		while(!(alreadyWon || getState().getMode() == Keys.GAMEOVER) && iterations > 0) {
 			ExecutorService executor = Executors.newSingleThreadExecutor();
-			Future<Message> result = executor.submit(new Client(output, input, new Message(getState(), "getHint", 0, "2048")));
+			Future<Message> result = executor.submit(new Client(output, input, new Message(getState(), "getHint", 0, "2048", 7)));
 			executor.shutdown();
 			try {
 				performAction(result.get().getResult());
@@ -130,7 +130,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 	public void fullSolver() {
 		while(!(alreadyWon || getState().getMode() == Keys.GAMEOVER)) {
 			ExecutorService executor = Executors.newSingleThreadExecutor();
-			Future<Message> result = executor.submit(new Client(output, input, new Message(getState(), "getHint", 0, "2048")));
+			Future<Message> result = executor.submit(new Client(output, input, new Message(getState(), "getHint", 0, "2048", 7)));
 			executor.shutdown();
 			try {
 				performAction(result.get().getResult());
@@ -153,8 +153,6 @@ public class Game2048Model extends AbsModel implements Serializable {
 				myServer = new Socket(socketAddress.getAddress(), socketAddress.getPort());
 				output = new ObjectOutputStream(myServer.getOutputStream());
 				input = new ObjectInputStream(myServer.getInputStream());
-				Message messageFromServer = (Message) input.readObject();
-				System.out.println("Message from server: " + messageFromServer.getMsg());
 				setConnectedToServer(true);
 				ArrayList<String> ips = (ArrayList<String>) SLhelper.load("conf/serverIPs.xml");
 				if(!(ips.contains(socketAddress.getAddress().getHostName()))) {
@@ -178,7 +176,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 	@Override
 	public void disconnectFromServer() {
 		try {
-			output.writeObject(new Message(null, "exit", 0, "2048"));
+			output.writeObject(new Message(null, "exit", 0, "2048", 7));
 			output.flush();
 			output.close();
 			input.close();

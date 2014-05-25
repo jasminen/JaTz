@@ -1,4 +1,4 @@
-package backend.minimax.ab;
+package backend.model.minimaxAB;
 
 
 import java.util.HashMap;
@@ -7,8 +7,8 @@ import java.util.Map;
 
 import common.Keys;
 import common.State;
-import backend.minimax.dataobjects.Direction;
-import backend.minimax.game.Board;
+import backend.model.minimaxAB.dataobjects.Board;
+import backend.model.minimaxAB.dataobjects.Direction;
 
 /**
  * The AIsolver class that uses Artificial Intelligence to estimate the next
@@ -16,7 +16,7 @@ import backend.minimax.game.Board;
  * 
  * @author Vasilis Vryniotis <bbriniotis at datumbox.com>
  */
-public class AIsolver {
+public class MinimaxAB {
 
 	/**
 	 * Player vs Computer enum class
@@ -41,9 +41,8 @@ public class AIsolver {
 	 * @return
 	 * @throws CloneNotSupportedException
 	 */
-	public static int findBestMove(State currentState) throws CloneNotSupportedException {
+	public static int findBestMove(State currentState, int depth) throws CloneNotSupportedException {
 		
-		int depth = 7;
         Board theBoard = new Board(currentState.getCopyBoard(), currentState.getScore());
 		Map<String, Object> result = alphabeta(theBoard, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, Player.USER);
 		

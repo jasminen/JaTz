@@ -13,16 +13,26 @@ public class Message implements Serializable {
 	private String msg;
 	private int result;
 	private String game;
+	private int depth;
 	
 	public Message() {}
 	
-	public Message(State state, String msg, int result, String game) {
+	public Message(State state, String msg, int result, String game, int depth) {
 		this.state = state;
 		this.msg = msg;
 		this.result = result;
 		this.game = game;
+		this.depth = depth;
 	}
 
+
+	public int getDepth() {
+		return depth;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
 
 	public State getState() {
 		return state;

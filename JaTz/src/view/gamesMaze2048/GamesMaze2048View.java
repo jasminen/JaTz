@@ -327,7 +327,6 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				String string = e.text;
 		        char[] chars = new char[string.length()];
 		        string.getChars(0, chars.length, chars, 0);
-		        System.out.println(e.text);
 		        for (int i = 0; i < chars.length; i++) {
 		          if (!('0' <= chars[i] && chars[i] <= '9')) {
 		            e.doit = false;

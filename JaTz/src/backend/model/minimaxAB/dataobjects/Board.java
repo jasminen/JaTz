@@ -14,14 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package backend.minimax.game;
+package backend.model.minimaxAB.dataobjects;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import backend.minimax.dataobjects.ActionStatus;
-import backend.minimax.dataobjects.Direction;
 
 /**
  * The main class of the Game 2048.
