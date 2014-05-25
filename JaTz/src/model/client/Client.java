@@ -8,7 +8,11 @@ import java.util.concurrent.Callable;
 
 
 import common.Message;
-
+/**
+ * 
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
+ */
 public class Client implements Callable<Message> {
 
 
@@ -17,12 +21,17 @@ public class Client implements Callable<Message> {
 	private Message message;
 	
 	
+	/**
+	 * C'tor
+	 * @param output
+	 * @param input
+	 * @param message - the message that should be sent to server
+	 */
 	public Client(ObjectOutputStream output, ObjectInputStream input, Message message ) {
 		this.output = output;
 		this.input = input;
 		this.message = message;
 	}
-	
 	
 	
 	@Override
@@ -31,7 +40,10 @@ public class Client implements Callable<Message> {
 	}
 	
 	
-	
+	/**
+	 * Ask for hint from solver server - send the message
+	 * @return Message - the message received from server
+	 */
 public Message getHint() {
 		
 	try {

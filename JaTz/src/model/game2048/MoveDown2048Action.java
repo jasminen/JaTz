@@ -4,12 +4,19 @@ import common.State;
 
 import model.Action;
 
-/*
- * Move Down 
+/**
+ * Move down action in 2048 game. Implements Action.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class MoveDown2048Action implements Action {
 
+	/**
+	 * Move down
+	 * @param state
+	 * @return new state after moving down
+	 */
 	@Override
 	public State doAction(State state) {
 		State newState = new State(state);

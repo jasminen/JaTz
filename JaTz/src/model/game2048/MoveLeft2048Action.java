@@ -5,12 +5,21 @@ import common.State;
 
 import model.Action;
 
-/*
- * Move Left 
+/**
+ * Move left action in 2048 game. Implements Action.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
+
 
 public class MoveLeft2048Action implements Action {
 
+	
+	/**
+	 * Move left
+	 * @param state
+	 * @return new state after moving left
+	 */
 	@Override
 	public State doAction(State state) {
 		State newState = new State(state);

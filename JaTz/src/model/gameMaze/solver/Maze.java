@@ -8,11 +8,13 @@ import org.eclipse.swt.graphics.Point;
 import common.Keys;
 
 
-
-/*
+/**
  * Maze class - holds a data member of type int[][] that represents a 2D matrix
  * that is our maze.
  * Generates the maze randomly where the size of the maze is between 3-22 (rows or columns).
+ * 
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 
@@ -21,6 +23,10 @@ public class Maze implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int[][] maze;
 	
+	
+	/**
+	 * Default C'tor - generates a random maze
+	 */
 	public Maze() {
 	
 	int rows = (int) (Math.random()*20)+3;
@@ -39,19 +45,31 @@ public class Maze implements Serializable{
 	}
 	
 	
-	
+	/**
+	 * Copy C'tor
+	 * @param maze
+	 */
 	public Maze(Maze maze)
 	{
 		this.maze=maze.getMaze();
 	}
 	
 	
+	/**
+	 * C'tor that gets the maze
+	 * @param maze
+	 */
 	public Maze(int[][] maze)
 	{
 		this.maze=maze;
 	}
 
-	
+	/**
+	 * Get value from cell [x][y]
+	 * @param x
+	 * @param y
+	 * @return int value
+	 */
 	public int get(int x, int y)
 	{
 		if (x >= maze.length || y>= maze[0].length || x<0 || y<0)
@@ -59,12 +77,20 @@ public class Maze implements Serializable{
 		return maze[x][y];
 	}
 	
+	/**
+	 * Get start node - mouse
+	 * @return start node
+	 */
 	public Node getStartNode()
 	{
 		Point start = new Point(maze.length-1,maze[0].length-1);
 		return ( new Node(start));
 	}
 	
+	/**
+	 * Get goal node - cheese
+	 * @return goal node
+	 */
 	public Node getGoalNode()
 	{
 		Point goal = new Point(0,0);
@@ -72,14 +98,26 @@ public class Maze implements Serializable{
 	}
 	
 	
+	/**
+	 * maze getter
+	 * @return maze
+	 */
 	public int[][] getMaze() {
 		return maze;
 	}
 
+	/**
+	 * maze setter
+	 * @param maze
+	 */
 	public void setMaze(int[][] maze) {
 		this.maze = maze;
 	}
 	
+	/**
+	 * maze setter
+	 * @param maze
+	 */
 	public void setMaze(Maze maze) {
 		this.maze = maze.getMaze();
 	}

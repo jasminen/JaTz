@@ -16,10 +16,10 @@ import model.gameMaze.solver.MazeDomain;
 import model.gameMaze.solver.Node;
 import model.gameMaze.solver.NodeMazeActionPair;
 
-
-
-/*
+/**
  * Search algorithm that is using Heuristics in order to solve the issue in the most efficient way. 
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class Astar extends AbsSearcher implements Serializable {
@@ -29,18 +29,28 @@ public class Astar extends AbsSearcher implements Serializable {
 	private Domain domain;
 	private Distance g,h;
 	
+	/**
+	 * Default C'tor
+	 */
 	public Astar() {
 		this.domain= new MazeDomain(new Maze());
 		this.g=new MazeDistanceG();
 		this.h=new MazeAirDistance();
 	}
 	
+	/**
+	 * C'tor
+	 * @param domain
+	 * @param g
+	 * @param h
+	 */
 	public Astar(Domain domain, Distance g, Distance h) {
 	
 		this.domain=domain;
 		this.g=g;
 		this.h=h;
 	}
+	
 	
 	@Override 
 	public double search (Node sstart, Node sgoal)
@@ -88,6 +98,12 @@ public class Astar extends AbsSearcher implements Serializable {
 		
 	}
 	
+	/**
+	 * Reconstruct the path from goal to start
+	 * @param cameFrom
+	 * @param current
+	 * @return the score
+	 */
 	private double reconstructPath (HashMap<Node, NodeMazeActionPair> cameFrom, Node current)
 	{
 		double score=0;
@@ -100,26 +116,50 @@ public class Astar extends AbsSearcher implements Serializable {
 		return score;
 	}
 
+	/**
+	 * domain getter 
+	 * @return domain
+	 */
 	public Domain getDomain() {
 		return domain;
 	}
 
+	/**
+	 * domain setter
+	 * @param domain
+	 */
 	public void setDomain(Domain domain) {
 		this.domain = domain;
 	}
 
+	/**
+	 * g getter
+	 * @return g
+	 */
 	public Distance getG() {
 		return g;
 	}
 
+	/**
+	 * g setter
+	 * @param g
+	 */
 	public void setG(Distance g) {
 		this.g = g;
 	}
 
+	/**
+	 * h getter
+	 * @return h
+	 */
 	public Distance getH() {
 		return h;
 	}
 
+	/**
+	 * h setter
+	 * @param h
+	 */
 	public void setH(Distance h) {
 		this.h = h;
 	}

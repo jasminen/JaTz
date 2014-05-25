@@ -11,8 +11,10 @@ import java.util.Observer;
 import common.Keys;
 
 
-/*
- * Presenter -  models 1&2 receiving the Maze and 2048 models
+/**
+ * Presenter - this class manages the communication between View and Model\s
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class Presenter implements Observer {
@@ -21,13 +23,23 @@ public class Presenter implements Observer {
 	private Model model;
 	private Model model2;
 	
-
+/**
+ * C'tor
+ * @param model
+ * @param model2
+ * @param gui
+ */
 	public Presenter(Model model, Model model2, View gui) {
 		this.model2 = model2;
 		this.model = model;
 		this.gui = gui;
 	}
 
+	/**
+	 * Gets a notification from one of the observable classes and updates the other one accordingly. 
+	 * @param observable
+	 * @param Object
+	 */
 	@Override
 	public void update(Observable o, final Object io) {
 

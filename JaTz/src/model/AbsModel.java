@@ -7,10 +7,11 @@ import java.util.Observable;
 import common.SLhelper;
 import common.State;
 
-/*
- * Abstract model - define the models structure and handle the state list.
+/**
+ * Abstract model - define the models structure and handle the state list. Implements Model and Serializable.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ * 
  */
-
 
 public abstract class AbsModel extends Observable implements Model , Serializable{
 
@@ -18,10 +19,15 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 	private static final long serialVersionUID = 1L;
 	protected LinkedList<State> states;
 	
+	/**
+	 * Default C'tor - creates a new state linked list
+	 */
+	
 	public AbsModel() {
 		this.states = new LinkedList<State>();
 	}
 
+	
 	@Override
 	public abstract void moveUp() ;
 
@@ -61,7 +67,9 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 	@Override
 	public abstract void restart();
 	
-
+/**
+ * Undo last move - pulls the last state out of the state linked list
+ */
 	@Override
 	public void undo() {
 		if (this.states.size() > 1)
@@ -70,6 +78,9 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 		notifyObservers();
 	}
 
+/**
+ * Clears the state linked list and gets a new start state
+ */
 	@Override
 	public void newGame() {
 		this.states.clear();
@@ -79,12 +90,20 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 		notifyObservers();
 	}
 
-	
+/**
+ * Returns the last state in list
+ * @return 	
+ */	
 	@Override
 	public State getState() {
 		return this.states.getLast();
 	}
 	
+	
+	/**
+	 * Saves the model at the path specified
+	 * @param path 
+	 */
 	@Override
 	public void save(String path) {
 		try {
@@ -94,17 +113,34 @@ public abstract class AbsModel extends Observable implements Model , Serializabl
 		}
 	}
 	
+	/**
+	 * Load a model from the path specified
+	 * @param path 
+	 */
 	@Override
 	public abstract void load(String path);
 	
+	
+	/**
+	 * Get a start state of the game
+	 * @return startState
+	 */
 	protected abstract State getStartState();
 
 
-
+/**
+ * State linked list setter
+ * @param states
+ */
 	public void setStates(LinkedList<State> states) {
 		this.states = states;
 	}
 	
+	
+	/**
+	 * State linked list getter
+	 * @return
+	 */
 	public LinkedList<State> getStates() {
 		return this.states;
 	}

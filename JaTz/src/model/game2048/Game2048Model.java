@@ -22,10 +22,11 @@ import common.State;
 import model.AbsModel;
 import model.client.Client;
 
-/*
- * Game2048Model 
+/**
+ * Game 2048 Model - Class that represents the 2048 game model, extends AbsModel and implements Serializable 
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
-
 public class Game2048Model extends AbsModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -38,14 +39,20 @@ public class Game2048Model extends AbsModel implements Serializable {
 	private Boolean connectedToServer = false;
 
 
-
+/**
+ * Default C'tor - boardSize init to 4 and winNum to 2048.
+ */
 	public Game2048Model() {
 		this.boardSize = 4;
 		this.winNum = 2048;
 		
 	}
 
-	// C'tor - gets the win number of the game (a power of two).
+	
+	/**
+	 * C'tor - gets the win number of the game (must be a power of two, else 2048)
+	 * @param winNum
+	 */
 	public Game2048Model(int winNum) {
 		
 		if (isPowerOfTwo(winNum))
@@ -57,6 +64,8 @@ public class Game2048Model extends AbsModel implements Serializable {
 		this.boardSize = 4;
 	}
 
+	
+	
 	@Override
 	public void moveUp() {
 		endPhase(new MoveUp2048Action().doAction(getState()));
@@ -154,7 +163,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 				output = new ObjectOutputStream(myServer.getOutputStream());
 				input = new ObjectInputStream(myServer.getInputStream());
 				setConnectedToServer(true);
-				Message messageFromServer = (Message) input.readObject();
+				input.readObject();
 				ArrayList<String> ips = (ArrayList<String>) SLhelper.load("conf/serverIPs.xml");
 				if(!(ips.contains(socketAddress.getAddress().getHostName()))) {
 					ips.add(socketAddress.getAddress().getHostName());
@@ -218,8 +227,11 @@ public class Game2048Model extends AbsModel implements Serializable {
 	
 	
 	
-	// Check if the mode needs to be change. if not, draw a new number. Add to
-	// states array and notify.
+
+	/**
+	 * Checks if the mode needs to be changed. if not, draw a new number. Add to states array and notify.
+	 * @param newState
+	 */
 	private void endPhase(State newState) {
 		if (newState != null  && !newState.equals(getState())) {
 			if (newState.getMode() == Keys.WIN || newState.getMode() == Keys.NEW_GAME) { // Let the game continue after winning
@@ -237,6 +249,11 @@ public class Game2048Model extends AbsModel implements Serializable {
 		}
 	}
 
+	
+	/**
+	 * Randomly draw a new number on board - 90% for 2 and 10% for 4
+	 * @param state
+	 */
 	private void DrawNewNumber(State state) {
 		ArrayList<Point> freeCells = state.getEmptyCellIds();
 
@@ -251,7 +268,11 @@ public class Game2048Model extends AbsModel implements Serializable {
 			state.setCell(row, column, 4);
 	}
 
-	
+	/**
+	 * Checks if the board is a win board (contains the winNum)
+	 * @param board
+	 * @return True/False
+	 */
 	private Boolean win(int[][] board) {
 		for (int[] r : board)
 			for (int c : r)
@@ -263,6 +284,12 @@ public class Game2048Model extends AbsModel implements Serializable {
 
 	}
 
+	
+	/**
+	 * Checks if there are any available moves on the given board
+	 * @param state
+	 * @return True/False
+	 */
 	private Boolean gotAvailableMoves(State state) {
 		State up = new MoveUp2048Action().doAction(state);
 		State down = new MoveDown2048Action().doAction(state);
@@ -278,6 +305,11 @@ public class Game2048Model extends AbsModel implements Serializable {
 
 	}
 	
+	
+	/**
+	 * Performs one of the actions based on the int received
+	 * @param action
+	 */
 	private void performAction(int action) {
 		switch (action) {
 		case Keys.UP:
@@ -298,6 +330,12 @@ public class Game2048Model extends AbsModel implements Serializable {
 		
 	}
 
+	
+	/**
+	 * Checks if a number is a power of two
+	 * @param number
+	 * @return True/False
+	 */
 	private static boolean isPowerOfTwo(int number) {
 		if (number <= 0) {
 			return false;
@@ -308,58 +346,115 @@ public class Game2048Model extends AbsModel implements Serializable {
 		return false;
 	}
 
+	/**
+	 * winNum getter
+	 * @return winNum
+	 */
 	public int getWinNum() {
 		return this.winNum;
 	}
 
+	
+	/**
+	 * winNum setter
+	 * @param winNum
+	 */
 	public void setWinNum(int winNum) {
 		this.winNum = winNum;
 	}
 
+	/**
+	 * boardSize getter
+	 * @return boardSize
+	 */
 	public int getBoardSize() {
 		return boardSize;
 	}
 
+	/**
+	 * boardSize setter
+	 * @return boardSize
+	 */
 	public void setBoardSize(int boardSize) {
 		this.boardSize = boardSize;
 	}
 
+	/**
+	 * alreadyWon getter
+	 * @return alreadyWon (True/False)
+	 */
 	public Boolean getAlreadyWon() {
 		return alreadyWon;
 	}
 
+	/**
+	 * alreadyWon setter
+	 * @param alreadyWon
+	 */
 	public void setAlreadyWon(Boolean alreadyWon) {
 		this.alreadyWon = alreadyWon;
 	}
 	
+	/**
+	 * myServer getter
+	 * @return myServer (socket)
+	 */
 	public Socket getMyServer() {
 		return myServer;
 	}
 
+	/**
+	 * myServer setter
+	 * @param myServer
+	 */
 	public void setMyServer(Socket myServer) {
 		this.myServer = myServer;
 	}
 
+	/**
+	 * output getter
+	 * @return output
+	 */
 	public ObjectOutputStream getOutput() {
 		return output;
 	}
 
+	/**
+	 * output setter
+	 * @param output
+	 */
 	public void setOutput(ObjectOutputStream output) {
 		this.output = output;
 	}
 
+	/**
+	 * input getter
+	 * @return input
+	 */
 	public ObjectInputStream getInput() {
 		return input;
 	}
 
+	/**
+	 * input setter
+	 * @param input
+	 */
 	public void setInput(ObjectInputStream input) {
 		this.input = input;
 	}
 
+	/**
+	 * connectedToServer getter
+	 * @return connectedToServer
+	 */
 	public Boolean isConnectedToServer() {
 		return connectedToServer;
 	}
 
+	/**
+	 * connectedToServer setter
+	 * @param connectedToServer
+	 */
 	public void setConnectedToServer(Boolean connectedToServer) {
 		this.connectedToServer = connectedToServer;
 	}

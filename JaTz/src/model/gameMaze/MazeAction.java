@@ -6,21 +6,29 @@ import common.Keys;
 import common.State;
 import model.Action;
 
-
-/*
+/**
  * Holds x,y and adds them to the State's Mouse point . x is rows and y columns.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class MazeAction implements Action {
 
 	private int x,y;
 	
+	/**
+	 * C'tor
+	 * @param x
+	 * @param y
+	 */
 	public MazeAction(int x, int y) {
 		this.x=x;
 		this.y=y;
 	}
 
-	
+	/**
+	 * Adds x,y to the Mouse point.
+	 */
 	
 	@Override
 	public State doAction(State state) {

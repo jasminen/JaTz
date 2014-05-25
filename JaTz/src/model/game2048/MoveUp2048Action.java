@@ -6,12 +6,20 @@ import common.State;
 
 import model.Action;
 
-/*
- * Move Up 
+/**
+ * Move up action in 2048 game. Implements Action.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class MoveUp2048Action implements Action {
 
+	
+	/**
+	 * Move up
+	 * @param state
+	 * @return new state after moving up
+	 */
 	@Override
 	public State doAction(State state) {
 		State newState = new State(state);

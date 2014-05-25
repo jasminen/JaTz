@@ -4,22 +4,32 @@ import org.eclipse.swt.graphics.Point;
 
 
 
-
-
-/*
+/**
  * Holds x,y and adds them to the Node's point . x is rows and y columns.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class MazeAction {
 
 	private int x,y;
 	
+	/**
+	 * C'tor
+	 * @param x
+	 * @param y
+	 */
 	public MazeAction(int x, int y) {
 		this.x=x;
 		this.y=y;
 		
 	}
 	
+	/**
+	 * Adds x,y to the Node's point . x is rows and y columns.
+	 * @param node
+	 * @return
+	 */
 	public Node doAction(Node node) {
 		Point oldPoint = node.getNode();
 		Point newPoint = new Point(oldPoint.x+this.x, oldPoint.y+this.y);
@@ -27,6 +37,10 @@ public class MazeAction {
 	}
 
 
+	/**
+	 * Get name of action
+	 * @return name
+	 */
 	public String getName() {
 		String upDown="", leftRight="", straightDiagonal="diagonal";
 		if(x==0 || y==0)

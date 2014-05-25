@@ -5,9 +5,10 @@ import java.io.Serializable;
 
 import org.eclipse.swt.graphics.Point;
 
-
-/*
+/**
  * Straight moves cost 10 and diagonal cost 15.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class MazeDistanceG implements Distance, Serializable {

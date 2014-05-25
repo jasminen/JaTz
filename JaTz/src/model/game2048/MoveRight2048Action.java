@@ -6,12 +6,19 @@ import common.State;
 
 import model.Action;
 
-/*
- * Move Right 
+/**
+ * Move right action in 2048 game. Implements Action.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
-
 public class MoveRight2048Action implements Action {
 
+	
+	/**
+	 * Move right
+	 * @param state
+	 * @return new state after moving right
+	 */
 	@Override
 	public State doAction(State state) {
 		State newState = new State(state);

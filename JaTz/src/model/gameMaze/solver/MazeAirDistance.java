@@ -5,9 +5,10 @@ import java.io.Serializable;
 
 import org.eclipse.swt.graphics.Point;
 
-
-/*
+/**
  * Heuristic of distance - square root of rows^2 + columns^2, rows from goal and columns from goal.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class MazeAirDistance implements Distance , Serializable{

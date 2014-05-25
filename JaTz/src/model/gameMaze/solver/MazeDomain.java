@@ -9,9 +9,10 @@ import org.eclipse.swt.graphics.Point;
 import common.Keys;
 
 
-
-/*
+/**
  * Maze Domain class. holds a data member of maze.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class MazeDomain implements Domain, Serializable {
@@ -19,10 +20,17 @@ public class MazeDomain implements Domain, Serializable {
 	private static final long serialVersionUID = 1L;
 	private Maze maze;
 	
+	/**
+	 * Default C'tor - default maze c'tor
+	 */
 	public MazeDomain() {
 		this.maze = new Maze();
 	}
 	
+	/**
+	 * C'tor
+	 * @param maze
+	 */
 	public MazeDomain(Maze maze) {
 		this.maze=maze;
 	}
@@ -63,13 +71,20 @@ public class MazeDomain implements Domain, Serializable {
 	}
 
 
-
+	/**
+	 * maze getter
+	 * @return maze
+	 */
 	public Maze getMaze() {
 		return maze;
 	}
 
 
 
+	/**
+	 * maze setter
+	 * @param maze
+	 */
 	public void setMaze(Maze maze) {
 		this.maze = maze;
 	}

@@ -3,7 +3,11 @@ import view.gamesMaze2048.GamesMaze2048View;
 import model.game2048.Game2048Model;
 import model.gameMaze.GameMazeModel;
 
-
+/**
+ * Our 2048 maze game main class
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
+ */
 
 public class Run {
 

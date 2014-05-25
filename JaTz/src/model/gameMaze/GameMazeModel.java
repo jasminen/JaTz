@@ -16,8 +16,10 @@ import model.gameMaze.solver.MazeDomain;
 import model.gameMaze.solver.Node;
 import model.gameMaze.solver.astar.Astar;
 
-/*
- * Maze Mode 
+/**
+ * Model of the Maze game. Extends AbsModel and implements  Serializable.
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
 
 public class GameMazeModel extends AbsModel implements  Serializable {
@@ -25,6 +27,9 @@ public class GameMazeModel extends AbsModel implements  Serializable {
 	private static final long serialVersionUID = 1L;
 	int rows, columns, winScore=0;
 
+	/**
+	 * Default C'tor - updates rows to 6 and columns to 7
+	 */
 	public GameMazeModel() {
 		this.rows = 6;
 		this.columns = 7;
@@ -90,9 +95,13 @@ public class GameMazeModel extends AbsModel implements  Serializable {
 		super.newGame();
 	}
 	
-	public void doAction(int r, int c) {
-		
-		
+	
+	/**
+	 * Calls MazeAction according to number of columns and rows. Update mode if needed.
+	 * @param r - rows
+	 * @param c - columns
+	 */
+	public void doAction(int r, int c) {	
 		if (getState().getMode() != Keys.WIN && getState().getMode() != Keys.GAMEOVER) {
 			State newState = new MazeAction(r, c).doAction(getState());
 
@@ -114,6 +123,7 @@ public class GameMazeModel extends AbsModel implements  Serializable {
 		}
 	}
 
+	
 	@Override
 	protected State getStartState() {
 		int[][] board = null;	
@@ -138,27 +148,50 @@ public class GameMazeModel extends AbsModel implements  Serializable {
 	}
 	
 	
-
+/**
+ * rows getter
+ * @return rows
+ */
 	public int getRows() {
 		return rows;
 	}
 
+	/**
+	 * rows setter
+	 * @param rows
+	 */
 	public void setRows(int rows) {
 		this.rows = rows;
 	}
 
+	/**
+	 * columns getter
+	 * @return columns
+	 */
 	public int getColumns() {
 		return columns;
 	}
 
+	/**
+	 * columns setter
+	 * @param columns
+	 */
 	public void setColumns(int columns) {
 		this.columns = columns;
 	}
 
+	/**
+	 * winScore getter
+	 * @return winScore
+	 */
 	public int getWinScore() {
 		return winScore;
 	}
 
+	/**
+	 * winScore setter
+	 * @param winScore
+	 */
 	public void setWinScore(int winScore) {
 		this.winScore = winScore;
 	}

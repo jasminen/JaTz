@@ -2,10 +2,13 @@ package model.gameMaze.solver;
 
 import org.eclipse.swt.graphics.Point;
 
-/* 
- * Node class - holds a data member of type object that represents the node,
+/**
+ * Node class - holds a data member of type Point that represents the node,
  * and g and f that are used in search algorithms .
+ * @author Tzelon Machluf and Jasmine Nouriel
+ *
  */
+
 
 public class Node implements Comparable<Node> {
 	
@@ -13,6 +16,10 @@ public class Node implements Comparable<Node> {
 	private double f;
 	private double g;
 	
+	/**
+	 * C'tor
+	 * @param node
+	 */
 	public Node(Point node) {
 		this.node = node;
 		this.f=0;
@@ -20,18 +27,42 @@ public class Node implements Comparable<Node> {
 	}
 	
 	
+	/**
+	 * node getter
+	 * @return node
+	 */
 	public Point getNode() {
 		return node;
 	}
+	
+	/**
+	 * f getter
+	 * @return f
+	 */
 	public double getF() {
 		return f;
 	}
+	
+	/**
+	 * f setter
+	 * @param f
+	 */
 	public void setF(double f) {
 		this.f = f;
 	}
+	
+	/**
+	 * g getter
+	 * @return g
+	 */
 	public double getG() {
 		return g;
 	}
+	
+	/**
+	 * g setter
+	 * @param g
+	 */
 	public void setG(double g) {
 		this.g = g;
 	}
