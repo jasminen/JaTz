@@ -104,7 +104,6 @@ public class GameMazeModel extends AbsModel implements  Serializable {
 	public void doAction(int r, int c) {	
 		if (getState().getMode() != Keys.WIN && getState().getMode() != Keys.GAMEOVER) {
 			State newState = new MazeAction(r, c).doAction(getState());
-
 			if (!newState.equals(getState())) {
 				if (newState.findCell(Keys.MOUSE_AND_CHEESE) != null) {
 					if (newState.getScore() == this.winScore) {
@@ -144,7 +143,7 @@ public class GameMazeModel extends AbsModel implements  Serializable {
 			winScore = (int) as.search(new Node(new Point(0, 0)), new Node(new Point(this.rows - 1, this.columns - 1)));
 		}
 	
-		return new State(board, 0, Keys.IN_PROGRESS, "Goal Score is: "+winScore+"         Straight moves cost 10, Diagonal cost 15.");
+		return new State(board, 0, Keys.NEW_GAME, "Goal Score is: "+winScore+"         Straight moves cost 10, Diagonal cost 15.");
 	}
 	
 	

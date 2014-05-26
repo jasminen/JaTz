@@ -217,6 +217,11 @@ public class Game2048Model extends AbsModel implements Serializable {
 	}
 	
 	
+	public Boolean getConnectedToServer() {
+		return connectedToServer;
+	}
+
+
 	@Override
 	public void undo() {
 		if(getState().getMode() == Keys.WIN) {
