@@ -9,7 +9,7 @@ import model.gameMaze.GameMazeModel;
  *
  */
 
-public class Run {
+public class RunGameCenter {
 
 	public static void main(String[] args) {
 	

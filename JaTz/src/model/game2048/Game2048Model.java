@@ -195,7 +195,6 @@ public class Game2048Model extends AbsModel implements Serializable {
 			setChanged();
 			notifyObservers(connectedToServer);
 		} catch (IOException | NullPointerException e) {
-			System.out.println("Not Connected");
 //			e.printStackTrace();
 		}
 	}
