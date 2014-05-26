@@ -77,6 +77,7 @@ public class Presenter implements Observer {
 						model.moveDiagonalRightUp();
 						break;
 					case Keys.DIFFERENT_GAME:
+						model.disconnectFromServer();
 						Model m = model;
 						model = model2;
 						model2 = m;

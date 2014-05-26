@@ -93,6 +93,7 @@ public class GameMazeModel extends AbsModel implements  Serializable {
 	public void newGame() {
 		winScore = 0;
 		super.newGame();
+		
 	}
 	
 	

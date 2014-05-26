@@ -400,53 +400,6 @@ public class Game2048Model extends AbsModel implements Serializable {
 		this.alreadyWon = alreadyWon;
 	}
 	
-	/**
-	 * myServer getter
-	 * @return myServer (socket)
-	 */
-	public Socket getMyServer() {
-		return myServer;
-	}
-
-	/**
-	 * myServer setter
-	 * @param myServer
-	 */
-	public void setMyServer(Socket myServer) {
-		this.myServer = myServer;
-	}
-
-	/**
-	 * output getter
-	 * @return output
-	 */
-	public ObjectOutputStream getOutput() {
-		return output;
-	}
-
-	/**
-	 * output setter
-	 * @param output
-	 */
-	public void setOutput(ObjectOutputStream output) {
-		this.output = output;
-	}
-
-	/**
-	 * input getter
-	 * @return input
-	 */
-	public ObjectInputStream getInput() {
-		return input;
-	}
-
-	/**
-	 * input setter
-	 * @param input
-	 */
-	public void setInput(ObjectInputStream input) {
-		this.input = input;
-	}
 
 	/**
 	 * connectedToServer getter

@@ -19,7 +19,7 @@ public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 	int command;
 	Boolean keyFlag = false;
 	int lastKeyEventCode = 0;
-
+	Timer tm = new Timer();
 	
 	/**
 	 * Support keys UP, DOWN, LEFT, RIGHT, RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP 
@@ -32,7 +32,7 @@ public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 			if (keyFlag == false) {
 				keyFlag = true;
 				lastKeyEventCode = e.keyCode;
-				Timer tm = new Timer();
+				tm = new Timer();
 				
 				tm.schedule(new TimerTask() { //Scheduled after 50 millisec
 
@@ -81,7 +81,7 @@ public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 				keyFlag = false;
 				lastKeyEventCode = e.keyCode;
 			}
-
+			
 		} else {
 			setInstructions(true);
 		}
@@ -90,7 +90,9 @@ public abstract class AbsArrowDiagonalKeysListener implements KeyListener {
 	
 
 	@Override
-	public void keyReleased(KeyEvent e) {}
+	public void keyReleased(KeyEvent e) {
+		tm.cancel();
+	}
 
 	
 	

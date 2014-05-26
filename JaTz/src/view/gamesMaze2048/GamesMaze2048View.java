@@ -9,12 +9,12 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -51,6 +51,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	private Button steps;
 	private Button fullSolver;
 	private Text numberOfSteps;
+	private Label numberOfStepsLabel;
 	private MouseDragCommand mouseCommand;
 	
 	/**
@@ -113,6 +114,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 		// Create all the items in the File drop down menu
 		MenuItem newGameItem = new MenuItem(fileMenu, SWT.CASCADE);
+		newGameItem.setImage(new Image(Display.getDefault(), "images/new_window.png"));
 		newGameItem.setText("New Game");
 
 		Menu newGameSubMenu = new Menu(shell, SWT.DROP_DOWN);
@@ -120,36 +122,43 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 		MenuItem game2048Item = new MenuItem(newGameSubMenu, SWT.NONE);
 		game2048Item.setText("2048");
+		game2048Item.setImage(new Image(Display.getDefault(), "images/icon_256.png"));
 		game2048Item.addListener(SWT.Selection, startNewGameListener("2048"));
 
 		MenuItem gameMazeItem = new MenuItem(newGameSubMenu, SWT.NONE);
 		gameMazeItem.setText("Maze");
+		gameMazeItem.setImage(new Image(Display.getDefault(), "images/maze_icon.png"));
 		gameMazeItem.addListener(SWT.Selection, startNewGameListener("maze"));
 		
 		MenuItem connectToServerItem = new MenuItem(fileMenu, SWT.NONE);
 		connectToServerItem.setText("Connect to Solver server");
+		connectToServerItem.setImage(new Image(Display.getDefault(), "images/electrical_plug.png"));
 		connectToServerItem.addListener(SWT.Selection, connectToServerListener());
-
 		MenuItem restartItem = new MenuItem(fileMenu, SWT.NONE);
 		restartItem.setText("Restart");
+		restartItem.setImage(new Image(Display.getDefault(), "images/restart.png"));
 		restartItem.addListener(SWT.Selection, restartGameListener());
 
 		// Create the first separator
 		new MenuItem(fileMenu, SWT.SEPARATOR);
 		MenuItem saveItem = new MenuItem(fileMenu, SWT.NONE);
 		saveItem.setText("Save");
+		saveItem.setImage(new Image(Display.getDefault(), "images/floppy_save.png"));
 		MenuItem loadItem = new MenuItem(fileMenu, SWT.NONE);
 		loadItem.setText("Load");
+		loadItem.setImage(new Image(Display.getDefault(), "images/floppy_open.png"));
 
 		// Create the second separator
 		new MenuItem(fileMenu, SWT.SEPARATOR);
 		MenuItem ExitItem = new MenuItem(fileMenu, SWT.NONE);
 		ExitItem.setText("Exit");
+		ExitItem.setImage(new Image(Display.getDefault(), "images/exit.png"));
 		// End of file drop down
 
 		// Create all the items in the Edit drop down menu
 		MenuItem undoItem = new MenuItem(editMenu, SWT.NONE);
 		undoItem.setText("Undo");
+		undoItem.setImage(new Image(Display.getDefault(), "images/undo.png"));
 		// End of Edit drop down
 
 		shell.setMenuBar(menuBar);
@@ -167,6 +176,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 	private void initButtons() {
 		Button undoMove = new Button(shell, SWT.PUSH);
 		undoMove.setText("Undo Move");
+		undoMove.setImage(new Image(Display.getDefault(), "images/undo.png"));
 		undoMove.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1,	1));
 
 		score = new Label(shell, SWT.NONE);
@@ -176,45 +186,56 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 
 		Button restartGame = new Button(shell, SWT.PUSH);
 		restartGame.setText("Restart Game");
+		restartGame.setImage(new Image(Display.getDefault(), "images/restart.png"));
 		restartGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 
 		board = new Board(shell, SWT.BORDER, mouseCommand);
 		board.setGameColors(new Color(null, 199, 193, 173), new Color(null,230, 227, 220));
 		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 7));
 
-		Button loadGame = new Button(shell, SWT.PUSH);
-		loadGame.setText("Load Game");
-		loadGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 
 		Button saveGame = new Button(shell, SWT.PUSH);
 		saveGame.setText("Save Game");
+		saveGame.setImage(new Image(Display.getDefault(), "images/floppy_save.png"));
 		saveGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		
+		Button loadGame = new Button(shell, SWT.PUSH);
+		loadGame.setText("Load Game");
+		loadGame.setImage(new Image(Display.getDefault(), "images/floppy_open.png"));
+		loadGame.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		
-		getSolver = new Button(shell, SWT.PUSH);
+		Group serverGroup = new Group(shell, SWT.NO_RADIO_GROUP);
+		serverGroup.setText("Server Options");
+		serverGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		serverGroup.setLayout(new GridLayout(2, false)); 
+		
+		getSolver = new Button(serverGroup, SWT.PUSH);
 		getSolver.setText("Please Solve");
-		getSolver.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		getSolver.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 2, 1));
 		getSolver.setEnabled(false);
 		
-		radioSelection = new Composite(shell, SWT.NULL);
+		radioSelection = new Composite(serverGroup, SWT.NULL);
 		radioSelection.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
-		radioSelection.setLayout(new RowLayout());
+		radioSelection.setLayout(new GridLayout(2, false));
+		radioSelection.setVisible(false);
 		
 	    fullSolver = new Button(radioSelection, SWT.RADIO);
 	    fullSolver.setText("Full Solver");
 	    steps = new Button(radioSelection, SWT.RADIO);
 	    steps.setText("Steps");
-	    radioSelection.setVisible(false);
 	    
-	    numberOfSteps = new Text(shell, SWT.BORDER);
+	    numberOfStepsLabel = new Label(radioSelection, SWT.NONE); 
+	    numberOfStepsLabel.setText("Number of steps: ");
+	    numberOfSteps = new Text(radioSelection, SWT.BORDER);
 	    numberOfSteps.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
 	    numberOfSteps.addListener(SWT.Verify, onlyNumbersListener());
 	    numberOfSteps.setVisible(false);
+	    numberOfStepsLabel.setVisible(false);
 	    
 	    
-	    serverMsg = new Label(shell, SWT.NONE);
+	    serverMsg = new Label(serverGroup, SWT.NONE);
 	    serverMsg.setText("Not connect to a solver server");
-	    serverMsg.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 2));
+	    serverMsg.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, false, false, 2, 1));
 	    
 	    steps.addListener(SWT.Selection, RadioSelectedListener());
 		getSolver.addListener(SWT.Selection, getSolverListener());
@@ -289,11 +310,12 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 			
 			@Override
 			public void run() {
-				if (isConnectedToServer) {
+				if (isConnectedToServer && gameName == "2048") {
 					connectShell.setVisible(false);
 					radioSelection.setVisible(true);
 					getSolver.setEnabled(true);
 					numberOfSteps.setVisible(true);
+					numberOfStepsLabel.setVisible(true);
 					serverMsg.setText("Connected to a server");
 					steps.setSelection(true);
 					fullSolver.setSelection(false);
@@ -301,6 +323,7 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 					radioSelection.setVisible(false);
 					getSolver.setEnabled(false);
 					numberOfSteps.setVisible(false);
+					numberOfStepsLabel.setVisible(false);
 					serverMsg.setText("Not connect to a solver server");
 				}
 			}
@@ -325,8 +348,10 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 			public void handleEvent(Event e) {
 				if (((Button) radioSelection.getChildren()[0]).getSelection()) { //Full Solver
 					numberOfSteps.setVisible(false);
+					numberOfStepsLabel.setVisible(false);
 				} else { // Steps
 					numberOfSteps.setVisible(true);
+					numberOfStepsLabel.setVisible(true);
 				}
 				shell.forceFocus();
 			}
@@ -372,7 +397,8 @@ public class GamesMaze2048View extends Observable implements View, Runnable {
 				} else { // Steps
 					userCommand = Keys.GET_HINT;
 					setChanged();
-					notifyObservers(Integer.parseInt(numberOfSteps.getText()));
+					if(numberOfSteps.getText() != "")
+						notifyObservers(Integer.parseInt(numberOfSteps.getText()));
 				}
 				shell.forceFocus();
 			}
