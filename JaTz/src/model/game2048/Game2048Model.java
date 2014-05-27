@@ -37,6 +37,7 @@ public class Game2048Model extends AbsModel implements Serializable {
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private Boolean connectedToServer = false;
+	private Boolean helpAsked = false;
 
 
 /**
@@ -117,13 +118,15 @@ public class Game2048Model extends AbsModel implements Serializable {
 			iterations = 0;
 		}
 		
-		while(!(alreadyWon || getState().getMode() == Keys.GAMEOVER) && iterations > 0) {
+		while(!(alreadyWon || getState().getMode() == Keys.GAMEOVER) && iterations > 0 && (helpAsked != true)) {
+			helpAsked = true;
 			ExecutorService executor = Executors.newSingleThreadExecutor();
 			Future<Message> result = executor.submit(new Client(output, input, new Message(getState(), "getHint", 0, "2048", 7)));
 			executor.shutdown();
 			try {
 				performAction(result.get().getResult());
 				Thread.sleep(500);
+				helpAsked = false;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {
@@ -137,12 +140,14 @@ public class Game2048Model extends AbsModel implements Serializable {
 	
 	@Override
 	public void fullSolver() {
-		while(!(alreadyWon || getState().getMode() == Keys.GAMEOVER)) {
+		while(!(alreadyWon || getState().getMode() == Keys.GAMEOVER) && (helpAsked != true)) {
+			helpAsked = true;
 			ExecutorService executor = Executors.newSingleThreadExecutor();
 			Future<Message> result = executor.submit(new Client(output, input, new Message(getState(), "getHint", 0, "2048", 7)));
 			executor.shutdown();
 			try {
 				performAction(result.get().getResult());
+				helpAsked = false;
 				//Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
